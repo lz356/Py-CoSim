@@ -39,7 +39,7 @@ setuptools.setup(
     ],
     extras_require={
         'dev': [
-            # 'pytest',
+            'pytest',
             # 'codecov',
             # 'flake8==3.8.2',
             # 'coverage',
