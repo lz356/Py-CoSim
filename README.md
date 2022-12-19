@@ -6,7 +6,7 @@ This repository is a work-in-progress.
 ## Tested Versions
 EnergyPlus Version: 22.2.0\
 EnergyPlus API version: 0.2\
-Python: 3.9.12
+Python: 3.8.2
 
 ## Installation
 Download and install the latest version of [Conda](https://www.anaconda.com/products/distribution)\
