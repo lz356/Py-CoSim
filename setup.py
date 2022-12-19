@@ -30,9 +30,9 @@ setuptools.setup(
     python_requires='>=3.8',
     install_requires=[
         'pandas',
-        # 'scikit-learn',
-        # 'matplotlib',
-        # 'jupyter',
+        'scikit-learn',
+        'matplotlib',
+        'jupyter',
         # 'torchvision==0.13.1',
         # 'torchaudio',
         # 'torch',
