@@ -21,3 +21,5 @@ Install the environment needed for this repository:\
 
 ## Referneces
 EnergyPlus API Example and Tutorial: https://github.com/jmarrec/OpenStudio_to_EnergyPlusAPI/blob/main/OpenStudio_to_EnergyPlusAPI.ipynb
+EnergyPlus API Documentation: https://nrel.github.io/EnergyPlus/api/python/index.html
+Threading: https://github.com/NREL/EnergyPlus/issues/9453
