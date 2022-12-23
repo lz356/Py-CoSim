@@ -1,5 +1,5 @@
-Program Version,EnergyPlus, Version 22.2.0-c249759bad, YMD=2022.12.21 16:32,
-   ** Warning ** Timestep: Requested number (2) is less than the suggested minimum of 4.
+Program Version,EnergyPlus, Version 22.2.0-c249759bad, YMD=2022.12.23 12:50,
+   ** Warning ** Timestep: Requested number (1) is less than the suggested minimum of 4.
    **   ~~~   ** Please see entry for Timestep in Input/Output Reference for discussion of considerations.
    ************* Beginning Zone Sizing Calculations
    ** Warning ** Weather file location will be used rather than entered (IDF) Location object.
@@ -27,27 +27,27 @@ Program Version,EnergyPlus, Version 22.2.0-c249759bad, YMD=2022.12.21 16:32,
    ************* No node connection errors were found.
    ************* Beginning Simulation
    ** Warning ** GetInputEconomicsTariff: UtilityCost:Tariff="ARIZONAPUBSERV_E-32_GENERALSERVICE" invalid data
-   **   ~~~   ** Demand window of QuarterHour is not consistent with number of timesteps per hour [2].
-   **   ~~~   ** Demand window will be set to HalfHour, and the simulation continues.
+   **   ~~~   ** Demand window of QuarterHour is not consistent with number of timesteps per hour [1].
+   **   ~~~   ** Demand window will be set to FullHour, and the simulation continues.
    ** Warning ** GetSpecificHeatGlycol: Temperature is out of range (too high) for fluid [WATER] specific heat **
    **   ~~~   ** ..Called From:PlantLoopSolver::EvaluateLoopSetPointLoad,Temperature=[INF], supplied data range=[0.00,125.00]
-   **   ~~~   **  Environment=RUNPERIOD 1, at Simulation time=01/01 10:03 - 10:05
+   **   ~~~   **  Environment=RUNPERIOD 1, at Simulation time=01/20 22:20 - 22:27
    ** Warning ** GetDensityGlycol: Temperature is out of range (too high) for fluid [WATER] density **
    **   ~~~   ** ..Called From:PlantPumps:CalcPumps: ,Temperature=[INF], supplied data range=[0.00,100.00]
-   **   ~~~   **  Environment=RUNPERIOD 1, at Simulation time=01/01 10:03 - 10:05
+   **   ~~~   **  Environment=RUNPERIOD 1, at Simulation time=01/20 22:20 - 22:27
    ************* Simulation Error Summary *************
    *************
    ************* ===== Recurring Error Summary =====
    ************* The following recurring error messages occurred.
    *************
    *************  ** Warning ** GetSpecificHeatGlycol: Temperature out of range (too high) for fluid [WATER] specific heat **
-   *************  **   ~~~   **   This error occurred 6 total times;
+   *************  **   ~~~   **   This error occurred 2 total times;
    *************  **   ~~~   **   during Warmup 0 times;
    *************  **   ~~~   **   during Sizing 0 times.
    *************  **   ~~~   **   Max=INF {C}  Min=INF {C}
    *************
    *************  ** Warning ** GetDensityGlycol: Temperature out of range (too high) for fluid [WATER] density **
-   *************  **   ~~~   **   This error occurred 6 total times;
+   *************  **   ~~~   **   This error occurred 2 total times;
    *************  **   ~~~   **   during Warmup 0 times;
    *************  **   ~~~   **   during Sizing 0 times.
    *************  **   ~~~   **   Max=INF {C}  Min=INF {C}
@@ -62,4 +62,4 @@ Program Version,EnergyPlus, Version 22.2.0-c249759bad, YMD=2022.12.21 16:32,
    *************
    ************* EnergyPlus Warmup Error Summary. During Warmup: 0 Warning; 0 Severe Errors.
    ************* EnergyPlus Sizing Error Summary. During Sizing: 2 Warning; 0 Severe Errors.
-   ************* EnergyPlus Completed Successfully-- 23 Warning; 0 Severe Errors; Elapsed Time=01hr 38min 42.62sec
+   ************* EnergyPlus Completed Successfully-- 15 Warning; 0 Severe Errors; Elapsed Time=00hr 00min 25.50sec

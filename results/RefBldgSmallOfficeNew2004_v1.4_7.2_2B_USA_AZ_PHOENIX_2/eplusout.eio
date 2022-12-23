@@ -1,14 +1,14 @@
-Program Version,EnergyPlus, Version 22.2.0-c249759bad, YMD=2022.12.21 16:32
+Program Version,EnergyPlus, Version 22.2.0-c249759bad, YMD=2022.12.23 12:50
 ! <Version>, Version ID
  Version, 22.2
 ! <Timesteps per Hour>, #TimeSteps, Minutes per TimeStep {minutes}
- Timesteps per Hour,  2, 30
+ Timesteps per Hour,  1, 60
 ! <System Convergence Limits>, Minimum System TimeStep {minutes}, Max HVAC Iterations, Minimum Plant Iterations, Maximum Plant Iterations
  System Convergence Limits, 2, 25, 2, 8
 ! <Simulation Control>, Do Zone Sizing, Do System Sizing, Do Plant Sizing, Do Design Days, Do Weather Simulation, Do HVAC Sizing Simulation
  Simulation Control, Yes, Yes, Yes, No, Yes, No
 ! <Performance Precision Tradeoffs>, Use Coil Direct Simulation, Zone Radiant Exchange Algorithm, Override Mode, Number of Timestep In Hour, Force Euler Method, Minimum Number of Warmup Days, Force Suppress All Begin Environment Resets, Minimum System Timestep, MaxZoneTempDiff, MaxAllowedDelTemp
- Performance Precision Tradeoffs, No, ScriptF, Normal, 2, No, 1, No, 2.0, 0.300, 2.0000E-003
+ Performance Precision Tradeoffs, No, ScriptF, Normal, 1, No, 1, No, 2.0, 0.300, 2.0000E-003
 ! <Output Reporting Tolerances>, Tolerance for Time Heating Setpoint Not Met, Tolerance for Zone Cooling Setpoint Not Met Time
  Output Reporting Tolerances, 0.556, 0.556, 
 ! <Site:GroundTemperature:BuildingSurface>,Jan{C},Feb{C},Mar{C},Apr{C},May{C},Jun{C},Jul{C},Aug{C},Sep{C},Oct{C},Nov{C},Dec{C}
@@ -133,125 +133,125 @@ Zone Volume Capacitance Multiplier,   1.000 ,   1.000,   1.000,   1.000
  Cooling Sizing Factor Information, Zone PERIMETER_ZN_3,   1.2000    
  Cooling Sizing Factor Information, Zone PERIMETER_ZN_4,   1.2000    
 ! <Zone Sizing Information>, Zone Name, Load Type, Calc Des Load {W}, User Des Load {W}, Calc Des Air Flow Rate {m3/s}, User Des Air Flow Rate {m3/s}, Design Day Name, Date/Time of Peak, Temperature at Peak {C}, Humidity Ratio at Peak {kgWater/kgDryAir}, Floor Area {m2}, # Occupants, Calc Outdoor Air Flow Rate {m3/s}, Calc DOAS Heat Addition Rate {W}
- Zone Sizing Information, CORE_ZN, Cooling, 3759.13388, 4510.96065, 0.30238, 0.36285, PHOENIX ANN CLG .4% CONDNS WB=>MDB, 7/21 09:00:00, 29.23500, 1.54781E-002, 149.65740, 8.05476, 8.05476E-002, 0.00000
- Zone Sizing Information, CORE_ZN, Heating, 2304.78848, 2765.74617, 9.87819E-002, 0.11854, PHOENIX ANN HTG 99.6% CONDNS DB, 12/21 06:00:00, 2.90000, 4.84800E-003, 149.65740, 8.05476, 8.05476E-002, 0.00000
- Zone Sizing Information, PERIMETER_ZN_1, Cooling, 4189.30205, 5027.16246, 0.34096, 0.40915, PHOENIX ANN CLG .4% CONDNS WB=>MDB, 7/21 17:30:00, 33.66300, 1.54864E-002, 113.45000, 6.10603, 6.10603E-002, 0.00000
- Zone Sizing Information, PERIMETER_ZN_1, Heating, 4300.64501, 5160.77401, 0.18433, 0.22120, PHOENIX ANN HTG 99.6% CONDNS DB, 12/21 06:00:00, 2.90000, 4.84800E-003, 113.45000, 6.10603, 6.10603E-002, 0.00000
- Zone Sizing Information, PERIMETER_ZN_2, Cooling, 3813.26524, 4575.91829, 0.31028, 0.37234, PHOENIX ANN CLG .4% CONDNS WB=>MDB, 7/21 09:30:00, 30.28050, 1.54801E-002, 67.30000, 3.62217, 3.62217E-002, 0.00000
- Zone Sizing Information, PERIMETER_ZN_2, Heating, 2760.15183, 3312.18220, 0.11831, 0.14197, PHOENIX ANN HTG 99.6% CONDNS DB, 12/21 06:00:00, 2.90000, 4.84800E-003, 67.30000, 3.62217, 3.62217E-002, 0.00000
- Zone Sizing Information, PERIMETER_ZN_3, Cooling, 4052.17209, 4862.60651, 0.32979, 0.39574, PHOENIX ANN CLG .4% CONDNS WB=>MDB, 7/21 18:30:00, 32.12550, 1.54835E-002, 113.45000, 6.10603, 6.10603E-002, 0.00000
- Zone Sizing Information, PERIMETER_ZN_3, Heating, 4230.41293, 5076.49551, 0.18132, 0.21759, PHOENIX ANN HTG 99.6% CONDNS DB, 12/21 06:00:00, 2.90000, 4.84800E-003, 113.45000, 6.10603, 6.10603E-002, 0.00000
- Zone Sizing Information, PERIMETER_ZN_4, Cooling, 4154.18574, 4985.02289, 0.33809, 0.40571, PHOENIX ANN CLG .4% CONDNS WB=>MDB, 7/21 18:00:00, 33.04800, 1.54852E-002, 67.30000, 3.62217, 3.62217E-002, 0.00000
- Zone Sizing Information, PERIMETER_ZN_4, Heating, 2781.50245, 3337.80294, 0.11922, 0.14306, PHOENIX ANN HTG 99.6% CONDNS DB, 12/21 06:00:00, 2.90000, 4.84800E-003, 67.30000, 3.62217, 3.62217E-002, 0.00000
+ Zone Sizing Information, CORE_ZN, Cooling, 3538.01996, 4245.62395, 0.28601, 0.34321, PHOENIX ANN CLG .4% CONDNS WB=>MDB, 7/21 12:00:00, 34.40100, 1.54877E-002, 149.65740, 8.05476, 8.05476E-002, 0.00000
+ Zone Sizing Information, CORE_ZN, Heating, 2304.43160, 2765.31792, 9.87661E-002, 0.11852, PHOENIX ANN HTG 99.6% CONDNS DB, 12/21 06:00:00, 2.90000, 4.84800E-003, 149.65740, 8.05476, 8.05476E-002, 0.00000
+ Zone Sizing Information, PERIMETER_ZN_1, Cooling, 4142.55877, 4971.07052, 0.33717, 0.40460, PHOENIX ANN CLG .4% CONDNS WB=>MDB, 7/21 18:00:00, 33.04800, 1.54852E-002, 113.45000, 6.10603, 6.10603E-002, 0.00000
+ Zone Sizing Information, PERIMETER_ZN_1, Heating, 4300.43678, 5160.52413, 0.18433, 0.22119, PHOENIX ANN HTG 99.6% CONDNS DB, 12/21 06:00:00, 2.90000, 4.84800E-003, 113.45000, 6.10603, 6.10603E-002, 0.00000
+ Zone Sizing Information, PERIMETER_ZN_2, Cooling, 3602.56855, 4323.08226, 0.29318, 0.35181, PHOENIX ANN CLG .4% CONDNS WB=>MDB, 7/21 13:00:00, 35.38500, 1.54896E-002, 67.30000, 3.62217, 3.62217E-002, 0.00000
+ Zone Sizing Information, PERIMETER_ZN_2, Heating, 2760.01711, 3312.02053, 0.11830, 0.14196, PHOENIX ANN HTG 99.6% CONDNS DB, 12/21 06:00:00, 2.90000, 4.84800E-003, 67.30000, 3.62217, 3.62217E-002, 0.00000
+ Zone Sizing Information, PERIMETER_ZN_3, Cooling, 3994.94254, 4793.93104, 0.32515, 0.39018, PHOENIX ANN CLG .4% CONDNS WB=>MDB, 7/21 19:00:00, 31.20300, 1.54818E-002, 113.45000, 6.10603, 6.10603E-002, 0.00000
+ Zone Sizing Information, PERIMETER_ZN_3, Heating, 4230.20389, 5076.24467, 0.18132, 0.21758, PHOENIX ANN HTG 99.6% CONDNS DB, 12/21 06:00:00, 2.90000, 4.84800E-003, 113.45000, 6.10603, 6.10603E-002, 0.00000
+ Zone Sizing Information, PERIMETER_ZN_4, Cooling, 3820.80891, 4584.97070, 0.31097, 0.37316, PHOENIX ANN CLG .4% CONDNS WB=>MDB, 7/21 20:00:00, 29.85000, 1.54793E-002, 67.30000, 3.62217, 3.62217E-002, 0.00000
+ Zone Sizing Information, PERIMETER_ZN_4, Heating, 2781.36779, 3337.64135, 0.11921, 0.14306, PHOENIX ANN HTG 99.6% CONDNS DB, 12/21 06:00:00, 2.90000, 4.84800E-003, 67.30000, 3.62217, 3.62217E-002, 0.00000
 ! <System Sizing Information>, System Name, Load Type, Peak Load Kind, User Design Capacity, Calc Des Air Flow Rate [m3/s], User Des Air Flow Rate [m3/s], Design Day Name, Date/Time of Peak
- System Sizing Information, PSZ-AC:1, Cooling, Sensible, 5451.80, 0.36285, 0.36285, PHOENIX ANN CLG .4% CONDNS WB=>MDB, 7/21 05:00:00
- System Sizing Information, PSZ-AC:1, Heating, Sensible, 4488.97, 0.11854, 0.11854, PHOENIX ANN HTG 99.6% CONDNS DB, 12/21 06:00:00
- System Sizing Information, PSZ-AC:2, Cooling, Sensible, 6257.43, 0.40915, 0.40915, PHOENIX ANN CLG .4% CONDNS WB=>MDB, 7/21 05:00:00
- System Sizing Information, PSZ-AC:2, Heating, Sensible, 6422.55, 0.22120, 0.22120, PHOENIX ANN HTG 99.6% CONDNS DB, 12/21 06:00:00
- System Sizing Information, PSZ-AC:3, Cooling, Sensible, 5320.93, 0.37234, 0.37234, PHOENIX ANN CLG .4% CONDNS WB=>MDB, 7/21 05:00:00
- System Sizing Information, PSZ-AC:3, Heating, Sensible, 4057.02, 0.14197, 0.14197, PHOENIX ANN HTG 99.6% CONDNS DB, 12/21 06:00:00
- System Sizing Information, PSZ-AC:4, Cooling, Sensible, 5962.34, 0.39574, 0.39574, PHOENIX ANN CLG .4% CONDNS WB=>MDB, 7/21 05:00:00
- System Sizing Information, PSZ-AC:4, Heating, Sensible, 6339.50, 0.21759, 0.21759, PHOENIX ANN HTG 99.6% CONDNS DB, 12/21 06:00:00
- System Sizing Information, PSZ-AC:5, Cooling, Sensible, 5893.55, 0.40571, 0.40571, PHOENIX ANN CLG .4% CONDNS WB=>MDB, 7/21 05:00:00
- System Sizing Information, PSZ-AC:5, Heating, Sensible, 4082.27, 0.14306, 0.14306, PHOENIX ANN HTG 99.6% CONDNS DB, 12/21 06:00:00
+ System Sizing Information, PSZ-AC:1, Cooling, Sensible, 5678.70, 0.34321, 0.34321, PHOENIX ANN CLG .4% CONDNS WB=>MDB, 7/21 05:00:00
+ System Sizing Information, PSZ-AC:1, Heating, Sensible, 4488.54, 0.11852, 0.11852, PHOENIX ANN HTG 99.6% CONDNS DB, 12/21 06:00:00
+ System Sizing Information, PSZ-AC:2, Cooling, Sensible, 6150.18, 0.40460, 0.40460, PHOENIX ANN CLG .4% CONDNS WB=>MDB, 7/21 05:00:00
+ System Sizing Information, PSZ-AC:2, Heating, Sensible, 6422.30, 0.22119, 0.22119, PHOENIX ANN HTG 99.6% CONDNS DB, 12/21 06:00:00
+ System Sizing Information, PSZ-AC:3, Cooling, Sensible, 5265.94, 0.35181, 0.35181, PHOENIX ANN CLG .4% CONDNS WB=>MDB, 7/21 05:00:00
+ System Sizing Information, PSZ-AC:3, Heating, Sensible, 4056.86, 0.14196, 0.14196, PHOENIX ANN HTG 99.6% CONDNS DB, 12/21 06:00:00
+ System Sizing Information, PSZ-AC:4, Cooling, Sensible, 5818.53, 0.39018, 0.39018, PHOENIX ANN CLG .4% CONDNS WB=>MDB, 7/21 05:00:00
+ System Sizing Information, PSZ-AC:4, Heating, Sensible, 6339.25, 0.21758, 0.21758, PHOENIX ANN HTG 99.6% CONDNS DB, 12/21 06:00:00
+ System Sizing Information, PSZ-AC:5, Cooling, Sensible, 5312.28, 0.37316, 0.37316, PHOENIX ANN CLG .4% CONDNS WB=>MDB, 7/21 05:00:00
+ System Sizing Information, PSZ-AC:5, Heating, Sensible, 4082.11, 0.14306, 0.14306, PHOENIX ANN HTG 99.6% CONDNS DB, 12/21 06:00:00
 ! <Component Sizing Information>, Component Type, Component Name, Input Field Description, Value
- Component Sizing Information, AirTerminal:SingleDuct:ConstantVolume:NoReheat, CORE_ZN DIRECT AIR, Design Size Maximum Air Flow Rate [m3/s], 0.36285
- Component Sizing Information, AirTerminal:SingleDuct:ConstantVolume:NoReheat, PERIMETER_ZN_1 DIRECT AIR, Design Size Maximum Air Flow Rate [m3/s], 0.40915
- Component Sizing Information, AirTerminal:SingleDuct:ConstantVolume:NoReheat, PERIMETER_ZN_2 DIRECT AIR, Design Size Maximum Air Flow Rate [m3/s], 0.37234
- Component Sizing Information, AirTerminal:SingleDuct:ConstantVolume:NoReheat, PERIMETER_ZN_3 DIRECT AIR, Design Size Maximum Air Flow Rate [m3/s], 0.39574
- Component Sizing Information, AirTerminal:SingleDuct:ConstantVolume:NoReheat, PERIMETER_ZN_4 DIRECT AIR, Design Size Maximum Air Flow Rate [m3/s], 0.40571
- Component Sizing Information, AirLoopHVAC, PSZ-AC:1, Sum of Air Terminal Maximum Heating Flow Rates [m3/s], 0.36285
- Component Sizing Information, AirLoopHVAC, PSZ-AC:1, Sum of Air Terminal Minimum Heating Flow Rates [m3/s], 0.36285
- Component Sizing Information, AirLoopHVAC, PSZ-AC:1, Sum of Air Terminal Maximum Flow Rates [m3/s], 0.36285
- Component Sizing Information, AirLoopHVAC, PSZ-AC:1, Adjusted Heating Design Air Flow Rate [m3/s], 0.36285
- Component Sizing Information, AirLoopHVAC, PSZ-AC:1, Adjusted Cooling Design Air Flow Rate [m3/s], 0.36285
- Component Sizing Information, AirLoopHVAC, PSZ-AC:1, Adjusted Main Design Air Flow Rate [m3/s], 0.36285
+ Component Sizing Information, AirTerminal:SingleDuct:ConstantVolume:NoReheat, CORE_ZN DIRECT AIR, Design Size Maximum Air Flow Rate [m3/s], 0.34321
+ Component Sizing Information, AirTerminal:SingleDuct:ConstantVolume:NoReheat, PERIMETER_ZN_1 DIRECT AIR, Design Size Maximum Air Flow Rate [m3/s], 0.40460
+ Component Sizing Information, AirTerminal:SingleDuct:ConstantVolume:NoReheat, PERIMETER_ZN_2 DIRECT AIR, Design Size Maximum Air Flow Rate [m3/s], 0.35181
+ Component Sizing Information, AirTerminal:SingleDuct:ConstantVolume:NoReheat, PERIMETER_ZN_3 DIRECT AIR, Design Size Maximum Air Flow Rate [m3/s], 0.39018
+ Component Sizing Information, AirTerminal:SingleDuct:ConstantVolume:NoReheat, PERIMETER_ZN_4 DIRECT AIR, Design Size Maximum Air Flow Rate [m3/s], 0.37316
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:1, Sum of Air Terminal Maximum Heating Flow Rates [m3/s], 0.34321
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:1, Sum of Air Terminal Minimum Heating Flow Rates [m3/s], 0.34321
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:1, Sum of Air Terminal Maximum Flow Rates [m3/s], 0.34321
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:1, Adjusted Heating Design Air Flow Rate [m3/s], 0.34321
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:1, Adjusted Cooling Design Air Flow Rate [m3/s], 0.34321
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:1, Adjusted Main Design Air Flow Rate [m3/s], 0.34321
  Component Sizing Information, AirLoopHVAC, PSZ-AC:1, User Heating Air Flow Ratio [], 1.00000
  Component Sizing Information, AirLoopHVAC, PSZ-AC:1, Calculated Heating Air Flow Ratio [], 1.00000
- Component Sizing Information, AirLoopHVAC, PSZ-AC:2, Sum of Air Terminal Maximum Heating Flow Rates [m3/s], 0.40915
- Component Sizing Information, AirLoopHVAC, PSZ-AC:2, Sum of Air Terminal Minimum Heating Flow Rates [m3/s], 0.40915
- Component Sizing Information, AirLoopHVAC, PSZ-AC:2, Sum of Air Terminal Maximum Flow Rates [m3/s], 0.40915
- Component Sizing Information, AirLoopHVAC, PSZ-AC:2, Adjusted Heating Design Air Flow Rate [m3/s], 0.40915
- Component Sizing Information, AirLoopHVAC, PSZ-AC:2, Adjusted Cooling Design Air Flow Rate [m3/s], 0.40915
- Component Sizing Information, AirLoopHVAC, PSZ-AC:2, Adjusted Main Design Air Flow Rate [m3/s], 0.40915
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:2, Sum of Air Terminal Maximum Heating Flow Rates [m3/s], 0.40460
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:2, Sum of Air Terminal Minimum Heating Flow Rates [m3/s], 0.40460
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:2, Sum of Air Terminal Maximum Flow Rates [m3/s], 0.40460
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:2, Adjusted Heating Design Air Flow Rate [m3/s], 0.40460
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:2, Adjusted Cooling Design Air Flow Rate [m3/s], 0.40460
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:2, Adjusted Main Design Air Flow Rate [m3/s], 0.40460
  Component Sizing Information, AirLoopHVAC, PSZ-AC:2, User Heating Air Flow Ratio [], 1.00000
  Component Sizing Information, AirLoopHVAC, PSZ-AC:2, Calculated Heating Air Flow Ratio [], 1.00000
- Component Sizing Information, AirLoopHVAC, PSZ-AC:3, Sum of Air Terminal Maximum Heating Flow Rates [m3/s], 0.37234
- Component Sizing Information, AirLoopHVAC, PSZ-AC:3, Sum of Air Terminal Minimum Heating Flow Rates [m3/s], 0.37234
- Component Sizing Information, AirLoopHVAC, PSZ-AC:3, Sum of Air Terminal Maximum Flow Rates [m3/s], 0.37234
- Component Sizing Information, AirLoopHVAC, PSZ-AC:3, Adjusted Heating Design Air Flow Rate [m3/s], 0.37234
- Component Sizing Information, AirLoopHVAC, PSZ-AC:3, Adjusted Cooling Design Air Flow Rate [m3/s], 0.37234
- Component Sizing Information, AirLoopHVAC, PSZ-AC:3, Adjusted Main Design Air Flow Rate [m3/s], 0.37234
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:3, Sum of Air Terminal Maximum Heating Flow Rates [m3/s], 0.35181
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:3, Sum of Air Terminal Minimum Heating Flow Rates [m3/s], 0.35181
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:3, Sum of Air Terminal Maximum Flow Rates [m3/s], 0.35181
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:3, Adjusted Heating Design Air Flow Rate [m3/s], 0.35181
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:3, Adjusted Cooling Design Air Flow Rate [m3/s], 0.35181
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:3, Adjusted Main Design Air Flow Rate [m3/s], 0.35181
  Component Sizing Information, AirLoopHVAC, PSZ-AC:3, User Heating Air Flow Ratio [], 1.00000
  Component Sizing Information, AirLoopHVAC, PSZ-AC:3, Calculated Heating Air Flow Ratio [], 1.00000
- Component Sizing Information, AirLoopHVAC, PSZ-AC:4, Sum of Air Terminal Maximum Heating Flow Rates [m3/s], 0.39574
- Component Sizing Information, AirLoopHVAC, PSZ-AC:4, Sum of Air Terminal Minimum Heating Flow Rates [m3/s], 0.39574
- Component Sizing Information, AirLoopHVAC, PSZ-AC:4, Sum of Air Terminal Maximum Flow Rates [m3/s], 0.39574
- Component Sizing Information, AirLoopHVAC, PSZ-AC:4, Adjusted Heating Design Air Flow Rate [m3/s], 0.39574
- Component Sizing Information, AirLoopHVAC, PSZ-AC:4, Adjusted Cooling Design Air Flow Rate [m3/s], 0.39574
- Component Sizing Information, AirLoopHVAC, PSZ-AC:4, Adjusted Main Design Air Flow Rate [m3/s], 0.39574
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:4, Sum of Air Terminal Maximum Heating Flow Rates [m3/s], 0.39018
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:4, Sum of Air Terminal Minimum Heating Flow Rates [m3/s], 0.39018
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:4, Sum of Air Terminal Maximum Flow Rates [m3/s], 0.39018
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:4, Adjusted Heating Design Air Flow Rate [m3/s], 0.39018
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:4, Adjusted Cooling Design Air Flow Rate [m3/s], 0.39018
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:4, Adjusted Main Design Air Flow Rate [m3/s], 0.39018
  Component Sizing Information, AirLoopHVAC, PSZ-AC:4, User Heating Air Flow Ratio [], 1.00000
  Component Sizing Information, AirLoopHVAC, PSZ-AC:4, Calculated Heating Air Flow Ratio [], 1.00000
- Component Sizing Information, AirLoopHVAC, PSZ-AC:5, Sum of Air Terminal Maximum Heating Flow Rates [m3/s], 0.40571
- Component Sizing Information, AirLoopHVAC, PSZ-AC:5, Sum of Air Terminal Minimum Heating Flow Rates [m3/s], 0.40571
- Component Sizing Information, AirLoopHVAC, PSZ-AC:5, Sum of Air Terminal Maximum Flow Rates [m3/s], 0.40571
- Component Sizing Information, AirLoopHVAC, PSZ-AC:5, Adjusted Heating Design Air Flow Rate [m3/s], 0.40571
- Component Sizing Information, AirLoopHVAC, PSZ-AC:5, Adjusted Cooling Design Air Flow Rate [m3/s], 0.40571
- Component Sizing Information, AirLoopHVAC, PSZ-AC:5, Adjusted Main Design Air Flow Rate [m3/s], 0.40571
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:5, Sum of Air Terminal Maximum Heating Flow Rates [m3/s], 0.37316
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:5, Sum of Air Terminal Minimum Heating Flow Rates [m3/s], 0.37316
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:5, Sum of Air Terminal Maximum Flow Rates [m3/s], 0.37316
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:5, Adjusted Heating Design Air Flow Rate [m3/s], 0.37316
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:5, Adjusted Cooling Design Air Flow Rate [m3/s], 0.37316
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:5, Adjusted Main Design Air Flow Rate [m3/s], 0.37316
  Component Sizing Information, AirLoopHVAC, PSZ-AC:5, User Heating Air Flow Ratio [], 1.00000
  Component Sizing Information, AirLoopHVAC, PSZ-AC:5, Calculated Heating Air Flow Ratio [], 1.00000
- Component Sizing Information, AirLoopHVAC, PSZ-AC:1, Design Supply Air Flow Rate [m3/s], 0.36285
- Component Sizing Information, AirLoopHVAC, PSZ-AC:2, Design Supply Air Flow Rate [m3/s], 0.40915
- Component Sizing Information, AirLoopHVAC, PSZ-AC:3, Design Supply Air Flow Rate [m3/s], 0.37234
- Component Sizing Information, AirLoopHVAC, PSZ-AC:4, Design Supply Air Flow Rate [m3/s], 0.39574
- Component Sizing Information, AirLoopHVAC, PSZ-AC:5, Design Supply Air Flow Rate [m3/s], 0.40571
- Component Sizing Information, Controller:OutdoorAir, PSZ-AC:1_OA_CONTROLLER, Maximum Outdoor Air Flow Rate [m3/s], 0.36285
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:1, Design Supply Air Flow Rate [m3/s], 0.34321
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:2, Design Supply Air Flow Rate [m3/s], 0.40460
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:3, Design Supply Air Flow Rate [m3/s], 0.35181
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:4, Design Supply Air Flow Rate [m3/s], 0.39018
+ Component Sizing Information, AirLoopHVAC, PSZ-AC:5, Design Supply Air Flow Rate [m3/s], 0.37316
+ Component Sizing Information, Controller:OutdoorAir, PSZ-AC:1_OA_CONTROLLER, Maximum Outdoor Air Flow Rate [m3/s], 0.34321
  Component Sizing Information, Controller:OutdoorAir, PSZ-AC:1_OA_CONTROLLER, Minimum Outdoor Air Flow Rate [m3/s], 8.05476E-002
- Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:1_COOLC DXCOIL, Design Size Rated Air Flow Rate [m3/s], 0.36285
- Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:1_COOLC DXCOIL, Design Size Gross Rated Total Cooling Capacity [W], 8218.12439
- Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:1_COOLC DXCOIL, Design Size Gross Rated Sensible Heat Ratio, 0.73071
+ Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:1_COOLC DXCOIL, Design Size Rated Air Flow Rate [m3/s], 0.34321
+ Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:1_COOLC DXCOIL, Design Size Gross Rated Total Cooling Capacity [W], 8522.62341
+ Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:1_COOLC DXCOIL, Design Size Gross Rated Sensible Heat Ratio, 0.70108
 ! <DX Cooling Coil Standard Rating Information>, Component Type, Component Name, Standard Rating (Net) Cooling Capacity {W}, Standard Rated Net COP {W/W}, EER {Btu/W-h}, SEER User {Btu/W-h}, SEER Standard {Btu/W-h}, IEER {Btu/W-h}
- DX Cooling Coil Standard Rating Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:1_COOLC DXCOIL, 7936.7, 3.15, 10.74, 12.36, 11.30, 11.89
- DX Cooling Coil Standard Rating Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:1_COOLC DXCOIL, 7878.2, 3.05, 10.42, 11.95, 11.24,  
- Component Sizing Information, Coil:Heating:Fuel, PSZ-AC:1_HEATC, Design Size Nominal Capacity [W], 10106.33401
- Component Sizing Information, Fan:ConstantVolume, PSZ-AC:1_FAN, Design Size Maximum Flow Rate [m3/s], 0.36285
- Component Sizing Information, Controller:OutdoorAir, PSZ-AC:2_OA_CONTROLLER, Maximum Outdoor Air Flow Rate [m3/s], 0.40915
+ DX Cooling Coil Standard Rating Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:1_COOLC DXCOIL, 8256.4, 3.19, 10.88, 12.53, 11.46, 12.16
+ DX Cooling Coil Standard Rating Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:1_COOLC DXCOIL, 8201.1, 3.10, 10.58, 12.15, 11.43,  
+ Component Sizing Information, Coil:Heating:Fuel, PSZ-AC:1_HEATC, Design Size Nominal Capacity [W], 9654.61836
+ Component Sizing Information, Fan:ConstantVolume, PSZ-AC:1_FAN, Design Size Maximum Flow Rate [m3/s], 0.34321
+ Component Sizing Information, Controller:OutdoorAir, PSZ-AC:2_OA_CONTROLLER, Maximum Outdoor Air Flow Rate [m3/s], 0.40460
  Component Sizing Information, Controller:OutdoorAir, PSZ-AC:2_OA_CONTROLLER, Minimum Outdoor Air Flow Rate [m3/s], 6.10603E-002
- Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:2_COOLC DXCOIL, Design Size Rated Air Flow Rate [m3/s], 0.40915
- Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:2_COOLC DXCOIL, Design Size Gross Rated Total Cooling Capacity [W], 8855.41392
- Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:2_COOLC DXCOIL, Design Size Gross Rated Sensible Heat Ratio, 0.74620
- DX Cooling Coil Standard Rating Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:2_COOLC DXCOIL, 8538.1, 3.13, 10.67, 12.26, 11.22, 11.76
- DX Cooling Coil Standard Rating Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:2_COOLC DXCOIL, 8472.2, 3.03, 10.33, 11.85, 11.14,  
- Component Sizing Information, Coil:Heating:Fuel, PSZ-AC:2_HEATC, Design Size Nominal Capacity [W], 10743.68569
- Component Sizing Information, Fan:ConstantVolume, PSZ-AC:2_FAN, Design Size Maximum Flow Rate [m3/s], 0.40915
- Component Sizing Information, Controller:OutdoorAir, PSZ-AC:3_OA_CONTROLLER, Maximum Outdoor Air Flow Rate [m3/s], 0.37234
+ Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:2_COOLC DXCOIL, Design Size Rated Air Flow Rate [m3/s], 0.40460
+ Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:2_COOLC DXCOIL, Design Size Gross Rated Total Cooling Capacity [W], 8702.48998
+ Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:2_COOLC DXCOIL, Design Size Gross Rated Sensible Heat Ratio, 0.74895
+ DX Cooling Coil Standard Rating Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:2_COOLC DXCOIL, 8388.7, 3.12, 10.66, 12.25, 11.20, 11.74
+ DX Cooling Coil Standard Rating Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:2_COOLC DXCOIL, 8323.6, 3.03, 10.32, 11.83, 11.13,  
+ Component Sizing Information, Coil:Heating:Fuel, PSZ-AC:2_HEATC, Design Size Nominal Capacity [W], 10639.00615
+ Component Sizing Information, Fan:ConstantVolume, PSZ-AC:2_FAN, Design Size Maximum Flow Rate [m3/s], 0.40460
+ Component Sizing Information, Controller:OutdoorAir, PSZ-AC:3_OA_CONTROLLER, Maximum Outdoor Air Flow Rate [m3/s], 0.35181
  Component Sizing Information, Controller:OutdoorAir, PSZ-AC:3_OA_CONTROLLER, Minimum Outdoor Air Flow Rate [m3/s], 3.62217E-002
- Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:3_COOLC DXCOIL, Design Size Rated Air Flow Rate [m3/s], 0.37234
- Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:3_COOLC DXCOIL, Design Size Gross Rated Total Cooling Capacity [W], 7107.25477
- Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:3_COOLC DXCOIL, Design Size Gross Rated Sensible Heat Ratio, 0.79484
- DX Cooling Coil Standard Rating Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:3_COOLC DXCOIL, 6818.6, 3.06, 10.45, 11.99, 10.97, 11.36
- DX Cooling Coil Standard Rating Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:3_COOLC DXCOIL, 6758.6, 2.96, 10.09, 11.54, 10.85,  
- Component Sizing Information, Coil:Heating:Fuel, PSZ-AC:3_HEATC, Design Size Nominal Capacity [W], 9353.53407
- Component Sizing Information, Fan:ConstantVolume, PSZ-AC:3_FAN, Design Size Maximum Flow Rate [m3/s], 0.37234
- Component Sizing Information, Controller:OutdoorAir, PSZ-AC:4_OA_CONTROLLER, Maximum Outdoor Air Flow Rate [m3/s], 0.39574
+ Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:3_COOLC DXCOIL, Design Size Rated Air Flow Rate [m3/s], 0.35181
+ Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:3_COOLC DXCOIL, Design Size Gross Rated Total Cooling Capacity [W], 7224.97107
+ Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:3_COOLC DXCOIL, Design Size Gross Rated Sensible Heat Ratio, 0.76635
+ DX Cooling Coil Standard Rating Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:3_COOLC DXCOIL, 6952.2, 3.10, 10.58, 12.15, 11.11, 11.60
+ DX Cooling Coil Standard Rating Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:3_COOLC DXCOIL, 6895.5, 3.00, 10.23, 11.72, 11.02,  
+ Component Sizing Information, Coil:Heating:Fuel, PSZ-AC:3_HEATC, Design Size Nominal Capacity [W], 8881.59894
+ Component Sizing Information, Fan:ConstantVolume, PSZ-AC:3_FAN, Design Size Maximum Flow Rate [m3/s], 0.35181
+ Component Sizing Information, Controller:OutdoorAir, PSZ-AC:4_OA_CONTROLLER, Maximum Outdoor Air Flow Rate [m3/s], 0.39018
  Component Sizing Information, Controller:OutdoorAir, PSZ-AC:4_OA_CONTROLLER, Minimum Outdoor Air Flow Rate [m3/s], 6.10603E-002
- Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:4_COOLC DXCOIL, Design Size Rated Air Flow Rate [m3/s], 0.39574
- Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:4_COOLC DXCOIL, Design Size Gross Rated Total Cooling Capacity [W], 8443.24912
- Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:4_COOLC DXCOIL, Design Size Gross Rated Sensible Heat Ratio, 0.75126
- DX Cooling Coil Standard Rating Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:4_COOLC DXCOIL, 8136.4, 3.12, 10.64, 12.23, 11.19, 11.71
- DX Cooling Coil Standard Rating Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:4_COOLC DXCOIL, 8072.6, 3.02, 10.31, 11.81, 11.11,  
- Component Sizing Information, Coil:Heating:Fuel, PSZ-AC:4_HEATC, Design Size Nominal Capacity [W], 10435.41055
- Component Sizing Information, Fan:ConstantVolume, PSZ-AC:4_FAN, Design Size Maximum Flow Rate [m3/s], 0.39574
- Component Sizing Information, Controller:OutdoorAir, PSZ-AC:5_OA_CONTROLLER, Maximum Outdoor Air Flow Rate [m3/s], 0.40571
+ Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:4_COOLC DXCOIL, Design Size Rated Air Flow Rate [m3/s], 0.39018
+ Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:4_COOLC DXCOIL, Design Size Gross Rated Total Cooling Capacity [W], 8244.48400
+ Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:4_COOLC DXCOIL, Design Size Gross Rated Sensible Heat Ratio, 0.75503
+ DX Cooling Coil Standard Rating Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:4_COOLC DXCOIL, 7941.9, 3.11, 10.63, 12.21, 11.17, 11.68
+ DX Cooling Coil Standard Rating Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:4_COOLC DXCOIL, 7879.1, 3.02, 10.29, 11.79, 11.09,  
+ Component Sizing Information, Coil:Heating:Fuel, PSZ-AC:4_HEATC, Design Size Nominal Capacity [W], 10307.43519
+ Component Sizing Information, Fan:ConstantVolume, PSZ-AC:4_FAN, Design Size Maximum Flow Rate [m3/s], 0.39018
+ Component Sizing Information, Controller:OutdoorAir, PSZ-AC:5_OA_CONTROLLER, Maximum Outdoor Air Flow Rate [m3/s], 0.37316
  Component Sizing Information, Controller:OutdoorAir, PSZ-AC:5_OA_CONTROLLER, Minimum Outdoor Air Flow Rate [m3/s], 3.62217E-002
- Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:5_COOLC DXCOIL, Design Size Rated Air Flow Rate [m3/s], 0.40571
- Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:5_COOLC DXCOIL, Design Size Gross Rated Total Cooling Capacity [W], 7873.82393
- Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:5_COOLC DXCOIL, Design Size Gross Rated Sensible Heat Ratio, 0.78859
- DX Cooling Coil Standard Rating Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:5_COOLC DXCOIL, 7559.3, 3.07, 10.48, 12.03, 11.00, 11.42
- DX Cooling Coil Standard Rating Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:5_COOLC DXCOIL, 7493.9, 2.97, 10.12, 11.58, 10.89,  
- Component Sizing Information, Coil:Heating:Fuel, PSZ-AC:5_HEATC, Design Size Nominal Capacity [W], 10120.81982
- Component Sizing Information, Fan:ConstantVolume, PSZ-AC:5_FAN, Design Size Maximum Flow Rate [m3/s], 0.40571
-Water Heater Information,WaterHeater:Mixed,SWHSYS1 WATER HEATER,0.1514,845000.0,4.611,0.5778
+ Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:5_COOLC DXCOIL, Design Size Rated Air Flow Rate [m3/s], 0.37316
+ Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:5_COOLC DXCOIL, Design Size Gross Rated Total Cooling Capacity [W], 7110.48447
+ Component Sizing Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:5_COOLC DXCOIL, Design Size Gross Rated Sensible Heat Ratio, 0.79540
+ DX Cooling Coil Standard Rating Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:5_COOLC DXCOIL, 6821.2, 3.06, 10.45, 11.99, 10.96, 11.36
+ DX Cooling Coil Standard Rating Information, Coil:Cooling:DX:SingleSpeed, PSZ-AC:5_COOLC DXCOIL, 6761.1, 2.96, 10.08, 11.53, 10.85,  
+ Component Sizing Information, Coil:Heating:Fuel, PSZ-AC:5_HEATC, Design Size Nominal Capacity [W], 9372.45830
+ Component Sizing Information, Fan:ConstantVolume, PSZ-AC:5_FAN, Design Size Maximum Flow Rate [m3/s], 0.37316
+Water Heater Information,WaterHeater:Mixed,SWHSYS1 WATER HEATER,0.1514,845000.0,4.606,0.5670
  Component Sizing Information, PlantLoop, SWHSYS1, Maximum Loop Flow Rate [m3/s], 3.15000E-006
  Component Sizing Information, PlantLoop, SWHSYS1, Plant Loop Volume [m3], 3.78000E-004
  Component Sizing Information, Pump:ConstantSpeed, SWHSYS1 PUMP, Design Flow Rate [m3/s], 3.15000E-006
@@ -261,16 +261,16 @@ Water Heater Information,WaterHeater:Mixed,SWHSYS1 WATER HEATER,0.1514,845000.0,
 ! <Environment:Special Days>, Special Day Name, Special Day Type, Source, Start Date, Duration {#days}
 ! <Environment:Daylight Saving>, Daylight Saving Indicator, Source, Start Date, End Date
 ! <Environment:WarmupDays>, NumberofWarmupDays
-Environment,RUNPERIOD 1,WeatherFileRunPeriod,01/01/2017,07/31/2017,Sunday,212,Use RunPeriod Specified Day,No,No,No,Yes,Yes,Clark and Allen
+Environment,RUNPERIOD 1,WeatherFileRunPeriod,01/01/2017,02/28/2017,Sunday,59,Use RunPeriod Specified Day,No,No,No,Yes,Yes,Clark and Allen
 Environment:Daylight Saving,Yes,InputFile,03/12,11/05
 Environment:Special Days,NEW YEARS DAY,Holiday,InputFile,01/01,  1Environment:Special Days,VETERANS DAY,Holiday,InputFile,11/11,  1Environment:Special Days,CHRISTMAS,Holiday,InputFile,12/25,  1Environment:Special Days,INDEPENDENCE DAY,Holiday,InputFile,07/04,  1Environment:Special Days,MLK DAY,Holiday,InputFile,01/16,  1Environment:Special Days,PRESIDENTS DAY,Holiday,InputFile,02/20,  1Environment:Special Days,MEMORIAL DAY,Holiday,InputFile,05/29,  1Environment:Special Days,LABOR DAY,Holiday,InputFile,09/04,  1Environment:Special Days,COLUMBUS DAY,Holiday,InputFile,10/09,  1Environment:Special Days,THANKSGIVING,Holiday,InputFile,11/23,  1Environment:WarmupDays,  6
 ! <Warmup Convergence Information>,Zone Name,Environment Type/Name,Average Warmup Temperature Difference {deltaC},Std Dev Warmup Temperature Difference {deltaC},Max Temperature Pass/Fail Convergence,Min Temperature Pass/Fail Convergence,Average Warmup Load Difference {W},Std Dev Warmup Load Difference {W},Heating Load Pass/Fail Convergence,Cooling Load Pass/Fail Convergence
- Warmup Convergence Information,ATTIC,RunPeriod: RUNPERIOD 1,1.0069654168,0.9823440637,Pass,Pass,0.0000000000,0.0000000000,Pass,Pass
- Warmup Convergence Information,CORE_ZN,RunPeriod: RUNPERIOD 1,2.2000978316,0.6233898576,Pass,Pass,0.4971369763,0.5226516917,Pass,Pass
- Warmup Convergence Information,PERIMETER_ZN_1,RunPeriod: RUNPERIOD 1,1.6774342165,0.8260531447,Pass,Pass,0.4749412565,0.5729285610,Pass,Pass
- Warmup Convergence Information,PERIMETER_ZN_2,RunPeriod: RUNPERIOD 1,2.7573813045,0.6157096429,Pass,Pass,0.4886036970,0.5147502634,Pass,Pass
- Warmup Convergence Information,PERIMETER_ZN_3,RunPeriod: RUNPERIOD 1,3.3733315785,0.7480160549,Pass,Pass,0.4883248900,0.5102454982,Pass,Pass
- Warmup Convergence Information,PERIMETER_ZN_4,RunPeriod: RUNPERIOD 1,2.8832425311,0.6663217285,Pass,Pass,0.4916976224,0.5242862304,Pass,Pass
+ Warmup Convergence Information,ATTIC,RunPeriod: RUNPERIOD 1,2.0351269440,1.7132754569,Pass,Pass,0.0000000000,0.0000000000,Pass,Pass
+ Warmup Convergence Information,CORE_ZN,RunPeriod: RUNPERIOD 1,2.3990030581,0.8221807962,Pass,Pass,0.4965312973,0.5523769337,Pass,Pass
+ Warmup Convergence Information,PERIMETER_ZN_1,RunPeriod: RUNPERIOD 1,1.7872199109,0.9289527927,Pass,Pass,0.5488996037,0.7354138181,Pass,Pass
+ Warmup Convergence Information,PERIMETER_ZN_2,RunPeriod: RUNPERIOD 1,2.9379322767,0.8549771593,Pass,Pass,0.4870122238,0.5434656340,Pass,Pass
+ Warmup Convergence Information,PERIMETER_ZN_3,RunPeriod: RUNPERIOD 1,3.5886682452,1.0273539103,Pass,Pass,0.4799632473,0.5259342786,Pass,Pass
+ Warmup Convergence Information,PERIMETER_ZN_4,RunPeriod: RUNPERIOD 1,3.0697533973,0.9153506159,Pass,Pass,0.4898822922,0.5537529625,Pass,Pass
 ! <Program Control Information:Threads/Parallel Sims>, Threading Supported,Maximum Number of Threads, Env Set Threads (OMP_NUM_THREADS), EP Env Set Threads (EP_OMP_NUM_THREADS), IDF Set Threads, Number of Threads Used (Interior Radiant Exchange), Number Nominal Surfaces, Number Parallel Sims
 Program Control:Threads/Parallel Sims, No,1, N/A, N/A, N/A, N/A, N/A, N/A
 End of Data

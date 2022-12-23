@@ -30,7 +30,7 @@
  NumEnergyMeters=         179
  NumVarMeterArrays=         116
  maxUniqueKeyCount=        1500
- maxNumberOfFigures=           4
+ maxNumberOfFigures=           3
  MAXHCArrayBounds=          10
  MaxVerticesPerSurface=           4
  NumReportList=         500
