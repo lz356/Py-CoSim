@@ -1,4 +1,4 @@
-Program Version,EnergyPlus, Version 22.2.0-c249759bad, YMD=2023.06.08 19:47,
+Program Version,EnergyPlus, Version 22.2.0-c249759bad, YMD=2023.06.12 13:46,
 Var Type (reported time step),Var Report Type,Variable Name [Units]
 Zone,Meter,Carbon Equivalent:Facility [kg]
 Zone,Meter,CarbonEquivalentEmissions:Carbon Equivalent [kg]
