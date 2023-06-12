@@ -1,4 +1,4 @@
-Program Version,EnergyPlus, Version 22.2.0-c249759bad, YMD=2022.12.23 12:50,
+Program Version,EnergyPlus, Version 22.2.0-c249759bad, YMD=2023.06.08 19:47,
 Var Type (reported time step),Var Report Type,Variable Name [Units]
 HVAC,Sum,Air System Chilled Water Energy [J]
 HVAC,Sum,Air System Component Model Simulation Calls []

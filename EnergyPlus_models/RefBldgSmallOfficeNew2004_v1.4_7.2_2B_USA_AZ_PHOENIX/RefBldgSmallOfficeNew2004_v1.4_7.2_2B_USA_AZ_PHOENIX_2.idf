@@ -226,8 +226,8 @@ RunPeriod,
     1,                       !- Begin Month
     1,                       !- Begin Day of Month
     ,                        !- Begin Year
-    2,                       !- End Month
-    28,                      !- End Day of Month
+    1,                       !- End Month
+    2,                       !- End Day of Month
     ,                        !- End Year
     Sunday,                  !- Day of Week for Start Day
     No,                      !- Use Weather File Holidays and Special Days
@@ -2791,8 +2791,8 @@ People,
     Core_ZN People,          !- Name
     Core_ZN,                 !- Zone or ZoneList or Space or SpaceList Name
     BLDG_OCC_SCH,            !- Number of People Schedule Name
-    Area/Person,             !- Number of People Calculation Method
-    ,                        !- Number of People
+    People,                  !- Number of People Calculation Method
+    1,                       !- Number of People
     ,                        !- People per Floor Area {person/m2}
     18.58,                   !- Floor Area per Person {m2/person}
     0.3000,                  !- Fraction Radiant
@@ -2813,8 +2813,8 @@ People,
     Perimeter_ZN_1 People,   !- Name
     Perimeter_ZN_1,          !- Zone or ZoneList or Space or SpaceList Name
     BLDG_OCC_SCH,            !- Number of People Schedule Name
-    Area/Person,             !- Number of People Calculation Method
-    ,                        !- Number of People
+    People,                  !- Number of People Calculation Method
+    1,                       !- Number of People
     ,                        !- People per Floor Area {person/m2}
     18.58,                   !- Floor Area per Person {m2/person}
     0.3000,                  !- Fraction Radiant
@@ -2835,8 +2835,8 @@ People,
     Perimeter_ZN_2 People,   !- Name
     Perimeter_ZN_2,          !- Zone or ZoneList or Space or SpaceList Name
     BLDG_OCC_SCH,            !- Number of People Schedule Name
-    Area/Person,             !- Number of People Calculation Method
-    ,                        !- Number of People
+    People,                  !- Number of People Calculation Method
+    1,                       !- Number of People
     ,                        !- People per Floor Area {person/m2}
     18.58,                   !- Floor Area per Person {m2/person}
     0.3000,                  !- Fraction Radiant
@@ -2857,8 +2857,8 @@ People,
     Perimeter_ZN_3 People,   !- Name
     Perimeter_ZN_3,          !- Zone or ZoneList or Space or SpaceList Name
     BLDG_OCC_SCH,            !- Number of People Schedule Name
-    Area/Person,             !- Number of People Calculation Method
-    ,                        !- Number of People
+    People,                  !- Number of People Calculation Method
+    1,                       !- Number of People
     ,                        !- People per Floor Area {person/m2}
     18.58,                   !- Floor Area per Person {m2/person}
     0.3000,                  !- Fraction Radiant
@@ -2879,8 +2879,8 @@ People,
     Perimeter_ZN_4 People,   !- Name
     Perimeter_ZN_4,          !- Zone or ZoneList or Space or SpaceList Name
     BLDG_OCC_SCH,            !- Number of People Schedule Name
-    Area/Person,             !- Number of People Calculation Method
-    ,                        !- Number of People
+    People,                  !- Number of People Calculation Method
+    1,                       !- Number of People
     ,                        !- People per Floor Area {person/m2}
     18.58,                   !- Floor Area per Person {m2/person}
     0.3000,                  !- Fraction Radiant
@@ -5549,6 +5549,11 @@ Output:Variable,
 Output:Variable,
     *,                       !- Key Value
     Zone Thermostat Cooling Setpoint Temperature ,  !- Variable Name
+    Hourly;                  !- Reporting Frequency
+
+Output:Variable,
+    *,                       !- Key Value
+    Zone Air System Sensible Heating Rate ,  !- Variable Name
     Hourly;                  !- Reporting Frequency
 
 
