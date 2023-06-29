@@ -1507,26 +1507,4 @@
   Site:Environmental Impact NaturalGas NMVOC Emissions Mass
 
  For Meter=NaturalGasEmissions:Hg [kg], ResourceType=Hg, EndUse=NaturalGasEmissions, contents are:
-  Site:Environmental Impact NaturalGas Hg Emissions Mass
-
- For Meter=NaturalGasEmissions:Pb [kg], ResourceType=Pb, EndUse=NaturalGasEmissions, contents are:
-  Site:Environmental Impact NaturalGas Pb Emissions Mass
-
- For Meter=NaturalGasEmissions:WaterEnvironmentalFactors [L], ResourceType=WaterEnvironmentalFactors, EndUse=NaturalGasEmissions, contents are:
-  Site:Environmental Impact NaturalGas Water Consumption Volume
-
- For Meter=NaturalGasEmissions:Nuclear High [kg], ResourceType=Nuclear High, EndUse=NaturalGasEmissions, contents are:
-  Site:Environmental Impact NaturalGas Nuclear High Level Waste Mass
-
- For Meter=NaturalGasEmissions:Nuclear Low [m3], ResourceType=Nuclear Low, EndUse=NaturalGasEmissions, contents are:
-  Site:Environmental Impact NaturalGas Nuclear Low Level Waste Volume
-
- For Meter=Carbon Equivalent:Facility [kg], ResourceType=Carbon Equivalent, contents are:
-  Site:Environmental Impact Total N2O Emissions Carbon Equivalent Mass
-  Site:Environmental Impact Total CH4 Emissions Carbon Equivalent Mass
-  Site:Environmental Impact Total CO2 Emissions Carbon Equivalent Mass
-
- For Meter=CarbonEquivalentEmissions:Carbon Equivalent [kg], ResourceType=Carbon Equivalent, EndUse=CarbonEquivalentEmissions, contents are:
-  Site:Environmental Impact Total N2O Emissions Carbon Equivalent Mass
-  Site:Environmental Impact Total CH4 Emissions Carbon Equivalent Mass
-  Site:Environmental Impact Total CO2 Emissions Carbon Equivalent Mass
+  Site:Environmental Impact NaturalGas Hg Emissio
