@@ -223,10 +223,10 @@ SizingPeriod:DesignDay,
 
 RunPeriod,
     RUNPERIOD 1,             !- Name
-    1,                       !- Begin Month
+    8,                       !- Begin Month
     1,                       !- Begin Day of Month
     ,                        !- Begin Year
-    1,                       !- End Month
+    8,                       !- End Month
     2,                       !- End Day of Month
     ,                        !- End Year
     Sunday,                  !- Day of Week for Start Day
@@ -659,21 +659,21 @@ Schedule:Compact,
     Through: 12/31,          !- Field 1
     For: Weekdays SummerDesignDay,  !- Field 2
     Until: 06:00,            !- Field 3
-    0.0,                     !- Field 4
+    1,                       !- Field 4
     Until: 22:00,            !- Field 5
     1.0,                     !- Field 6
     Until: 24:00,            !- Field 7
-    0.0,                     !- Field 8
+    1,                       !- Field 8
     For: Saturday WinterDesignDay,  !- Field 9
     Until: 06:00,            !- Field 10
-    0.0,                     !- Field 11
+    1,                       !- Field 11
     Until: 18:00,            !- Field 12
     1.0,                     !- Field 13
     Until: 24:00,            !- Field 14
-    0.0,                     !- Field 15
+    1,                       !- Field 15
     For: AllOtherDays,       !- Field 16
     Until: 24:00,            !- Field 17
-    0.0;                     !- Field 18
+    1;                       !- Field 18
 
 ! ***SWH SCHEDULES***
 Schedule:Compact,
@@ -5554,6 +5554,11 @@ Output:Variable,
 Output:Variable,
     *,                       !- Key Value
     Zone Air System Sensible Heating Rate ,  !- Variable Name
+    Hourly;                  !- Reporting Frequency
+
+Output:Variable,
+    *,                       !- Key Value
+    Zone Air System Sensible Cooling Rate ,  !- Variable Name
     Hourly;                  !- Reporting Frequency
 
 
