@@ -7,14 +7,14 @@ This is cleaned version based on `history_versions_2/example_run_clean_version_a
 ## Tested Versions
 EnergyPlus Version: 22.2.0\
 EnergyPlus API version: 0.2\
-Python: 3.9.13
+Python: 3.8.2
 
 ## Installation
 Download and install the latest version of [Conda](https://www.anaconda.com/products/distribution)\
 Run Anaconda Prompt as Administrator\
 Create a new conda environment:\
-`$ conda create -n <enter-the-name-of-repository-here> python=3.9.13 pip`
-`$ conda activate <enter-the-name-of-repository-here>`
+`$ conda create -n <enter-the-name-of-repository-here> python=3.8.2 pip`
+`$ activate <enter-the-name-of-repository-here>`
 Ensure that you have navigated to the top level of your cloned repository. You will execute all your pip commands from this location. For example:\
 `$ cd /path/to/repository`
 Install the environment needed for this repository:\
@@ -64,3 +64,4 @@ https://nrel.github.io/EnergyPlus/api/python/datatransfer.html
 - In terms of parallel computing: another way to do it is to create multiple python script and run them together through bash: e.g., "python script1.py & python script2.py"
 - Modualize
 - hardcode year to 2009
+- Docker
