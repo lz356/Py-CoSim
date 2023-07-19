@@ -65,3 +65,4 @@ https://nrel.github.io/EnergyPlus/api/python/datatransfer.html
 - Modualize
 - hardcode year to 2009
 - Docker
+- Stability of online visualization
