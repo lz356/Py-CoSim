@@ -1,4 +1,4 @@
-Program Version,EnergyPlus, Version 22.2.0-c249759bad, YMD=2023.07.12 14:17,
+Program Version,EnergyPlus, Version 22.2.0-c249759bad, YMD=2023.07.18 22:00,
    ** Warning ** Timestep: Requested number (1) is less than the suggested minimum of 4.
    **   ~~~   ** Please see entry for Timestep in Input/Output Reference for discussion of considerations.
    ************* Beginning Zone Sizing Calculations
@@ -29,3 +29,15 @@ Program Version,EnergyPlus, Version 22.2.0-c249759bad, YMD=2023.07.12 14:17,
    ** Warning ** GetInputEconomicsTariff: UtilityCost:Tariff="ARIZONAPUBSERV_E-32_GENERALSERVICE" invalid data
    **   ~~~   ** Demand window of QuarterHour is not consistent with number of timesteps per hour [1].
    **   ~~~   ** Demand window will be set to FullHour, and the simulation continues.
+   ************* Simulation Error Summary *************
+   *************
+   ************* ===== Final Error Summary =====
+   ************* The following error categories occurred.  Consider correcting or noting.
+   ************* Nominally Unused Constructions
+   ************* ..The nominally unused constructions warning is provided to alert you to potential conditions that can cause
+   ************* ..extra time during simulation. Each construction is calculated by the algorithm indicated in the HeatBalanceAlgorithm
+   ************* ..object. You may remove the constructions indicated (when you use the DisplayExtraWarnings option).
+   *************
+   ************* EnergyPlus Warmup Error Summary. During Warmup: 0 Warning; 0 Severe Errors.
+   ************* EnergyPlus Sizing Error Summary. During Sizing: 2 Warning; 0 Severe Errors.
+   ************* EnergyPlus Completed Successfully-- 11 Warning; 0 Severe Errors; Elapsed Time=00hr 01min 40.52sec
