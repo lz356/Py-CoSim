@@ -5,8 +5,8 @@ from codecs import open
 import os
 import sys
 
-if sys.version_info.major < 3 or (sys.version_info.major == 3 and sys.version_info.minor < 8):
-    raise Exception("This package requires python 3.8 or higher")
+if sys.version_info.major < 3 or (sys.version_info.major == 3 and sys.version_info.minor < 9):
+    raise Exception("This package requires python 3.9 or higher")
 
 here = os.path.abspath(os.path.dirname(__file__))
 metadata = {}
