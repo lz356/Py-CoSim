@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "py-cosim"
+dynamic = ["version"]
+description = "Python co-simulation framework for buildings: EnergyPlus + DER + grids + ML/LLM/RL on one synchronized clock"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.9"
+authors = [{ name = "Liang Zhang", email = "liangzhang1@arizona.edu" }]
+keywords = [
+    "co-simulation", "EnergyPlus", "building energy modeling", "building control",
+    "grid-interactive buildings", "reinforcement learning", "large language models",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Scientific/Engineering",
+]
+dependencies = [
+    "numpy>=1.21",
+    "pandas>=1.3",
+    "matplotlib>=3.4",
+    "pyyaml>=5.4",
+]
+
+[project.optional-dependencies]
+ml = ["scikit-learn>=1.0"]
+rl = ["gymnasium>=0.29"]
+fmu = ["fmpy>=0.3"]
+dev = ["pytest>=7", "pytest-cov", "scikit-learn>=1.0", "gymnasium>=0.29", "ruff"]
+all = ["scikit-learn>=1.0", "gymnasium>=0.29", "fmpy>=0.3"]
+
+[project.urls]
+Homepage = "https://github.com/lz356/Py-CoSim"
+Documentation = "https://github.com/lz356/Py-CoSim/tree/main/docs"
+Issues = "https://github.com/lz356/Py-CoSim/issues"
+
+[project.scripts]
+pycosim = "pycosim.cli:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "pycosim._version.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+pycosim = ["data/*", "data/**/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "energyplus: tests that need a local EnergyPlus installation (skipped otherwise)",
+    "slow: long-running tests",
+]
+filterwarnings = ["ignore::DeprecationWarning:matplotlib.*"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E501", "B905", "UP007", "UP006", "UP035", "B028"]
