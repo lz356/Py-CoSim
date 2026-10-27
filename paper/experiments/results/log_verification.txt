@@ -1,0 +1,27 @@
+{
+  "V1_max_abs_diff": 0.0,
+  "V1_n_series": 7,
+  "wall_cli_s": 5.295795600046404,
+  "wall_pycosim_s": 6.274796499987133,
+  "n_steps": 672,
+  "V2_max_abs_diff": 0.0,
+  "V3_max_abs_diff": 0.0,
+  "precool_effect_max_dT": 2.5066035390112162
+}
+                                     series    n  max_abs_diff   mean_abs
+4  Zone Mean Air Temperature:PERIMETER_ZN_2  672           0.0  25.214446
+5  Zone Mean Air Temperature:PERIMETER_ZN_3  672           0.0  25.212610
+6  Zone Mean Air Temperature:PERIMETER_ZN_4  672           0.0  25.215451
+                   pycosim                                        energyplus    n  max_abs_diff
+0         office.T_Core_ZN                 Zone Mean Air Temperature:CORE_ZN  671           0.0
+1  office.T_Perimeter_ZN_1          Zone Mean Air Temperature:PERIMETER_ZN_1  671           0.0
+2  office.T_Perimeter_ZN_2          Zone Mean Air Temperature:PERIMETER_ZN_2  671           0.0
+3  office.T_Perimeter_ZN_3          Zone Mean Air Temperature:PERIMETER_ZN_3  671           0.0
+4  office.T_Perimeter_ZN_4          Zone Mean Air Temperature:PERIMETER_ZN_4  671           0.0
+5            office.E_elec                              Electricity:Facility  671           0.0
+6             office.T_out  Site Outdoor Air Drybulb Temperature:Environment  671           0.0
+                                     series    n  max_abs_diff   mean_abs
+4  Zone Mean Air Temperature:PERIMETER_ZN_2  672           0.0  25.404481
+5  Zone Mean Air Temperature:PERIMETER_ZN_3  672           0.0  25.425333
+6  Zone Mean Air Temperature:PERIMETER_ZN_4  672           0.0  25.405093
+figure written

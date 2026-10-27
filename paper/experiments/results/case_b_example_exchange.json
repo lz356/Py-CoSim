@@ -1,0 +1,8 @@
+{
+  "prompt": "OPERATOR INTENT: This building is a nursing home. Residents are elderly; keep them comfortable at all times.\n\nSTATE: {\"time\": \"2023-07-17 10:00\", \"weekday\": \"Monday\", \"observations\": {\"T_zone\": 23.5, \"T_out\": 34.4, \"price\": 0.08, \"P_elec\": 18.52}, \"observation_meaning\": {\"T_zone\": \"core zone air temperature [C]\", \"T_out\": \"outdoor air temperature [C]\", \"price\": \"electricity price [$/kWh]\", \"P_elec\": \"building electric power [kW]\"}, \"current_setpoints\": {\"clg_sp\": 23.5, \"htg_sp\": 22.5}, \"occupied\": true}",
+  "response": "{\"clg_sp\": 23.5, \"htg_sp\": 22.5, \"reason\": \"rule profile 'comfort'\"}",
+  "applied": {
+    "clg_sp": 23.5,
+    "htg_sp": 22.5
+  }
+}
