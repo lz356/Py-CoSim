@@ -20,6 +20,7 @@ examples/07_reinforcement_learning/policy_theta.npy
 paper/experiments/results/verification/
 paper/experiments/results/scalability/
 paper/experiments/results/case_*/
+paper/experiments/results/overhead/
 *.jsonl
 
 # EnergyPlus by-products

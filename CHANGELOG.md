@@ -25,7 +25,11 @@ Py-CoSim is now an installable Python package (`pip install -e .`, import `pycos
   time-of-use tariff, grid meter, thermostat schedule, pre-cooling, PI, peak-shaving battery dispatch, NHTS household
   occupancy (+ MLP occupancy model), LLM supervisor with Anthropic/OpenAI/Ollama backends, guardrails, fault injection
   and record/replay.
-- **Reinforcement learning**: `pycosim.gym.ExternalAgent` + `CoSimEnv` (Gymnasium API).
+- **Reinforcement learning**: `pycosim.gym.ExternalAgent` + `CoSimEnv` (Gymnasium API; the end of the
+  co-simulation window is reported as `truncated`, several external agents may coexist).
+- Function components: returning `None` from a single-output function publishes `None` (e.g. releases an
+  EnergyPlus actuator); return `pycosim.HOLD` to keep the previous output. Inputs whose source publishes
+  `None` fall back to their default.
 - **YAML scenarios** and a CLI: `pycosim doctor | handles | run | version`.
 - Nine runnable examples, documentation, test-suite and CI.
 

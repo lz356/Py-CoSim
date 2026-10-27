@@ -181,14 +181,16 @@ apartment prototype is occupied by a household sampled from the 2017 NHTS
 per-dwelling `People` actuators. Two thermostat policies are compared: *fixed* (23.9 °C) and
 *smart* (set up to 26.7 °C when nobody is home, through `Zone Temperature Control` actuators
 and a `transform`). All groups × policies run as **one** co-simulation, one EnergyPlus process
-per apartment building. Also uses `sizing="weather_file"`.
+per apartment building. Also uses `sizing="weather_file"` and a `preprocess` hook that removes the
+prototype's door-switch thermostat reset (EMS program) and window ventilation, so that both policies
+set the zone cooling set-points on equal terms.
 
 ```bash
 python examples/06_travel_behavior_occupancy/run.py --days 2
-python examples/06_travel_behavior_occupancy/run.py --groups long short ev non_ev --replicates 2
+python examples/06_travel_behavior_occupancy/run.py --groups long short ev nonev --replicates 2
 ```
 
-Options: `--groups` (any of `long short ev non_ev`; default `long short`), `--policies`
+Options: `--groups` (any of `long short ev nonev`; default `long short`), `--policies`
 (`fixed smart`), `--replicates N` (1), `--days N` (7), `--no-plot`. The number of EnergyPlus
 buildings is groups × policies × replicates (4 by default = 92 dwellings).
 
