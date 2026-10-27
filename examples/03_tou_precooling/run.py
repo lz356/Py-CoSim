@@ -67,7 +67,7 @@ def main() -> None:
     args = parser.parse_args()
     runs = {"baseline": scenario("03_baseline", False, args.days), "precool": scenario("03_precool", True, args.days)}
     table = pd.DataFrame({k: kpis(v) for k, v in runs.items()}).T
-    table.loc["change_%"] = (table.loc["precool"] / table.loc["baseline"] - 1) * 100
+    table.loc["change_%"] = (table.loc["precool"] / table.loc["baseline"].replace(0, float("nan")) - 1) * 100
     print(table.round(2).to_string())
     if not args.no_plot:
         import matplotlib.pyplot as plt
