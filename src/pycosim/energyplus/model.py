@@ -336,6 +336,13 @@ class EnergyPlusModel:
                     for key in ("floor_area", "volume"):
                         if isinstance(fields.get(key), (int, float)):
                             fields[key] = fields[key] * factor
+                elif cls == "InternalMass" and isinstance(fields.get("surface_area"), (int, float)):
+                    fields["surface_area"] = fields["surface_area"] * factor
+                elif cls == "Construction:FfactorGroundFloor":
+                    if isinstance(fields.get("area"), (int, float)):
+                        fields["area"] = fields["area"] * factor
+                    if isinstance(fields.get("perimeter_exposed"), (int, float)):
+                        fields["perimeter_exposed"] = fields["perimeter_exposed"] * s
         return self
 
     def __repr__(self) -> str:

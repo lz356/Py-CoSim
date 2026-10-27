@@ -86,7 +86,10 @@ class ExternalAgent(Component):
             if arr.size != len(self.bounds):
                 raise ValueError(f"expected {len(self.bounds)} action values, got {arr.size}")
             values = dict(zip(self.bounds, arr.tolist()))
-        return {k: min(max(v, self.bounds[k][0]), self.bounds[k][1]) for k, v in values.items()}
+        bad = [k for k, v in values.items() if not np.isfinite(v)]
+        if bad:
+            raise ValueError(f"{self.name}: non-finite action for {bad}: {values}")
+        return {k: min(max(float(v), self.bounds[k][0]), self.bounds[k][1]) for k, v in values.items()}
 
     def apply_action(self, t, inputs, action) -> Dict[str, float]:
         self.last_action = self.to_dict(action)
@@ -156,6 +159,8 @@ class CoSimEnv(_EnvBase):
                     try:
                         req = self._gen.send(action)
                         action = None
+                        while req[1].name != self.agent_name:  # another external agent: let its policy act
+                            req = self._gen.send(None)
                         return dict(req[2])
                     except StopIteration:
                         self._gen = None
@@ -165,6 +170,8 @@ class CoSimEnv(_EnvBase):
                 self._gen = sim._step_gen()
                 try:
                     req = next(self._gen)
+                    while req[1].name != self.agent_name:
+                        req = self._gen.send(None)
                     return dict(req[2])
                 except StopIteration:
                     self._gen = None
@@ -179,6 +186,8 @@ class CoSimEnv(_EnvBase):
         self.sim = self.make_sim()
         if seed is not None:
             self.sim.seed = seed
+        elif _EnvBase is not object:  # new random draws in every episode, reproducible from the env seed
+            self.sim.seed = int(self.np_random.integers(2**31 - 1))
         self.sim.initialize()
         self._gen = None
         obs = self._advance()
@@ -191,13 +200,15 @@ class CoSimEnv(_EnvBase):
         if self.sim is None:
             raise RuntimeError("call reset() first")
         obs = self._advance(action)
-        terminated = obs is None
-        if terminated:
-            obs = self._last_obs
-            self.results = self.sim.finalize()
+        truncated = obs is None  # the co-simulation window ended (a time limit, not a terminal state)
+        if truncated:
+            obs = dict(self.sim._gather(self.sim[self.agent_name]))  # state after the last action
         self._last_obs = obs
         reward = float(self.reward_fn(obs, self.sim))
-        return self._vector(obs), reward, terminated, False, {"time": self.sim.now}
+        info = {"time": self.sim.now}
+        if truncated:
+            self.results = self.sim.finalize()
+        return self._vector(obs), reward, False, truncated, info
 
     def close(self) -> None:
         if self.sim is not None and self.sim.status == "running":

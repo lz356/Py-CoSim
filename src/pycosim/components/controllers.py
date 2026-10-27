@@ -105,6 +105,9 @@ class PIController(Component):
         self.reverse = reverse
         self.integral = 0.0
 
+    def setup(self, ctx) -> None:
+        self.integral = 0.0
+
     def step(self, t, inputs):
         if inputs.measurement is None:
             return self.u_min

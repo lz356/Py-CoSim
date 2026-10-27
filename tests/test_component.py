@@ -489,3 +489,22 @@ def test_top_level_error_and_observer_modules():
         assert getattr(errors, name) is getattr(core_errors, name)
     for name in ("Observer", "ProgressBar", "LivePlot", "CSVStreamRecorder", "CallbackObserver"):
         assert getattr(observers, name) is getattr(core_observers, name)
+
+
+
+def test_function_component_none_and_hold():
+    import pycosim as pc
+
+    @pc.component(outputs="y")
+    def single(t, x=1.0):
+        return None if x < 0 else (pc.HOLD if x == 0 else x)
+
+    assert single.step(None, {"x": -1.0}) == {"y": None}   # None is a value for single outputs
+    assert single.step(None, {"x": 0.0}) is None           # HOLD keeps the previous output
+    assert single.step(None, {"x": 2.0}) == 2.0
+
+    @pc.component(outputs=["a", "b"])
+    def multi(t):
+        return None
+
+    assert multi.step(None, {}) is None                     # several outputs: None keeps previous values

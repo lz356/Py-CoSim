@@ -36,7 +36,17 @@ from typing import Any, Callable, ClassVar, Dict, Iterable, List, Mapping, Optio
 from .errors import ConfigurationError
 from .timeutils import DurationLike, parse_duration
 
-__all__ = ["Port", "PortRef", "Inputs", "Component", "FunctionComponent", "component"]
+__all__ = ["Port", "PortRef", "Inputs", "Component", "FunctionComponent", "component", "HOLD"]
+
+
+class _Hold:
+    """Sentinel: return ``pycosim.HOLD`` from a function component to keep its previous outputs."""
+
+    def __repr__(self) -> str:
+        return "pycosim.HOLD"
+
+
+HOLD = _Hold()
 
 _NAME_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_\-]*$")
 
@@ -368,9 +378,14 @@ class FunctionComponent(Component):
         kwargs = dict(inputs)
         if self._wants_ctx:
             kwargs["ctx"] = self.ctx
-        if self._time_param is not None:
-            return self.func(t, **kwargs)
-        return self.func(**kwargs)
+        result = self.func(t, **kwargs) if self._time_param is not None else self.func(**kwargs)
+        if result is None and len(self.output_ports) == 1:
+            # For a single-output function, None is a value ("no value" -- e.g. release an EnergyPlus
+            # actuator), not "keep the previous output". Return HOLD to keep the previous output.
+            return {next(iter(self.output_ports)): None}
+        if result is HOLD:
+            return None
+        return result
 
     def copy(self, name: str, **overrides: Any) -> "FunctionComponent":
         """Create an independent instance (e.g. one controller per building)."""

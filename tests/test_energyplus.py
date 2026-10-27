@@ -153,8 +153,8 @@ def override_run(idf_path, epw_path, tmp_path_factory):
 
     @pc.component(outputs="clg_sp")
     def override(t):
-        # a dict is needed to publish None (a bare None return means "keep the previous output")
-        return {"clg_sp": 30.0 if 10 <= t.hour < 12 else None}
+        # None releases the actuator (EnergyPlus' own schedule applies again)
+        return 30.0 if 10 <= t.hour < 12 else None
 
     sim = ep_sim(out, name="override", save=True)
     sim.add(office("base"), office("ovr"), override, EPWWeather("wx", epw_path))

@@ -87,7 +87,8 @@ def episode_return(env: CoSimEnv, act) -> float:
     obs, _ = env.reset()
     total, done = 0.0, False
     while not done:
-        obs, r, done, _, _ = env.step(act(obs))
+        obs, r, terminated, truncated, _ = env.step(act(obs))
+        done = terminated or truncated  # the episode ends when the co-simulation window ends (truncated)
         total += r
     return total
 

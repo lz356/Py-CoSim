@@ -358,16 +358,16 @@ class CoSimulation:
                 except Exception as exc:
                     raise ComponentError(comp.name, "ready", None, exc) from exc
                 self._timing[comp.name][1] += time.perf_counter() - t0
+            self.status = "running"
+            self._setup_time = time.perf_counter() - self._wall_start
+            for obs in self._observers:
+                obs.on_start(self)
         except BaseException as exc:
             for comp in reversed(set_up):
                 _safe(comp.abort)
             self.status = "failed"
             self._write_error_report(exc)
             raise
-        self.status = "running"
-        self._setup_time = time.perf_counter() - self._wall_start
-        for obs in self._observers:
-            obs.on_start(self)
 
     # ================================================================ stepping
     def _gather(self, comp: Component) -> Inputs:
@@ -381,7 +381,7 @@ class CoSimulation:
             store = previous if delay else latest
             if len(sources) == 1:
                 value = store.get(sources[0], _MISSING)
-                if value is _MISSING:
+                if value is _MISSING or value is None:  # no value yet / "no value" -> the input's default
                     value = default
             else:
                 collected = [store.get(s) for s in sources]

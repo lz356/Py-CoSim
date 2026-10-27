@@ -63,10 +63,10 @@ def test_env_full_episode(env):
     assert obs.dtype == np.float32 and obs.tolist() == [24.0, 35.0]
     assert info["time"] == datetime(2023, 7, 3)
     assert env.sim.seed == 3
-    steps, rewards, times, terminated = 0, [], [], False
-    while not terminated:
+    steps, rewards, times, truncated = 0, [], [], False
+    while not truncated:
         obs, r, terminated, truncated, info = env.step(np.array([22.0], dtype=np.float32))
-        assert not truncated and env.observation_space.contains(obs)
+        assert not terminated and env.observation_space.contains(obs)  # end of window = time limit
         rewards.append(r)
         times.append(info["time"])
         steps += 1
@@ -126,8 +126,8 @@ def test_env_reset_propagates_configuration_errors(tmp_path):
 def test_env_agent_slower_than_window_acts_once(tmp_path):
     env = CoSimEnv(make_rl_sim(tmp_path, step_size="1d", end="2023-07-03 06:00"), agent="agent", reward=reward)
     env.reset()
-    *_, terminated, _, _ = env.step(np.array([23.0], dtype=np.float32))
-    assert terminated and len(env.results.df) == 24
+    _, _, terminated, truncated, _ = env.step(np.array([23.0], dtype=np.float32))
+    assert truncated and not terminated and len(env.results.df) == 24
 
 
 def test_external_agent_with_policy_runs_without_rl(tmp_path):

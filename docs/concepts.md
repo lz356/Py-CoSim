@@ -310,6 +310,24 @@ actuator value take effect?
 The RC building follows the same convention: its outputs at `t` are the state at `t` and the
 average HVAC power over the previous step.
 
+### Interval conventions when you add up energy
+
+Two conventions meet in a typical co-simulation:
+
+| Published at `t` by … | describes the interval |
+|---|---|
+| state-based components (EnergyPlus meters, `RCBuilding.P_elec`) | `[t-dt, t)` — the step that just ended |
+| feedthrough components (`TimeOfUseTariff.price`, `Battery.P`, a controller's set-point) | `[t, t+dt)` — the step that starts |
+
+`GridMeter` integrates `P_net(t) · price(t) · dt`, so a building's energy is priced with the
+tariff of the *following* step. Away from tariff changes this makes no difference; at each
+change (e.g. 16:00 and 21:00) one step is priced with the neighbouring rate. For a 15-min step
+this biased a week's cost by about 2% in our tests. If you need exact accounting, connect the
+price to the meter with `delay=True` (then EnergyPlus energy is priced with the rate of its own
+interval), use a smaller step, or post-process `res.df` with the convention you prefer.
+Energy-based KPIs computed directly from `res.df` (e.g. `P.sum() * dt`) are unaffected except
+for the first and last step.
+
 ## Errors
 
 When something goes wrong during a run, Py-CoSim raises a `ComponentError` that names the

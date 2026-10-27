@@ -84,11 +84,15 @@ class Battery(Component):
         self.max_discharge = (max_discharge_kw if max_discharge_kw is not None else max_charge_kw) * 1000.0
         self.eff_c, self.eff_d = eff_charge, eff_discharge
         self.soc_min, self.soc_max = soc_min, soc_max
-        self.soc = float(soc_init)
+        self.soc_init = float(soc_init)
+        self.soc = self.soc_init
         self.output_ports["soc"].default = self.soc
         self.output_ports["energy"].default = self.soc * capacity_kwh
         self.output_ports["P"].unit = "W"
         self.output_ports["energy"].unit = "kWh"
+
+    def setup(self, ctx) -> None:
+        self.soc = self.soc_init
 
     def step(self, t, inputs):
         dt = self.ctx.step_size
@@ -182,6 +186,10 @@ class GridMeter(Component):
         for port, unit in (("P_import", "W"), ("P_export", "W"), ("E_import", "kWh"), ("E_export", "kWh"),
                            ("cost", "$"), ("peak", "kW")):
             self.output_ports[port].unit = unit
+
+    def setup(self, ctx) -> None:
+        self._e_imp = self._e_exp = self._cost = self._peak = 0.0
+        self._window = []
 
     def step(self, t, inputs):
         dt = self.ctx.step_size

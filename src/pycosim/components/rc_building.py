@@ -64,11 +64,16 @@ class RCBuilding(Component):
         self.base_load = base_load if base_load is not None else 8.0 * a
         self.default_clg, self.default_htg = default_setpoints
         self.substep = substep
+        self.T_init = float(T_init)
         self.T_a = self.T_m = float(T_init)
         self._q_cool = self._q_heat = 0.0
         for port, unit, init in (("T_zone", "C", self.T_a), ("T_mass", "C", self.T_m), ("Q_cool", "W", 0.0),
                                  ("Q_heat", "W", 0.0), ("P_hvac", "W", 0.0), ("P_elec", "W", self.base_load)):
             self.add_output(port, initial=init, unit=unit)
+
+    def setup(self, ctx) -> None:
+        self.T_a = self.T_m = self.T_init
+        self._q_cool = self._q_heat = 0.0
 
     # ----------------------------------------------------------- dynamics
     def _simulate(self, T_a: float, T_m: float, T_out: float, q_air: float, q_mass: float, q_hvac: float,

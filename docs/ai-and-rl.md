@@ -263,15 +263,20 @@ env = CoSimEnv(make_sim, agent="agent", reward=reward,
   previous one: `obs_dict` holds the agent's observations *after* the action has acted for
   one decision interval, and `sim` gives access to everything else (`sim.now`,
   `sim.bus.latest("comp.port")`, …). On the final `step()` (the one that returns
-  `terminated=True`) there is no new decision point, so `obs_dict` repeats the last
-  observation.
+  `truncated=True`) `obs_dict` holds the agent's inputs at the end of the window, i.e. the
+  state after the last action.
 * `action_space` is a `Box` built from the action bounds; `observation_space` a `Box` with
   `observation_bounds` (default unbounded). Observations are float32 vectors in the order of
   `observations`; a missing value becomes NaN — connect every observation.
 * `reset(seed=...)` builds a new simulation (a given seed replaces the simulation seed) and
   returns `(observation, {"time": ...})`; `step(action)` returns
-  `(observation, reward, terminated, truncated, info)`; `terminated` is `True` at the end of
-  the simulation window, after which `env.results` holds the episode's `Results`.
+  `(observation, reward, terminated, truncated, info)`. Reaching the end of the simulation
+  window is a time limit, so `truncated` becomes `True` (and `terminated` stays `False`);
+  afterwards `env.results` holds the episode's `Results`. Actions must be finite numbers
+  (NaN/inf raise `ValueError`). Several `ExternalAgent`s may coexist: the environment drives
+  the one named in `agent=`, the others act through their own `policy`.
+* `reset(seed=None)` draws a new simulation seed from the environment's random generator, so
+  stochastic components (e.g. occupancy) differ between episodes but remain reproducible.
 * The environment passes Gymnasium's `check_env`.
 
 A hand-written loop:
@@ -281,7 +286,8 @@ obs, info = env.reset(seed=0)
 done, total = False, 0.0
 while not done:
     action = np.array([24.0 if obs[1] < 0.2 else 26.0], dtype=np.float32)
-    obs, r, done, truncated, info = env.step(action)
+    obs, r, terminated, truncated, info = env.step(action)
+    done = terminated or truncated
     total += r
 print(total)
 ```

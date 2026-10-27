@@ -281,6 +281,11 @@ class FaultInjectionBackend(LLMBackend):
     def last_model(self):
         return getattr(self.inner, "last_model", None)
 
+    def on_timeout(self, system: str, prompt: str, error: str) -> None:
+        hook = getattr(self.inner, "on_timeout", None)
+        if callable(hook):
+            hook(system, prompt, error)
+
 
 def _key(system: str, prompt: str) -> str:
     return hashlib.sha256((system + "\n---\n" + prompt).encode("utf-8")).hexdigest()
@@ -295,9 +300,22 @@ class RecordingBackend(LLMBackend):
         self.inner = inner
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
+        self._timed_out: set = set()
+        self._lock = __import__("threading").Lock()
+
+    def _write(self, record: Dict[str, Any]) -> None:
+        with self._lock, open(self.path, "a", encoding="utf-8") as fh:
+            fh.write(json.dumps(record) + "\n")
+
+    def on_timeout(self, system: str, prompt: str, error: str) -> None:
+        """Called by LLMSupervisor when a call timed out: record it as an error, ignore the late answer."""
+        key = _key(system, prompt)
+        self._timed_out.add(key)
+        self._write({"key": key, "backend": self.inner.describe(), "error": f"TimeoutError: {error}"})
 
     def complete(self, system: str, prompt: str) -> str:
-        record = {"key": _key(system, prompt), "backend": self.inner.describe()}
+        key = _key(system, prompt)
+        record = {"key": key, "backend": self.inner.describe()}
         try:
             text = self.inner.complete(system, prompt)
             record["response"] = text
@@ -306,8 +324,8 @@ class RecordingBackend(LLMBackend):
             record["error"] = f"{type(exc).__name__}: {exc}"
             raise
         finally:
-            with open(self.path, "a", encoding="utf-8") as fh:
-                fh.write(json.dumps(record) + "\n")
+            if key not in self._timed_out:
+                self._write(record)
 
     def describe(self) -> str:
         return f"record({self.inner.describe()})"
@@ -328,7 +346,8 @@ class ReplayBackend(LLMBackend):
             for line in fh:
                 if line.strip():
                     rec = json.loads(line)
-                    self.responses[rec["key"]] = rec.get("response", ReplayedError(rec.get("error", "error")))
+                    if rec["key"] not in self.responses:  # the first record of a prompt is the one that was used
+                        self.responses[rec["key"]] = rec.get("response", ReplayedError(rec.get("error", "error")))
         self.strict = strict
 
     def complete(self, system: str, prompt: str) -> str:
@@ -371,6 +390,12 @@ def extract_json(text: str) -> Optional[Dict[str, Any]]:
         if isinstance(obj, dict):
             return obj
     return None
+
+
+def _json_default(obj):
+    if isinstance(obj, np.generic):
+        return obj.item()
+    return str(obj)
 
 
 # ==================================================================== component
@@ -429,6 +454,8 @@ class LLMSupervisor(Component):
         self.add_output("valid", initial=0)
         self.add_output("latency", initial=0.0, unit="s")
         self.add_output("reason", initial="")
+        if max_change is not None and max_change <= 0:
+            raise ValueError("max_change must be positive")
         self.max_change = max_change
         self.timeout = timeout
         self.occupied_hours = occupied_hours
@@ -451,7 +478,8 @@ class LLMSupervisor(Component):
         obs = {}
         for name, desc in self.observations.items():
             value = inputs.get(name)
-            if isinstance(value, (int, float)) and not (isinstance(value, float) and math.isnan(value)):
+            if isinstance(value, (int, float, np.integer, np.floating)) and not isinstance(value, bool) \
+                    and math.isfinite(float(value)):
                 value = round(float(value), self.decimals)
             obs[name] = value
         state: Dict[str, Any] = {
@@ -463,7 +491,7 @@ class LLMSupervisor(Component):
         }
         if self.occupied_hours is not None:
             state["occupied"] = bool(t.weekday() < 5 and self.occupied_hours[0] <= t.hour < self.occupied_hours[1])
-        return f"OPERATOR INTENT: {self.intent}\n\nSTATE: {json.dumps(state)}"
+        return f"OPERATOR INTENT: {self.intent}\n\nSTATE: {json.dumps(state, default=_json_default)}"
 
     # ------------------------------------------------------------------ step
     def step(self, t, inputs):
@@ -477,6 +505,9 @@ class LLMSupervisor(Component):
             raise  # a strict replay that diverges must stop the run, not fall back silently
         except cf.TimeoutError:
             error = f"timeout after {self.timeout:g}s"
+            hook = getattr(self.backend, "on_timeout", None)
+            if callable(hook):
+                hook(system, prompt, error)
             # abandon the hung call so later decisions do not queue behind it
             self._pool.shutdown(wait=False, cancel_futures=True)
             self._pool = cf.ThreadPoolExecutor(max_workers=1, thread_name_prefix=f"llm-{self.name}")
@@ -519,7 +550,7 @@ class LLMSupervisor(Component):
                 continue
             try:
                 value = float(value)
-            except (TypeError, ValueError):
+            except (TypeError, ValueError, OverflowError):
                 notes.setdefault("missing_or_invalid", []).append(sp)
                 continue
             if not math.isfinite(value):
@@ -544,6 +575,13 @@ class LLMSupervisor(Component):
         self.stats["valid"] += 1
         notes["reason"] = str(data.get("reason", ""))[:300]
         return applied, notes, True
+
+    def setup(self, ctx) -> None:
+        # fresh state for every run (components may be reused, e.g. by a Gymnasium environment)
+        self.current = {sp: lim[2] for sp, lim in self.limits.items()}
+        self.stats = {"calls": 0, "valid": 0, "fallback": 0, "clipped": 0, "rate_limited": 0}
+        if self._pool._shutdown:
+            self._pool = cf.ThreadPoolExecutor(max_workers=1, thread_name_prefix=f"llm-{self.name}")
 
     def finalize(self) -> None:
         self._pool.shutdown(wait=False, cancel_futures=True)

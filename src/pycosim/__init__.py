@@ -37,6 +37,7 @@ __all__ = [
     "Component",
     "FunctionComponent",
     "component",
+    "HOLD",
     "Inputs",
     "Port",
     "CoSimulation",
@@ -54,6 +55,7 @@ _LAZY = {
     "Component": ("pycosim.core.component", "Component"),
     "FunctionComponent": ("pycosim.core.component", "FunctionComponent"),
     "component": ("pycosim.core.component", "component"),
+    "HOLD": ("pycosim.core.component", "HOLD"),
     "Inputs": ("pycosim.core.component", "Inputs"),
     "Port": ("pycosim.core.component", "Port"),
     "Context": ("pycosim.core.context", "Context"),
@@ -86,7 +88,7 @@ def __dir__() -> list[str]:
 if TYPE_CHECKING:  # pragma: no cover - for static type checkers and IDEs only
     from . import components, energyplus
     from . import errors, observers
-    from .core.component import Component, FunctionComponent, Inputs, Port, component
+    from .core.component import HOLD, Component, FunctionComponent, Inputs, Port, component
     from .core.context import Context
     from .core.master import CoSimulation
     from .core.results import Results

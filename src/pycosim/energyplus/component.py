@@ -26,6 +26,7 @@ parallelism across buildings and a crashing model cannot take the master down.
 from __future__ import annotations
 
 import logging
+import math
 import os
 import queue
 import secrets
@@ -160,23 +161,33 @@ class _ProcessEndpoint:
             raise EnergyPlusRuntimeError(f"Could not connect to EnergyPlus worker: {self._box['error']}")
         self.conn = self._box["conn"]
 
+    def _dead(self, exc: Optional[BaseException] = None) -> EnergyPlusRuntimeError:
+        try:
+            self.proc.wait(5)
+        except subprocess.TimeoutExpired:
+            pass
+        detail = f" ({type(exc).__name__}: {exc})" if exc is not None else ""
+        return EnergyPlusRuntimeError(
+            f"EnergyPlus worker stopped (exit code {self.proc.returncode}){detail}.\n{self.log_tail()}")
+
     def send(self, msg) -> None:
         self.connected()
-        self.conn.send(msg)
+        try:
+            self.conn.send(msg)
+        except (BrokenPipeError, ConnectionResetError, EOFError, OSError) as exc:
+            raise self._dead(exc) from None
 
     def recv(self, timeout: float):
         self.connected()
         deadline = time.monotonic() + timeout
         while True:
-            if self.conn.poll(0.2):
-                try:
+            try:
+                if self.conn.poll(0.2):
                     return self.conn.recv()
-                except EOFError:
-                    raise EnergyPlusRuntimeError(f"EnergyPlus worker closed the connection.\n{self.log_tail()}") from None
-            if self.proc.poll() is not None and not self.conn.poll(0):
-                raise EnergyPlusRuntimeError(
-                    f"EnergyPlus worker died (exit code {self.proc.returncode}).\n{self.log_tail()}"
-                )
+                if self.proc.poll() is not None and not self.conn.poll(0):
+                    raise self._dead()
+            except (BrokenPipeError, ConnectionResetError, EOFError, OSError) as exc:
+                raise self._dead(exc) from None
             if time.monotonic() > deadline:
                 raise EnergyPlusRuntimeError(f"No message from EnergyPlus within {timeout:.0f}s")
 
@@ -251,10 +262,14 @@ class _ThreadEndpoint:
         self._released = False
         self.to_worker: "queue.Queue" = queue.Queue()
         self.from_worker: "queue.Queue" = queue.Queue()
-        api_cls = install.import_api()
-        from .session import EPlusSession
+        try:
+            api_cls = install.import_api()
+            from .session import EPlusSession
 
-        self.session = EPlusSession(api_cls(), cfg, _QueueChannel(self.to_worker, self.from_worker))
+            self.session = EPlusSession(api_cls(), cfg, _QueueChannel(self.to_worker, self.from_worker))
+        except BaseException:
+            self._release()
+            raise
         self.thread = threading.Thread(target=self._run, name="pycosim-energyplus", daemon=True)
         self.returncode: Optional[int] = None
         self.thread.start()
@@ -463,6 +478,16 @@ class EnergyPlusComponent(Component):
                 f"{self.name}: a step of {step:g}s gives {n:g} EnergyPlus time steps per hour; "
                 f"EnergyPlus needs one of {VALID_TIMESTEPS} (e.g. step='15min')"
             )
+        offset = (ctx.start - datetime(ctx.start.year, ctx.start.month, ctx.start.day)).total_seconds()
+        if self.sync_run_period and abs(offset / step - round(offset / step)) > 1e-9:
+            raise ConfigurationError(
+                f"{self.name}: the co-simulation starts at {ctx.start:%H:%M}, which is not a multiple of the "
+                f"EnergyPlus time step ({step:g}s) after midnight")
+        # fresh state for every run (components may be reused, e.g. by a Gymnasium environment)
+        self._model = None
+        self._done_msg = None
+        self.final_outputs = None
+        self.info = {}
         model = self.model
         model.set_timesteps_per_hour(int(round(n)))
         skip_until = None
@@ -547,16 +572,35 @@ class EnergyPlusComponent(Component):
             return msg[2]
         if kind == "done":
             self._done_msg = msg
+            if msg[1] != 0:
+                raise EnergyPlusRuntimeError(
+                    f"{self.name}: EnergyPlus terminated with exit code {msg[1]} at {t} (see the error file).\n"
+                    + self._err_tail())
             raise SynchronizationError(
-                f"{self.name}: EnergyPlus reached the end of its RunPeriod at {t} before the master clock "
-                f"(exit code {msg[1]}). Make the RunPeriod cover the co-simulation window."
+                f"{self.name}: EnergyPlus reached the end of its RunPeriod at {t} before the master clock. "
+                "Make the RunPeriod cover the co-simulation window (or keep sync_run_period=True)."
             )
         if kind == "error":
             raise EnergyPlusRuntimeError(f"{self.name}: EnergyPlus error at {t}:\n{msg[-1]}\n{self._err_tail()}")
         raise EnergyPlusRuntimeError(f"{self.name}: unexpected message {kind!r}")
 
     def update(self, t: datetime, inputs) -> None:
-        self._endpoint.send(("act", {name: inputs[name] for name in self.actuators}))
+        values = {}
+        for name in self.actuators:
+            v = inputs[name]
+            if v is not None:
+                try:
+                    v = float(v)
+                except (TypeError, ValueError):
+                    raise ConfigurationError(
+                        f"{self.name}: actuator input {name!r} received {v!r}; expected a number or None "
+                        "(None/NaN releases the actuator)") from None
+                if math.isnan(v):
+                    v = None
+                elif math.isinf(v):
+                    raise ConfigurationError(f"{self.name}: actuator input {name!r} received {v}")
+            values[name] = v
+        self._endpoint.send(("act", values))
 
     def finalize(self) -> None:
         ep = self._endpoint

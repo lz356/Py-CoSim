@@ -53,7 +53,11 @@ accepted by the function, or the function must take `**inputs`).
 | a single value | the value of the one output |
 | a tuple or list `(a, b)` | values of several outputs, in the order of `outputs=[...]` |
 | a dict `{"a": 1.0, "b": 2.0}` | values by name (you may return only some of them) |
-| `None` | publish nothing new this step: the outputs keep their previous values |
+| `None` | single output: the output becomes `None` (e.g. *release* an EnergyPlus actuator). Several outputs: publish nothing new, the outputs keep their previous values |
+| `pycosim.HOLD` | publish nothing new this step: the outputs keep their previous values |
+
+Class components (`step()` methods) follow the dict/tuple/value rules above, and returning
+`None` from `step()` keeps the previous outputs.
 
 ```python
 @pc.component(outputs=["clg_sp", "htg_sp"])
