@@ -1,0 +1,64 @@
+# Example 08 - a complete co-simulation described in YAML (no Python script needed).
+#
+#   pycosim run scenario.yaml --plot
+#
+# Component types are classes from pycosim.components (or "module:Class" for your
+# own); "function: module:func" wraps a plain Python function (see my_rules.py).
+# Relative paths are resolved against this file's folder.
+
+simulation:
+  name: 08_yaml_scenario
+  start: 2023-07-17
+  end: 2023-07-24
+  step: 15min
+  output_dir: output
+  seed: 1
+
+components:
+  weather:
+    type: EPWWeather
+    path: ../weather/USA_AZ_Tucson.Intl.AP.722740_TMY3.epw
+
+  # Swap this RC model for EnergyPlus by uncommenting the block below
+  house:
+    type: RCBuilding
+    floor_area: 180
+  # house:
+  #   type: EnergyPlusComponent
+  #   model: ../models/small_office.idf
+  #   weather: ../weather/USA_AZ_Tucson.Intl.AP.722740_TMY3.epw
+  #   sensors: {T_zone: [Zone Mean Air Temperature, Core_ZN]}
+  #   meters: {P_elec: [Electricity:Facility, W]}
+  #   actuators: {clg_sp: [Schedule:Compact, Schedule Value, CLGSETP_SCH]}
+
+  tariff:
+    type: TimeOfUseTariff
+    peak_hours: [16, 21]
+    peak_price: 0.30
+    offpeak_price: 0.08
+
+  pv:
+    type: PVSystem
+    capacity_kw: 6
+
+  thermostat:
+    function: my_rules:price_aware_thermostat
+    outputs: [clg_sp]
+
+  meter:
+    type: GridMeter
+
+connections:
+  - weather.T_out -> house.T_out
+  - weather.GHI -> house.GHI
+  - weather.GHI -> pv.GHI
+  - weather.DNI -> pv.DNI
+  - weather.DHI -> pv.DHI
+  - weather.T_out -> pv.T_out
+  - weather.solar_zenith -> pv.solar_zenith
+  - weather.solar_azimuth -> pv.solar_azimuth
+  - tariff.price -> thermostat.price
+  - house.T_zone -> thermostat.T_zone
+  - thermostat.clg_sp -> house.clg_sp
+  - {from: [house.P_elec, pv.P_ac], to: meter.P_net, reduce: my_rules:net_power}
+  - tariff.price -> meter.price
