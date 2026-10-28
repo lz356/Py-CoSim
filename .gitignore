@@ -46,3 +46,6 @@ paper/experiments/helics_feds/*.log
 
 # Author's personal review folder
 Liang's Working Folder/
+
+# Word lock files
+~$*
