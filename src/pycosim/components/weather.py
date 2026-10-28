@@ -122,10 +122,10 @@ class EPWWeather(Component):
         self.solar = solar
         self._arrays = {f: self.data[f].to_numpy() for f in self.fields}
         for f in self.fields:
-            self.add_output(f, unit=EPW_FIELDS[f][1])
+            self.add_output(f, unit=EPW_FIELDS[f][1], kind="instant")
         if solar:
-            self.add_output("solar_zenith", unit="deg")
-            self.add_output("solar_azimuth", unit="deg")
+            self.add_output("solar_zenith", unit="deg", kind="instant")
+            self.add_output("solar_azimuth", unit="deg", kind="instant")
 
     def value_at(self, field: str, t: datetime) -> float:
         arr = self._arrays[field] if field in self._arrays else self.data[field].to_numpy()

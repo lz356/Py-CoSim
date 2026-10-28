@@ -53,6 +53,13 @@ class EPlusSession:
         self.internals: Dict[str, Tuple[str, str]] = {k: tuple(v) for k, v in cfg.get("internal_variables", {}).items()}
         self.actuators: Dict[str, Tuple[str, str, str]] = {k: tuple(v) for k, v in cfg.get("actuators", {}).items()}
         self.mode = cfg.get("mode", "cosim")
+        # exchange with the master every `every` zone time steps; outputs are aggregated in between
+        self.every = max(int(cfg.get("exchange_every", 1) or 1), 1)
+        self.aggregate: Dict[str, str] = dict(cfg.get("aggregate", {}))
+        self._acc: Dict[str, float] = {}
+        self._n_acc = 0
+        self._since = 0
+        self._last_act: Dict[str, Any] = {}
         self.skip_until: Optional[Tuple[int, int, int, int]] = tuple(cfg["skip_until"]) if cfg.get("skip_until") else None
         self.resolved = False
         self.failed = False
@@ -110,13 +117,25 @@ class EPlusSession:
                 if stamp < self.skip_until:
                     return
                 self.skip_until = None
-            obs = self.snapshot if self.snapshot is not None else self._read(state)
+            if self.every > 1:
+                exchange = self._since % self.every == 0
+                self._since += 1
+                if not exchange:  # free-running sub-step: keep the last commands
+                    if self._last_act:
+                        self._apply(state, self._last_act)
+                    return
+                obs = self._aggregated() if self._n_acc else (
+                    self.snapshot if self.snapshot is not None else self._read(state))
+            else:
+                obs = self.snapshot if self.snapshot is not None else self._read(state)
             self.channel.send(("obs", stamp, obs))
             self.n_obs += 1
             msg = self.channel.recv()
             kind = msg[0]
             if kind == "act":
                 self._apply(state, msg[1])
+                if self.every > 1:
+                    self._last_act = dict(msg[1])
             elif kind == "detach":
                 self._detach(state)
             else:
@@ -137,9 +156,31 @@ class EPlusSession:
             if self.api.exchange.kind_of_sim(state) != RUN_PERIOD_WEATHER:
                 return
             self.snapshot = self._read(state)
+            if self.every > 1 and self.skip_until is None and self._since > 0:
+                self._accumulate(self.snapshot)
         except Exception:
             self._report("exception", traceback.format_exc())
             self._fail_silently(state)
+
+    # ---------------------------------------------------------- aggregation
+    def _accumulate(self, values: Dict[str, float]) -> None:
+        acc = self._acc
+        for name, v in values.items():
+            how = self.aggregate.get(name, "last")
+            if how in ("average", "amount"):
+                acc[name] = acc.get(name, 0.0) + float(v)
+            else:
+                acc[name] = v
+        self._n_acc += 1
+
+    def _aggregated(self) -> Dict[str, float]:
+        out = {}
+        n = self._n_acc
+        for name, v in self._acc.items():
+            out[name] = v / n if self.aggregate.get(name) == "average" else v
+        self._acc = {}
+        self._n_acc = 0
+        return out
 
     # --------------------------------------------------------------- helpers
     def _stamp(self, state) -> Tuple[int, int, int, int]:

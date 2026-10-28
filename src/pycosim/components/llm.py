@@ -447,7 +447,7 @@ class LLMSupervisor(Component):
             if not lo <= default <= hi:
                 raise ValueError(f"default of {sp!r} outside [{lo}, {hi}]")
             self.limits[sp] = (float(lo), float(hi), float(default))
-            self.add_output(sp, initial=float(default), unit="C" if sp.endswith("_sp") else None)
+            self.add_output(sp, initial=float(default), unit="C" if sp.endswith("_sp") else None, kind="hold")
         self.observations = dict(observations) if isinstance(observations, Mapping) else {o: o for o in observations}
         for obs in self.observations:
             self.add_input(obs, default=None)

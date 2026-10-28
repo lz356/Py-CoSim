@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import threading
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
@@ -12,6 +13,13 @@ if TYPE_CHECKING:  # pragma: no cover
     from .master import CoSimulation
 
 __all__ = ["Context"]
+
+#: Set inside the worker thread of an asynchronous component: the master step whose state it may see.
+_ASYNC = threading.local()
+
+
+def _async_step():
+    return getattr(_ASYNC, "k", None)
 
 
 class Context:
@@ -49,13 +57,15 @@ class Context:
     # ------------------------------------------------------------------ clock
     @property
     def now(self) -> datetime:
-        """Current master time."""
-        return self._sim.now
+        """Current master time (for an asynchronous component: the time its inputs were taken)."""
+        k = _async_step()
+        return self._sim.times[k] if k is not None else self._sim.now
 
     @property
     def step_index(self) -> int:
         """Index of the current master step (0-based)."""
-        return self._sim.k
+        k = _async_step()
+        return k if k is not None else self._sim.k
 
     @property
     def step_timedelta(self) -> timedelta:
@@ -64,17 +74,30 @@ class Context:
     # --------------------------------------------------------------- data bus
     def latest(self, ref: str, default: Any = None) -> Any:
         """Latest value of any port, e.g. ``ctx.latest("office.T_zone")``."""
+        k = _async_step()
+        if k is not None:
+            return self._sim.bus.value_at_step(ref, k, default)
         return self._sim.bus.latest(ref, default)
 
     def history(self, ref: str, n: Optional[int] = None):
         """History of any port as a pandas Series (last ``n`` publications)."""
-        return self._sim.bus.history(ref, n)
+        return self._sim.bus.history(ref, n, upto_step=_async_step())
+
+    def at(self, ref: str, when: Any = None) -> Any:
+        """Value of any port in effect at ``when`` (default: now), aligned by the port's time meaning."""
+        return self._sim.bus.at(ref, self.now if when is None else when, upto_step=_async_step())
+
+    def window(self, ref: str, start: Any, end: Any = None) -> Any:
+        """Aggregate of any port over ``[start, end)`` (default end: now): mean, total or event list."""
+        return self._sim.bus.window(ref, start, self.now if end is None else end, upto_step=_async_step())
 
     # ---------------------------------------------------------------- logging
     def log(self, message: str, level: int = logging.INFO, kind: str = "info", **data: Any) -> None:
         """Write to the Python log *and* to the co-simulation event log."""
         self.logger.log(level, message)
-        self._sim.bus.log_event(self._sim.now if self._sim.k >= 0 else None, self.component, kind, message, **data)
+        k = _async_step()
+        when = self._sim.times[k] if k is not None else (self._sim.now if self._sim.k >= 0 else None)
+        self._sim.bus.log_event(when, self.component, kind, message, **data)
 
     # ------------------------------------------------------------------ files
     @property

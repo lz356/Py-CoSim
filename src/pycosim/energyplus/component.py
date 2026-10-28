@@ -62,6 +62,8 @@ class EnergyPlusRuntimeError(PyCoSimError):
 def _parse_pair(name: str, spec: Any, what: str) -> Tuple[str, str]:
     if isinstance(spec, Mapping):
         return str(spec["variable"]), str(spec.get("key", "Environment"))
+    if isinstance(spec, (list, tuple)) and len(spec) == 3:  # (variable, key, kind)
+        return str(spec[0]), str(spec[1])
     if isinstance(spec, str):
         return spec, "Environment"
     if isinstance(spec, (list, tuple)) and len(spec) == 2:
@@ -105,6 +107,19 @@ def _guess_unit(variable: str) -> Optional[str]:
         if token.lower() in variable.lower():
             return unit
     return None
+
+
+def _sensor_kind(spec: Any, unit: Optional[str]) -> str:
+    """Time meaning of an EnergyPlus output variable read at the end of a zone time step.
+
+    EnergyPlus reports time-step values as averages over the step (energies as
+    sums), so the value published at ``t`` describes ``[t - h, t)``.
+    """
+    if isinstance(spec, Mapping) and spec.get("kind"):
+        return str(spec["kind"])
+    if isinstance(spec, (list, tuple)) and len(spec) == 3:
+        return str(spec[2])
+    return "amount" if unit == "J" else "average"
 
 
 # ------------------------------------------------------------------- endpoints
@@ -347,7 +362,15 @@ class EnergyPlusComponent(Component):
         ``{output_name: (variable_name, key)}`` for static data such as
         ``("Zone Floor Area", "Core_ZN")``.
     timestep : int, optional
-        EnergyPlus time steps per hour. By default derived from the master step.
+        EnergyPlus time steps per hour (its *internal* step). By default the
+        exchange step is used.
+    step_size : str or float, optional
+        Exchange step with the co-simulation (default: the master step, or
+        ``3600 / timestep``). It may be a multiple of the EnergyPlus step, e.g.
+        ``timestep=60, step_size="15min"``: EnergyPlus then runs fifteen
+        1-minute steps between two exchanges, holds the actuator values and
+        aggregates its outputs by their time meaning (mean of rates, sum of
+        energies, last value of anything else).
     sync_run_period : bool
         Rewrite the model's RunPeriod to match the co-simulation window (default).
     sizing : {"model", "weather_file"}
@@ -386,6 +409,7 @@ class EnergyPlusComponent(Component):
         actuators: Optional[Mapping[str, Any]] = None,
         internal_variables: Optional[Mapping[str, Any]] = None,
         timestep: Optional[int] = None,
+        step_size: Optional[Union[str, float]] = None,
         sync_run_period: bool = True,
         sizing: str = "model",
         daylight_saving: Optional[bool] = None,
@@ -408,9 +432,11 @@ class EnergyPlusComponent(Component):
         self.actuators = {k: _parse_actuator(k, v) for k, v in (actuators or {}).items()}
         self.internal_variables = {k: _parse_pair(k, v, "internal variable") for k, v in (internal_variables or {}).items()}
         self.timestep = timestep
-        if timestep is not None:
-            if int(timestep) not in VALID_TIMESTEPS:
-                raise ConfigurationError(f"timestep must be one of {VALID_TIMESTEPS}")
+        if timestep is not None and int(timestep) not in VALID_TIMESTEPS:
+            raise ConfigurationError(f"timestep must be one of {VALID_TIMESTEPS}")
+        if step_size is not None:
+            self.step_size = step_size
+        elif timestep is not None:
             self.step_size = 3600.0 / int(timestep)
         self.sync_run_period = sync_run_period
         self.sizing = sizing
@@ -421,12 +447,21 @@ class EnergyPlusComponent(Component):
         self.verbose = verbose
         self.timeout = float(timeout)
         self.extra_args = list(extra_args or [])
+        self._aggregate: Dict[str, str] = {}
         for out_name, (var, _key) in self.sensors.items():
-            self.add_output(out_name, unit=_guess_unit(var), description=f"EnergyPlus variable '{var}'")
+            unit = _guess_unit(var)
+            kind = _sensor_kind((sensors or {})[out_name], unit)
+            self.add_output(out_name, unit=unit, description=f"EnergyPlus variable '{var}'", kind=kind,
+                            interval="past" if kind in ("average", "amount") else None)
+            self._aggregate[out_name] = kind if kind in ("average", "amount") else "last"
         for out_name, (meter, unit) in self.meters.items():
-            self.add_output(out_name, unit=unit, description=f"EnergyPlus meter '{meter}'")
+            kind = "average" if unit in ("W", "kW") else "amount"
+            self.add_output(out_name, unit=unit, description=f"EnergyPlus meter '{meter}'", kind=kind,
+                            interval="past")
+            self._aggregate[out_name] = kind
         for out_name, (var, _key) in self.internal_variables.items():
-            self.add_output(out_name, description=f"EnergyPlus internal variable '{var}'")
+            self.add_output(out_name, description=f"EnergyPlus internal variable '{var}'", kind="hold")
+            self._aggregate[out_name] = "last"
         for in_name, spec in self.actuators.items():
             self.add_input(in_name, default=None, description=f"EnergyPlus actuator {spec}")
         overlap = set(self.output_ports) & set(self.input_ports)
@@ -461,10 +496,11 @@ class EnergyPlusComponent(Component):
         """Clock derived from the model (used when CoSimulation gets no start/end/step)."""
         first, last, _year = self.model.get_run_period()
         ts = self.timestep or self.model.timesteps_per_hour
+        step = parse_duration(self.step_size) if self.step_size is not None else 3600.0 / ts
         return {
             "start": datetime(first.year, first.month, first.day),
             "end": datetime(last.year, last.month, last.day) + timedelta(days=1),
-            "step": 3600.0 / ts,
+            "step": step,
         }
 
     # -------------------------------------------------------------- lifecycle
@@ -472,12 +508,24 @@ class EnergyPlusComponent(Component):
         if not self.weather.exists():
             raise FileNotFoundError(f"Weather file not found: {self.weather}")
         step = ctx.step_size
-        n = 3600.0 / step
-        if abs(n - round(n)) > 1e-9 or int(round(n)) not in VALID_TIMESTEPS:
-            raise ConfigurationError(
-                f"{self.name}: a step of {step:g}s gives {n:g} EnergyPlus time steps per hour; "
-                f"EnergyPlus needs one of {VALID_TIMESTEPS} (e.g. step='15min')"
-            )
+        if self.timestep is not None:
+            ts = int(self.timestep)
+            ratio = step / (3600.0 / ts)
+            every = int(round(ratio))
+            if every < 1 or abs(ratio - every) > 1e-9:
+                raise ConfigurationError(
+                    f"{self.name}: the exchange step ({step:g}s) must be a whole multiple of the EnergyPlus "
+                    f"time step ({3600.0 / ts:g}s, timestep={ts})")
+        else:
+            n = 3600.0 / step
+            if abs(n - round(n)) > 1e-9 or int(round(n)) not in VALID_TIMESTEPS:
+                raise ConfigurationError(
+                    f"{self.name}: a step of {step:g}s gives {n:g} EnergyPlus time steps per hour; "
+                    f"EnergyPlus needs one of {VALID_TIMESTEPS} (e.g. step='15min'), or set timestep=... to run "
+                    "EnergyPlus with a finer internal step"
+                )
+            ts, every = int(round(n)), 1
+        self._every = every
         offset = (ctx.start - datetime(ctx.start.year, ctx.start.month, ctx.start.day)).total_seconds()
         if self.sync_run_period and abs(offset / step - round(offset / step)) > 1e-9:
             raise ConfigurationError(
@@ -489,7 +537,7 @@ class EnergyPlusComponent(Component):
         self.final_outputs = None
         self.info = {}
         model = self.model
-        model.set_timesteps_per_hour(int(round(n)))
+        model.set_timesteps_per_hour(ts)
         skip_until = None
         if self.sync_run_period:
             last = (ctx.end - timedelta(seconds=1)).date()
@@ -521,6 +569,8 @@ class EnergyPlusComponent(Component):
             "verbose": self.verbose,
             "skip_until": skip_until,
             "mode": "cosim",
+            "exchange_every": every,
+            "aggregate": dict(self._aggregate),
         }
         self._t_start = time.perf_counter()
         executor = self.executor
@@ -670,6 +720,7 @@ class EnergyPlusComponent(Component):
     def run_metadata(self) -> Dict[str, Any]:
         meta = dict(self.info)
         meta.update(
+            exchange_every_timesteps=getattr(self, "_every", 1),
             executor=getattr(self, "_executor_used", self.executor),
             model=str(self.model_source if not isinstance(self.model_source, EnergyPlusModel) else self.model_source.source),
             weather=str(self.weather),

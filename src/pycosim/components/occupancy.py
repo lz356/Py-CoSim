@@ -99,10 +99,11 @@ class HouseholdOccupancy(Component):
         self.resample = resample
         width = max(2, len(str(n_units - 1)))
         self.unit_ports: List[str] = [f"{prefix}_{i:0{width}d}" for i in range(n_units)]
+        # diary slots are 15-minute means: the value published at t covers [t, t + 15 min)
         for port in self.unit_ports:
-            self.add_output(port, initial=0.0, unit="people")
-        self.add_output("total", initial=0.0, unit="people")
-        self.add_output("fraction", initial=0.0)
+            self.add_output(port, initial=0.0, unit="people", kind="average", interval="ahead")
+        self.add_output("total", initial=0.0, unit="people", kind="average", interval="ahead")
+        self.add_output("fraction", initial=0.0, kind="average", interval="ahead")
         self._by_size: Dict[int, np.ndarray] = {}
         self.assignment: Optional[pd.DataFrame] = None
 
