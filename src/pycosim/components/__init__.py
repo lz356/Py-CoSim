@@ -10,11 +10,14 @@ Controls                   :class:`ThermostatSchedule`, :class:`PrecoolingContro
                            :class:`PIController`, :class:`PeakShavingController`
 People and travel          :class:`HouseholdOccupancy`, :class:`OccupancyMLP`
 AI decision making         :class:`LLMSupervisor` and LLM backends
+FMI / Modelica models      :class:`FMUComponent` (co-simulation FMUs; needs ``fmpy``)
 =========================  =========================================================
 
 EnergyPlus buildings live in :mod:`pycosim.energyplus`
 (``pycosim.EnergyPlusComponent``).
 """
+from typing import Any
+
 from .controllers import PeakShavingController, PIController, PrecoolingController, ThermostatSchedule
 from .energy import Battery, GridMeter, PVSystem, TimeOfUseTariff
 from .llm import (
@@ -27,6 +30,7 @@ from .llm import (
     OpenAIBackend,
     RecordingBackend,
     ReplayBackend,
+    StochasticStandInBackend,
 )
 from .occupancy import HouseholdOccupancy, OccupancyMLP, load_household_profiles, select_households
 from .rc_building import RCBuilding
@@ -41,5 +45,24 @@ __all__ = [
     "ThermostatSchedule", "PrecoolingController", "PIController", "PeakShavingController",
     "HouseholdOccupancy", "OccupancyMLP", "load_household_profiles", "select_households",
     "LLMSupervisor", "LLMBackend", "AnthropicBackend", "OpenAIBackend", "OllamaBackend",
-    "OfflineStandInBackend", "FaultInjectionBackend", "RecordingBackend", "ReplayBackend",
+    "OfflineStandInBackend", "StochasticStandInBackend", "FaultInjectionBackend", "RecordingBackend",
+    "ReplayBackend",
+    "FMUComponent",
 ]
+
+# Optional components, imported on first use so that this package works without their dependencies.
+_LAZY = {"FMUComponent": ".fmu"}
+
+
+def __getattr__(name: str) -> Any:  # PEP 562
+    if name in _LAZY:
+        from importlib import import_module
+
+        value = getattr(import_module(_LAZY[name], __name__), name)
+        globals()[name] = value
+        return value
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
+def __dir__() -> list:
+    return sorted(set(globals()) | set(__all__))

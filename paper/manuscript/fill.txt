@@ -1,0 +1,23 @@
+@@ABSTRACT@@ =
+Building energy models are increasingly co-simulated with photovoltaic systems, batteries, tariffs, occupant and machine-learning models, and large language model agents. Existing co-simulation tools connect such programs but exchange values as numbers stamped with an instant, leaving users to decide which time interval each value belongs to, and they offer no rules for AI components that answer differently on every call, return invalid values or take seconds to respond. This paper redesigns the Simulation Management and Messaging Module (SMMM) of the open-source Py-CoSim framework into a time-aware message hub. Each message states whether its value is an instantaneous sample, an interval average, an interval amount, a value held until replaced or an event, and each input declares the time window it needs. SMMM aligns the data automatically, flags their quality, records them for exact replay, traces their provenance and delivers the answers of slow components at a declared simulation time. EnergyPlus is coupled through its Python interface and may run a finer internal time step than the exchange step. Co-simulated EnergyPlus results were identical to standalone runs. Aligned exchange computed energy and cost exactly when a consumer's step was a multiple of its producer's, whereas exchanging the latest values erred by up to 6 %. In a community of ten offices with photovoltaics and a battery, naive exchange overstated the battery's peak reduction (120 kW instead of 135 kW peak import). Replay reproduced runs with a stochastic AI supervisor exactly and reduced the spread of a retrofit-savings estimate 24-fold; asynchronous delivery shortened runs with eight slow AI supervisors 2.9-fold without changing their results.
+====
+@@ACK@@ =
+[Funding and acknowledgements to be added by the authors.]
+====
+@@N_TESTS@@ =
+more than 450
+====
+@@E2A_NAIVE_ENERGY@@ =
+0.19
+====
+@@E2A_ALIGNED_TOU@@ =
+10^−7^
+====
+@@CONCLUSION_LIST@@ =
+1. Co-simulated EnergyPlus results were identical to standalone EnergyPlus (maximum absolute difference zero), including actuation through Python.
+2. Exchanging the latest values charged energy at the wrong price interval and mixed powers of different intervals: cost errors reached 6 % on synthetic signals and 4.8 % (export 8.2 %) in an EnergyPlus case at a 60-min exchange step. Aligned exchange was exact whenever the consumer's step was a multiple of the producer's and reduced the EnergyPlus-case errors to 1.3 % and 0.5 %.
+3. In a community of ten offices with PV and a battery, naive exchange made a peak-shaving controller look as if it had perfect foresight (peak import 120 kW instead of 135 kW) and overstated the cost savings of the coordinated strategy (32.7 % instead of 30.1 %).
+4. The EnergyPlus time step changed the weekly electricity of the test building by up to 14 % through autosizing alone; fixing the sizing window in minutes, or keeping EnergyPlus's own step and exchanging at a coarser step, avoids this pitfall.
+5. Recording the messages of a stochastic AI supervisor made its runs exactly repeatable and reduced the spread of a retrofit-savings estimate from 0.38 to 0.016 percentage points.
+6. Asynchronous delivery with a declared decision delay overlapped slow AI calls (2.9 times faster with eight supervisors) while keeping results independent of their latency.
+7. @@CONCL_OVERHEAD@@

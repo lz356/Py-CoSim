@@ -446,3 +446,28 @@ def test_message_envelope_publishes_future_values(tmp_path):
     res = sim.run()
     assert res.df.loc["2023-07-03 01:45", "m.y"] == 0.1
     assert res.df.loc["2023-07-03 02:00", "m.y"] == 0.5
+
+
+def test_replay_rejects_a_different_clock(tmp_path):
+    _dice_sim(tmp_path, "rec15", record=["ai"]).run()
+    sim = pc.CoSimulation("2023-07-03", "2023-07-04", "5min", name="r5", output_dir=tmp_path, log_level="WARNING")
+    sim.add(pc.components.RCBuilding("house", 100))
+    sim.add(_Dice("ai", step_size="1h"))
+    sim.connect("house.T_zone", "ai.T")
+    sim.connect("ai.sp", "house.clg_sp")
+    sim.replay("ai", tmp_path / "rec15")
+    with pytest.raises(ConfigurationError, match="master step"):
+        sim.initialize()
+
+
+def test_async_answers_queued_behind_a_late_call_are_flagged(tmp_path):
+    sim = _sim(tmp_path, end="2023-07-03 02:00")
+    sim.add(pc.FunctionComponent(lambda t: 1.0, name="src", outputs="x"))
+    # a decision delay longer than the step queues several calls behind a slow one
+    sim.add(_Slow("agent", latency=0.25).make_async(delay="1h", deadline=0.05))
+    sim.connect("src.x", "agent.x")
+    res = sim.run()
+    meta = res.meta["asynchronous"]["agent"]
+    late = res.quality.set_index("quality")["messages"].get("late", 0)
+    assert meta["late"] == late >= 2
+    assert meta["delivered"] + meta["late"] == 4  # every answer due before the end is accounted for

@@ -67,13 +67,16 @@ interval that starts now. That is exactly the non-feedthrough pattern: report th
 A useful consequence: a loop *building → controller → building* never needs special
 treatment, because the building's outputs are available before the controller runs.
 
-## One master step: output → step → update
+## One master step: deliver → output → step → update
 
-At each grid time `t_k` the master runs three phases:
+At each grid time `t_k` the master runs these phases:
 
 ```text
              one master step k, at time t_k
  ┌───────────────────────────────────────────────────────────────────────┐
+ │ 0. DELIVER  answers of asynchronous components that are due at t_k    │
+ │             are published (only if there are such components)         │
+ │                                                                       │
  │ 1. OUTPUT   state-based components publish their state y(t_k)         │
  │             office (EnergyPlus), house (RC) ...           ──► data bus │
  │                                                                       │
@@ -91,6 +94,10 @@ At each grid time `t_k` the master runs three phases:
                                    │
                                    ▼  k = k + 1
 ```
+
+Phase 0 only matters for [asynchronous components](smmm.md#asynchronous-components) (for
+example a slow LLM that thinks in the background): their answers become visible at a
+declared simulation time, before anything else runs in that step.
 
 The order in phase 2 is computed automatically from the connections (a *topological
 order*): if `controller` reads `tariff.price`, the tariff runs first. Components that do not
@@ -124,15 +131,24 @@ with a 15-minute master step, an hourly LLM decision is seen by the building in 
 Inside a component, `ctx.step_size` is its own step in seconds (use it for integration),
 and `ctx.dt` is the master step.
 
+By default a slow component sees only the *latest* value of a faster one: an hourly meter
+reading 15-minute power gets the power of the last quarter hour. If it needs the mean over
+its whole hour, connect with `read="past"` — SMMM then aligns the values by their time
+meaning (see [Messages and time](smmm.md#alignment-across-step-sizes)).
+
 ## Connections
 
 ```python
-sim.connect(source, target, *, delay=False, transform=None, reduce=None)
+sim.connect(source, target, *, delay=False, transform=None, reduce=None, read=None)
+sim.subscribe(target, source, ...)      # the same, with the arguments in reading order
 ```
 
 * `source`: `"comp.port"`, `comp["port"]`, a `(comp, "port")` pair, or a **list** of those
-  (fan-in).
+  (fan-in). It can also be a glob pattern such as `"*.P_elec"` (every component's `P_elec`)
+  or a topic such as `"grid/price"` ([Patterns and topics](smmm.md#patterns-and-topics)).
 * `target`: one input port. Each input can be connected only once.
+* `read`: how the target reads the source — `"latest"` (default: the most recent value),
+  `"at"`, `"past"` or `"ahead"` ([read modes](smmm.md#the-four-read-modes-what-an-input-asks-for)).
 
 ### Fan-in with `reduce`
 
@@ -167,6 +183,8 @@ input default if there is none).
 sim.connect("battery.soc", "dispatch.soc", delay=True)
 ```
 
+`delay=True` only works with the default `read="latest"`.
+
 `connect_matching("a", "b")` connects every output of `a` to the same-named input of `b`
 (optionally only the names in `ports=[...]`).
 
@@ -182,23 +200,35 @@ dispatch -> battery -> dispatch.
 Break the loop by passing delay=True to one of the connections in this cycle ...
 ```
 
-Two ways out:
+Ways out:
 
 1. **`delay=True`** on one connection of the cycle. Example 04 does this: the dispatch
    controller uses the battery's state of charge from the previous step, which is also what
    a real battery management system would report.
 2. Make one of the components **non-feedthrough** if its outputs really only depend on its
    state (that is why building → controller → building loops never cause this error).
+3. Read a value that is valid *from* `t` on (a set-point, a price: `kind="hold"`) with
+   **`read="past"`**: the reader then needs only what was valid before `t`, so it does not
+   have to wait for the source ([details](smmm.md#the-four-read-modes-what-an-input-asks-for)).
+4. Make the slow decision maker **asynchronous** (`make_async(delay=...)`): its answers
+   appear in a later step, so it is never part of a loop
+   ([details](smmm.md#asynchronous-components)).
 
-## The data bus
+## The data bus (SMMM)
 
-All values pass through an in-memory **data bus** (it replaces the CSV files of Py-CoSim
-0.x). The bus stores every published value with its time. Besides normal connections,
-a component can read any port through its context:
+All values pass through an in-memory **data bus**, the messaging half of SMMM (it replaces
+the CSV files of Py-CoSim 0.x). The bus stores every published value as a *message*: the
+value, the time span it describes, a quality flag and the step that produced it. What the
+time span is depends on the output's `kind` (a temperature *at* `t`, a mean power *over* the
+step that ended, a set-point valid *from* `t`, …); [Messages and time](smmm.md) explains
+this and everything built on it. Besides normal connections, a component can read any port
+through its context:
 
 ```python
 self.ctx.latest("office.T_zone")          # most recent value of any output port
 self.ctx.history("weather.T_out", n=4)    # last 4 published values as a pandas Series
+self.ctx.at("tariff.price")               # value in effect now (or at when=...)
+self.ctx.window("office.P_elec", t - timedelta(hours=1))   # mean over the last hour, aligned
 ```
 
 `history` only contains the times at which the producer actually published (its own rate).
@@ -230,7 +260,10 @@ in the error report if a run fails.
 | `res.df` | DataFrame, one column per **output** port (`"comp.port"`), one row per master step; values of slower components are held between their updates |
 | `res.events` | the event log |
 | `res.timing` | wall-clock time and number of calls per component |
-| `res.meta` | start/end, step, seed, wall time, versions, connections, per-component metadata |
+| `res.meta` | start/end, step, seed, wall time, versions, connections, per-component metadata, port kinds, topics, asynchronous statistics |
+| `res.quality` | number of messages per port that were clipped, replaced by a fallback, late or replayed |
+| `res.alignment` | for each input read with `at`/`past`/`ahead`: how often SMMM had to fill a gap |
+| `res.messages`, `res.trace` | every message of the recorded components (`record=`) and, with `trace=True`, which messages each component read ([details](smmm.md#record-and-replay)) |
 | `res["office.T_zone"]` | shortcut for `res.df["office.T_zone"]` |
 
 Results are saved to `<output_dir>/<name>/` (`timeseries.csv`, `events.csv`, `timing.csv`,
@@ -254,8 +287,10 @@ seeded from the simulation `seed` *and the component's name*. Consequences:
 Use `self.ctx.rng` (never `np.random.seed` or the global `random` module) for anything
 random. The default seed is `0`. With `seed=None`, Py-CoSim draws a random seed, stores it in
 `sim.seed` and in the results' `meta["seed"]`, so even a "random" run can be repeated
-afterwards by passing that number. EnergyPlus itself is deterministic. LLM answers are not —
-use [record/replay](ai-and-rl.md#reproducibility-record-and-replay) for those. `meta.json`
+afterwards by passing that number. EnergyPlus itself is deterministic. LLM answers, web services and anything else outside
+your control are not — record their messages with `CoSimulation(..., record=["llm"])` and
+replay them later with `sim.replay("llm", run_folder)`
+([Record and replay](smmm.md#record-and-replay)). `meta.json`
 stores the seed and the Python, Py-CoSim and EnergyPlus versions of every run.
 
 ## Time convention
@@ -314,19 +349,25 @@ average HVAC power over the previous step.
 
 Two conventions meet in a typical co-simulation:
 
-| Published at `t` by … | describes the interval |
-|---|---|
-| state-based components (EnergyPlus meters, `RCBuilding.P_elec`) | `[t-dt, t)` — the step that just ended |
-| feedthrough components (`TimeOfUseTariff.price`, `Battery.P`, a controller's set-point) | `[t, t+dt)` — the step that starts |
+| Published at `t` by … | describes the interval | declared as |
+|---|---|---|
+| state-based components (EnergyPlus meters, `RCBuilding.P_elec`) | `[t-dt, t)` — the step that just ended | `kind="average"`, `interval="past"` |
+| `Battery.P` | `[t, t+dt)` — the step that starts | `kind="average"`, `interval="ahead"` |
+| prices, set-points (`TimeOfUseTariff.price`, a controller's output) | valid from `t` until the next value | `kind="hold"` |
 
-`GridMeter` integrates `P_net(t) · price(t) · dt`, so a building's energy is priced with the
-tariff of the *following* step. Away from tariff changes this makes no difference; at each
-change (e.g. 16:00 and 21:00) one step is priced with the neighbouring rate. For a 15-min step
-this biased a week's cost by about 2% in our tests. If you need exact accounting, connect the
-price to the meter with `delay=True` (then EnergyPlus energy is priced with the rate of its own
-interval), use a smaller step, or post-process `res.df` with the convention you prefer.
-Energy-based KPIs computed directly from `res.df` (e.g. `P.sum() * dt`) are unaffected except
-for the first and last step.
+Because every output declares its convention, SMMM can line them up: an input read with
+`read="past"` gets the mean over `[t-dt, t)` of whatever it is connected to.
+[`GridMeter`](component-library.md#gridmeter) does this by default (`aligned=True`): its
+`P_load`, `P_gen`, `P_bat`, `price` and `export_price` inputs are read `past`, so each energy
+is priced with the tariff of its own interval, also when the meter runs at another step than
+the building. In Py-CoSim 2.0 the meter multiplied the latest `P_net(t)` by the latest
+`price(t)`, which priced a building's energy with the tariff of the *following* step and
+biased a week's cost by about 1–2 % at a 15-minute step in our tests.
+
+Energy-based KPIs computed directly from `res.df` (e.g. `P.sum() * dt`) are unaffected
+except for the first and last step. If you post-process costs from `res.df` yourself,
+remember that row `t` of an EnergyPlus meter belongs to the price of row `t - dt`.
+See [Messages and time](smmm.md) for the details.
 
 ## Errors
 

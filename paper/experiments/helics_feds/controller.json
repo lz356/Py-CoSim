@@ -1,0 +1,11 @@
+{
+  "name": "controller",
+  "coreType": "zmq",
+  "coreInitString": "--federates=1",
+  "period": 900,
+  "terminate_on_error": true,
+  "publications": [
+    {"key": "controller/clg_sp", "type": "double", "unit": "degC", "global": true},
+    {"key": "controller/price", "type": "double", "unit": "$/kWh", "global": true}
+  ]
+}

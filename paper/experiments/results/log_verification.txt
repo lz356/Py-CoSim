@@ -1,8 +1,8 @@
-{
+﻿{
   "V1_max_abs_diff": 0.0,
   "V1_n_series": 7,
-  "wall_cli_s": 5.295795600046404,
-  "wall_pycosim_s": 6.274796499987133,
+  "wall_cli_s": 8.15869740000926,
+  "wall_pycosim_s": 16.085717500187457,
   "n_steps": 672,
   "V2_max_abs_diff": 0.0,
   "V3_max_abs_diff": 0.0,

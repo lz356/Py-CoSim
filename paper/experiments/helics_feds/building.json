@@ -1,0 +1,14 @@
+{
+  "name": "building",
+  "coreType": "zmq",
+  "coreInitString": "--federates=1",
+  "period": 900,
+  "wait_for_current_time_update": true,
+  "terminate_on_error": true,
+  "publications": [
+    {"key": "building/P_facility", "type": "double", "unit": "W", "global": true}
+  ],
+  "subscriptions": [
+    {"key": "controller/clg_sp", "type": "double", "unit": "degC"}
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "RTP-5min/aligned": {
+    "max_abs_energy_err_pct": 0.030012150779579194,
+    "max_abs_cost_err_pct": 3.7638407388459694,
+    "max_abs_cost_err_pct_meter_not_faster": 0.011482937611828614,
+    "max_abs_energy_err_pct_meter_not_faster": 3.5461633629552125e-09
+  },
+  "RTP-5min/naive": {
+    "max_abs_energy_err_pct": 0.1917078353535273,
+    "max_abs_cost_err_pct": 4.077327102468509,
+    "max_abs_cost_err_pct_meter_not_faster": 3.903634272741363,
+    "max_abs_energy_err_pct_meter_not_faster": 0.1917078353535273
+  },
+  "TOU/aligned": {
+    "max_abs_energy_err_pct": 0.030012150779579194,
+    "max_abs_cost_err_pct": 5.881930696140136,
+    "max_abs_cost_err_pct_meter_not_faster": 1.33338673435901e-08,
+    "max_abs_energy_err_pct_meter_not_faster": 3.5461633629552125e-09
+  },
+  "TOU/naive": {
+    "max_abs_energy_err_pct": 0.1917078353535273,
+    "max_abs_cost_err_pct": 6.007889710563785,
+    "max_abs_cost_err_pct_meter_not_faster": 5.995582629830021,
+    "max_abs_energy_err_pct_meter_not_faster": 0.1917078353535273
+  }
+}

@@ -33,7 +33,8 @@ class EVCharger(pc.Component):
     """
 
     inputs = {"price": 0.10}
-    outputs = {"P_ev": 0.0, "soc": 0.8, "connected": 0}
+    # P_ev is the charging power over the step that starts at t
+    outputs = {"P_ev": {"default": 0.0, "kind": "average", "interval": "ahead"}, "soc": 0.8, "connected": 0}
 
     def __init__(self, name, battery_kwh=60.0, charger_kw=7.2, smart=False, price_threshold=0.15,
                  arrival_hour=(16.5, 19.5), departure_hour=(6.5, 8.0), daily_km=(15, 90), kwh_per_km=0.18):
@@ -90,7 +91,8 @@ def run(smart: bool, days: int) -> pc.Results:
     sim.connect("weather.T_out", "house.T_out")
     sim.connect("weather.GHI", "house.GHI")
     sim.connect("tariff.price", "ev.price")
-    sim.connect(["house.P_elec", "ev.P_ev"], "meter.P_net", reduce="sum")
+    # the meter reads both loads over the 15 min that just ended, so each is priced correctly
+    sim.subscribe("meter.P_load", ["house.P_elec", "ev.P_ev"], reduce="sum")
     sim.connect("tariff.price", "meter.price")
     return sim.run()
 

@@ -38,7 +38,7 @@ def scenario(name: str, precool: bool, days: int) -> pc.Results:
                                  occupied_hours=(6, 21), unoccupied_sp=29.4))
     sim.add(GridMeter("meter"))
     sim.connect("ctrl.clg_sp", "office.clg_sp")
-    sim.connect("office.P_facility", "meter.P_net")
+    sim.subscribe("meter.P_load", "office.P_facility")  # power and price of the same 15 min
     sim.connect("tariff.price", "meter.price")
     return sim.run(progress=True)
 

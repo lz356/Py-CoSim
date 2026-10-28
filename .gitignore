@@ -21,6 +21,9 @@ paper/experiments/results/verification/
 paper/experiments/results/scalability/
 paper/experiments/results/case_*/
 paper/experiments/results/overhead/
+paper/experiments/results/e[0-9]*/
+paper/experiments/results/helics*/
+paper/manuscript/render/
 *.jsonl
 
 # EnergyPlus by-products

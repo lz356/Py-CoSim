@@ -110,3 +110,17 @@ def load_example(folder: str):
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+def fix_sizing_window(model, timesteps_per_hour: int, minutes: float = 90.0) -> None:
+    """Keep EnergyPlus's sizing averaging window at ~``minutes`` whatever the time step.
+
+    ``Sizing:Parameters`` counts the window in time steps (6 in the DOE small
+    office = 90 min at 4 steps per hour). With 60 steps per hour the same
+    setting is a 6-min window, which catches the morning cool-down spike and
+    autosizes much larger coils and fans. Fixing the window in minutes keeps
+    the equipment comparable across time steps.
+    """
+    n = max(1, int(round(minutes / (60.0 / timesteps_per_hour))))
+    for obj in model.objects("Sizing:Parameters").values():
+        obj["timesteps_in_averaging_window"] = n

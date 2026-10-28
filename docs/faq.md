@@ -69,14 +69,27 @@ So in `res.df`, a set-point change in row `t` shows up in temperature and power 
 identical to EnergyPlus' own output files row by row. Details and a diagram:
 [Concepts](concepts.md#timing-of-energyplus-values).
 
-If you see a delay of a whole *extra* step, check for `delay=True` on a connection, or a
-component that reads another one through `ctx.latest(...)` instead of a connection (then it
-may run first and see the previous value).
+If you see a delay of a whole *extra* step, check for `delay=True` on a connection, a
+`read="past"` connection (it reads the step that just ended, on purpose), an asynchronous
+component (its answers apply `delay` later), or a component that reads another one through
+`ctx.latest(...)` instead of a connection (then it may run first and see the previous value).
+
+### My costs changed after updating Py-CoSim
+
+`GridMeter` now reads its `price` (and its new `P_load`, `P_gen`, `P_bat` inputs) as the mean
+over the step that just ended (`aligned=True`), so energy is priced with the tariff of its
+own interval. For an EnergyPlus building connected to `P_net` the cost becomes *more*
+accurate (in our tests it moved by about 1–2 % for a week at 15-minute steps). If you added
+power from a battery or another feedthrough component to `P_net`, connect it to `P_bat` or
+`P_load` instead ([GridMeter](component-library.md#gridmeter)); `GridMeter(name,
+aligned=False)` restores the old behaviour exactly. If a connection to the meter's `price`
+has `delay=True`, you now get a `ConfigurationError`: remove `delay=True`.
 
 ### A battery/controller loop gives `AlgebraicLoopError`
 
 Two feedthrough components depend on each other at the same time step. Add `delay=True` to
-one connection of the loop, typically the measurement (e.g. `battery.soc → dispatch.soc`).
+one connection of the loop, typically the measurement (e.g. `battery.soc → dispatch.soc`), or
+read a set-point/command that is valid from `t` on with `read="past"`.
 See [Concepts](concepts.md#algebraic-loops-and-how-to-break-them).
 
 ## Running and performance
@@ -99,7 +112,11 @@ done one building after the other.
 
 * `res.timing` (and `timing.csv`) shows where the time goes, per component.
 * Live plots are slow: increase `every`, or remove the observer.
-* An LLM backend waits for every answer; use a longer `step_size`, or record once and replay.
+* An LLM backend waits for every answer; use a longer `step_size`, make the supervisor
+  asynchronous (`make_async(delay="15min")`, so the simulation goes on while it thinks and
+  several supervisors think at once), or record once and replay
+  ([Messages and time](smmm.md#asynchronous-components)).
+* `trace=True` and `record=True` keep every message; switch them off for long production runs.
 * EnergyPlus models with many zones/HVAC objects or a small time step are slow on their own;
   a 15-minute step is usually a good compromise.
 * Python components are called at every master step; use `step_size` for slow logic.
@@ -134,7 +151,11 @@ PV, batteries, tariffs, controllers, occupancy, LLM and RL tools need no EnergyP
 
 Weather and model: yes, they are per-component parameters. Time step: every EnergyPlus
 component follows the master step by default; with `timestep=` a building can exchange less
-often (a multiple of the master step).
+often (a multiple of the master step), and with `timestep=` plus `step_size=` it can run a
+finer internal step than it exchanges, e.g. `timestep=60, step_size="15min"`
+([sub-steps](energyplus.md#internal-sub-steps-timestep-and-step_size)). Components that read
+a building with another step get correctly averaged values with `read="past"`
+([alignment](smmm.md#alignment-across-step-sizes)).
 
 ## Jupyter notebooks
 
@@ -164,8 +185,11 @@ on purpose. See [Concepts](concepts.md#time-convention).
 
 ### Are inputs recorded in the results?
 
-No, only outputs. To record what a component received, look at the output of its source (the
-values are identical), or record it yourself with `ctx.log` or an extra output.
+Not as time series, only outputs. To see what a component received, look at the output of
+its source (with the default `read="latest"` the values are identical), or record it yourself
+with `ctx.log` or an extra output. With `CoSimulation(..., trace=True)`, `res.trace` lists
+which messages every input read at every step, and `res.lineage(...)` follows a value back
+through them ([provenance](smmm.md#provenance-trace-and-lineage)).
 
 ### Is my data sent anywhere?
 
@@ -177,60 +201,38 @@ provider. `OllamaBackend`, `OfflineStandInBackend` and everything else run local
 
 Set `seed=` on `CoSimulation` (or `seed=None` for a random seed — it is recorded in
 `meta.json`, so you can repeat the run later), use `self.ctx.rng` for randomness in your
-components, keep the `meta.json` of each run (versions, seed, connections), and record LLM
-answers with `RecordingBackend`. See [Concepts](concepts.md#reproducibility).
+components, and keep the `meta.json` of each run (versions, seed, connections). For
+components you cannot seed — LLMs, web services, other people's models — record their
+messages (`CoSimulation(..., record=["llm"])`) and replay them (`sim.replay("llm",
+run_folder)`): the replay is identical bit for bit
+([Record and replay](smmm.md#record-and-replay)). `RecordingBackend` additionally keeps the
+raw LLM answers. See [Concepts](concepts.md#reproducibility).
 
 ## Extending Py-CoSim
 
 ### Can I use Modelica models or FMUs?
 
-Not built in yet. You can wrap an FMU (Functional Mock-up Unit, e.g. exported from Modelica
-or Dymola) in your own non-feedthrough component with the `fmpy` package
-(`pip install -e ".[fmu]"`). A sketch for a co-simulation FMU (FMI 2.0); adapt variable names
-and check the fmpy documentation:
+Yes, as co-simulation FMUs (FMI 2.0 or 3.0, e.g. exported from Modelica/Dymola/OpenModelica or
+Simulink). FMUs are optional: `FMUComponent` needs the `fmpy` package (`pip install fmpy`, or
+`pip install -e ".[fmu]"`) and behaves like any other state-based component:
 
 ```python
-import pycosim as pc
-from fmpy import extract, read_model_description
-from fmpy.fmi2 import FMU2Slave
+from pycosim.components import FMUComponent
 
-class FMUComponent(pc.Component):
-    direct_feedthrough = False
-
-    def __init__(self, name, path, inputs, outputs):
-        super().__init__(name)
-        self.path = path
-        for n in inputs:
-            self.add_input(n, default=None)
-        for n in outputs:
-            self.add_output(n)
-
-    def setup(self, ctx):
-        md = read_model_description(self.path)
-        self.vr = {v.name: v.valueReference for v in md.modelVariables}
-        self.fmu = FMU2Slave(guid=md.guid, unzipDirectory=extract(self.path),
-                             modelIdentifier=md.coSimulation.modelIdentifier, instanceName=self.name)
-        self.fmu.instantiate()
-        self.fmu.setupExperiment(startTime=0.0)
-        self.fmu.enterInitializationMode()
-        self.fmu.exitInitializationMode()
-        self.time = 0.0
-
-    def output(self, t):
-        names = list(self.output_ports)
-        return dict(zip(names, self.fmu.getReal([self.vr[n] for n in names])))
-
-    def update(self, t, inputs):
-        given = {n: v for n, v in inputs.items() if v is not None}
-        if given:
-            self.fmu.setReal([self.vr[n] for n in given], list(given.values()))
-        self.fmu.doStep(currentCommunicationPoint=self.time, communicationStepSize=self.ctx.step_size)
-        self.time += self.ctx.step_size
-
-    def finalize(self):
-        self.fmu.terminate()
-        self.fmu.freeInstance()
+zone = FMUComponent("zone", "ThermalZone.fmu",
+                    inputs={"T_out": "TOut", "Q_hvac": "QHVAC"},  # port -> FMU variable
+                    outputs={"T_zone": "TZon"},
+                    parameters={"UA": 165.0},
+                    kinds={"T_zone": "instant"})                  # the default for Real outputs
+sim.add(zone)
+sim.connect("weather.T_out", "zone.T_out")
 ```
+
+By default every input and output variable of the FMU becomes a port; the FMU clock starts at
+0 at the co-simulation start and advances by the component's step. Model-exchange-only FMUs
+are not supported (export with the co-simulation interface). See the `FMUComponent` docstring
+and [example 10](../examples/10_fmu_component/run.py), which builds a demo FMU with pythonfmu
+and couples it with EPW weather and Python controllers.
 
 ### Can I use my own optimiser or MPC?
 

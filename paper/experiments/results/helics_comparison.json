@@ -1,0 +1,403 @@
+{
+  "scenario": {
+    "model": "examples\\models\\small_office.idf",
+    "weather": "examples\\weather\\USA_AZ_Tucson.Intl.AP.722740_TMY3.epw",
+    "start": "2023-07-17",
+    "end": "2023-07-24",
+    "exchange_step_s": 900,
+    "energyplus_timesteps_per_hour": 4,
+    "reference": "Py-CoSim, EnergyPlus 60 steps/h, 1-min exchange, GridMeter(aligned=True); common.fix_sizing_window (90 min) applied to every variant's model, i.e. 6 steps at 4 steps/h and 90 steps at 60 steps/h, so HVAC autosizing is comparable across EnergyPlus time steps",
+    "common_window": "[start, end - 15 min): intervals covered by every meter",
+    "exchange_err": "error over the common window vs the aligned meter on the same EnergyPlus physics (4 steps/h: pycosim_aligned; 60 steps/h: reference_1min)"
+  },
+  "dx_coil_capacity_1min_vs_15min_pct": {
+    "PSZ-AC:1_COOLC DXCOIL": 3.9054286878375644,
+    "PSZ-AC:2_COOLC DXCOIL": 0.5686886605537955,
+    "PSZ-AC:3_COOLC DXCOIL": -0.015580797204373109,
+    "PSZ-AC:4_COOLC DXCOIL": 0.6289252399165779,
+    "PSZ-AC:5_COOLC DXCOIL": 0.305860466986263
+  },
+  "versions": {
+    "helics": "3.6.1 (2025-02-24)",
+    "pycosim": "2.1.0",
+    "energyplus": "22.2.0"
+  },
+  "machine": {
+    "cpu": "11th Gen Intel(R) Core(TM) i7-1185G7 @ 3.00GHz",
+    "physical_cores": 4,
+    "logical_cores": 8,
+    "memory_gb": 16,
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.10"
+  },
+  "identical_energyplus_input": true,
+  "results": [
+    {
+      "variant": "pycosim_naive",
+      "tool": "Py-CoSim",
+      "meter": "GridMeter(aligned=False): latest P x latest price",
+      "timing": "within-step order",
+      "physics": "EnergyPlus 4 steps/h",
+      "exchange": "15 min",
+      "energy_kWh": 1907.2010278273804,
+      "cost_usd": 243.28790791426752,
+      "energy_err_pct": -0.6709546432494773,
+      "cost_err_pct": 0.41219096580773495,
+      "cost_diff_vs_aligned_pct": 1.1023860640816618,
+      "exchange_err_energy_pct": 0.0,
+      "exchange_err_cost_pct": 1.1023860640816618,
+      "energy_common_window_kWh": 1907.201027827381,
+      "cost_common_window_usd": 243.28790791426752,
+      "energy_common_err_pct": -0.5523338583365844,
+      "cost_common_err_pct": 0.5071966276603002,
+      "wall_s_median": 15.325741200009361,
+      "wall_s_min": 13.046572800027207,
+      "wall_s_max": 15.863051799824461,
+      "core_wall_s_median": 9.067740400088951,
+      "reps": 3,
+      "loc_python": 17,
+      "loc_config": 0,
+      "loc_total": 17
+    },
+    {
+      "variant": "pycosim_aligned",
+      "tool": "Py-CoSim",
+      "meter": "GridMeter(aligned=True): P and price read 'past'",
+      "timing": "within-step order",
+      "physics": "EnergyPlus 4 steps/h",
+      "exchange": "15 min",
+      "energy_kWh": 1907.2010278273804,
+      "cost_usd": 240.63517923312364,
+      "energy_err_pct": -0.6709546432494773,
+      "cost_err_pct": -0.6826694454436288,
+      "cost_diff_vs_aligned_pct": 0.0,
+      "exchange_err_energy_pct": 0.0,
+      "exchange_err_cost_pct": 0.0,
+      "energy_common_window_kWh": 1907.201027827381,
+      "cost_common_window_usd": 240.63517923312364,
+      "energy_common_err_pct": -0.5523338583365844,
+      "cost_common_err_pct": -0.5886996930459465,
+      "wall_s_median": 14.837699799798429,
+      "wall_s_min": 13.273048599949107,
+      "wall_s_max": 24.183962400071323,
+      "core_wall_s_median": 9.033756999997422,
+      "reps": 3,
+      "loc_python": 17,
+      "loc_config": 0,
+      "loc_total": 17
+    },
+    {
+      "variant": "helics",
+      "tool": "HELICS 3.6.1",
+      "meter": "latest P x latest price",
+      "timing": "wait_for_current_time_update",
+      "physics": "EnergyPlus 4 steps/h",
+      "exchange": "15 min",
+      "energy_kWh": 1907.2010278273804,
+      "cost_usd": 243.28790791426752,
+      "energy_err_pct": -0.6709546432494773,
+      "cost_err_pct": 0.41219096580773495,
+      "cost_diff_vs_aligned_pct": 1.1023860640816618,
+      "exchange_err_energy_pct": 0.0,
+      "exchange_err_cost_pct": 1.1023860640817063,
+      "energy_common_window_kWh": 1907.201027827381,
+      "cost_common_window_usd": 243.28790791426763,
+      "energy_common_err_pct": -0.5523338583365844,
+      "cost_common_err_pct": 0.5071966276603446,
+      "wall_s_median": 11.885029800003394,
+      "wall_s_min": 11.562108499929309,
+      "wall_s_max": 13.34437879989855,
+      "core_wall_s_median": 7.2822,
+      "reps": 3,
+      "loc_python": 131,
+      "loc_config": 46,
+      "loc_total": 177
+    },
+    {
+      "variant": "helics_default",
+      "tool": "HELICS 3.6.1",
+      "meter": "latest P x latest price",
+      "timing": "default (no flag)",
+      "physics": "EnergyPlus 4 steps/h",
+      "exchange": "15 min",
+      "energy_kWh": 1905.486902504915,
+      "cost_usd": 244.32047958110223,
+      "energy_err_pct": -0.7602281017984547,
+      "cost_err_pct": 0.8383641541300335,
+      "cost_diff_vs_aligned_pct": 1.5314886043359177,
+      "exchange_err_energy_pct": -0.08987648902516465,
+      "exchange_err_cost_pct": 1.531488604335829,
+      "energy_common_window_kWh": 1905.486902504918,
+      "cost_common_window_usd": 244.320479581102,
+      "energy_common_err_pct": -0.6417139290821883,
+      "cost_common_err_pct": 0.9337730425771129,
+      "wall_s_median": 12.427842600038275,
+      "wall_s_min": 11.431084000039846,
+      "wall_s_max": 13.037323100026697,
+      "core_wall_s_median": 7.1981,
+      "reps": 3,
+      "loc_python": 131,
+      "loc_config": 46,
+      "loc_total": 177
+    },
+    {
+      "variant": "helics_handaligned",
+      "tool": "HELICS 3.6.1",
+      "meter": "hand-coded: P x previous price",
+      "timing": "wait_for_current_time_update",
+      "physics": "EnergyPlus 4 steps/h",
+      "exchange": "15 min",
+      "energy_kWh": 1907.2010278273804,
+      "cost_usd": 240.63517923312364,
+      "energy_err_pct": -0.6709546432494773,
+      "cost_err_pct": -0.6826694454436288,
+      "cost_diff_vs_aligned_pct": 0.0,
+      "exchange_err_energy_pct": 0.0,
+      "exchange_err_cost_pct": 6.661338147750939e-14,
+      "energy_common_window_kWh": 1907.201027827381,
+      "cost_common_window_usd": 240.63517923312378,
+      "energy_common_err_pct": -0.5523338583365844,
+      "cost_common_err_pct": -0.5886996930458799,
+      "wall_s_median": 12.184439999982715,
+      "wall_s_min": 10.538049899972975,
+      "wall_s_max": 12.791542399907485,
+      "core_wall_s_median": 7.304,
+      "reps": 3,
+      "loc_python": 133,
+      "loc_config": 46,
+      "loc_total": 179
+    },
+    {
+      "variant": "pycosim_naive_ep1min",
+      "tool": "Py-CoSim",
+      "meter": "GridMeter(aligned=False): latest P x latest price",
+      "timing": "within-step order",
+      "physics": "EnergyPlus 60 steps/h",
+      "exchange": "15 min",
+      "energy_kWh": 1917.7936514976323,
+      "cost_usd": 244.69535201462784,
+      "energy_err_pct": -0.11927960656599179,
+      "cost_err_pct": 0.9930852116034616,
+      "cost_diff_vs_aligned_pct": 1.6872731553397635,
+      "exchange_err_energy_pct": -1.1102230246251565e-14,
+      "exchange_err_cost_pct": 1.0886404904074887,
+      "energy_common_window_kWh": 1917.7936514976318,
+      "cost_common_window_usd": 244.69535201462787,
+      "energy_common_err_pct": -1.1102230246251565e-14,
+      "cost_common_err_pct": 1.0886404904074887,
+      "wall_s_median": 44.62618899997324,
+      "wall_s_min": 44.62618899997324,
+      "wall_s_max": 44.62618899997324,
+      "core_wall_s_median": 38.77250809990801,
+      "reps": 1,
+      "loc_python": 17,
+      "loc_config": 0,
+      "loc_total": 17
+    },
+    {
+      "variant": "pycosim_aligned_ep1min",
+      "tool": "Py-CoSim",
+      "meter": "GridMeter(aligned=True): P and price read 'past'",
+      "timing": "within-step order",
+      "physics": "EnergyPlus 60 steps/h",
+      "exchange": "15 min",
+      "energy_kWh": 1917.7936514976323,
+      "cost_usd": 242.06018680986037,
+      "energy_err_pct": -0.11927960656599179,
+      "cost_err_pct": -0.09452622801155997,
+      "cost_diff_vs_aligned_pct": 0.5921858895603149,
+      "exchange_err_energy_pct": -1.1102230246251565e-14,
+      "exchange_err_cost_pct": 2.886579864025407e-13,
+      "energy_common_window_kWh": 1917.7936514976318,
+      "cost_common_window_usd": 242.0601868098604,
+      "energy_common_err_pct": -1.1102230246251565e-14,
+      "cost_common_err_pct": 2.886579864025407e-13,
+      "wall_s_median": 47.244812899967656,
+      "wall_s_min": 47.244812899967656,
+      "wall_s_max": 47.244812899967656,
+      "core_wall_s_median": 41.97381120012142,
+      "reps": 1,
+      "loc_python": 17,
+      "loc_config": 0,
+      "loc_total": 17
+    },
+    {
+      "variant": "reference_1min",
+      "tool": "Py-CoSim",
+      "meter": "GridMeter(aligned=True)",
+      "timing": "within-step order",
+      "physics": "EnergyPlus 60 steps/h",
+      "exchange": "1 min",
+      "energy_kWh": 1920.0839200431967,
+      "cost_usd": 242.28921366441622,
+      "energy_err_pct": 0.0,
+      "cost_err_pct": 0.0,
+      "cost_diff_vs_aligned_pct": 0.6873618548060234,
+      "exchange_err_energy_pct": 0.0,
+      "exchange_err_cost_pct": 0.0,
+      "energy_common_window_kWh": 1917.793651497632,
+      "cost_common_window_usd": 242.06018680985972,
+      "energy_common_err_pct": 0.0,
+      "cost_common_err_pct": 0.0,
+      "wall_s_median": 58.156677999999374,
+      "wall_s_min": 58.156677999999374,
+      "wall_s_max": 58.156677999999374,
+      "core_wall_s_median": 49.73996789986268,
+      "reps": 1,
+      "loc_python": 17,
+      "loc_config": 0,
+      "loc_total": 17
+    }
+  ],
+  "walls_s": {
+    "pycosim_naive": [
+      13.046572800027207,
+      15.863051799824461,
+      15.325741200009361
+    ],
+    "pycosim_aligned": [
+      13.273048599949107,
+      24.183962400071323,
+      14.837699799798429
+    ],
+    "helics": [
+      11.562108499929309,
+      13.34437879989855,
+      11.885029800003394
+    ],
+    "helics_default": [
+      11.431084000039846,
+      12.427842600038275,
+      13.037323100026697
+    ],
+    "helics_handaligned": [
+      10.538049899972975,
+      12.184439999982715,
+      12.791542399907485
+    ],
+    "reference_1min": [
+      58.156677999999374
+    ],
+    "pycosim_naive_ep1min": [
+      44.62618899997324
+    ],
+    "pycosim_aligned_ep1min": [
+      47.244812899967656
+    ]
+  },
+  "agreement": {
+    "helics_vs_pycosim_naive": {
+      "P_W": 0.0,
+      "clg_sp": 0.0,
+      "price": 0.0,
+      "cost_usd": 1.4210854715202004e-14,
+      "steps": 672
+    },
+    "helics_handaligned_vs_pycosim_aligned_cost_abs_diff_usd": 0.0,
+    "helics_vs_pycosim_naive_cost_abs_diff_usd": 0.0,
+    "helics_vs_pycosim_naive_energy_abs_diff_kWh": 0.0,
+    "helics_default_setpoint_equals_pycosim_setpoint_one_step_earlier": true,
+    "helics_default_meter_power_equals_building_power_one_step_earlier": true,
+    "naive_misattributed_steps": 10,
+    "naive_misattributed_times": [
+      "2023-07-17 16:00:00",
+      "2023-07-17 21:00:00",
+      "2023-07-18 16:00:00",
+      "2023-07-18 21:00:00",
+      "2023-07-19 16:00:00",
+      "2023-07-19 21:00:00",
+      "2023-07-20 16:00:00",
+      "2023-07-20 21:00:00",
+      "2023-07-21 16:00:00",
+      "2023-07-21 21:00:00"
+    ],
+    "naive_misattribution_cost_usd": 2.6527286811438575,
+    "first_interval_cost_naive_usd": 0.0,
+    "naive_minus_aligned_cost_usd": 2.652728681143884,
+    "aligned_ep1min_minus_reference_common_window": {
+      "energy_kWh": -2.2737367544323206e-13,
+      "cost_usd": 6.821210263296962e-13
+    }
+  },
+  "lines_of_code": {
+    "per_file": {
+      "building_fed.py": 73,
+      "controller_fed.py": 32,
+      "meter_fed.py": 26,
+      "meter_fed_aligned.py": 28,
+      "building.json": 14,
+      "controller.json": 11,
+      "meter.json": 12,
+      "runner.json": 9,
+      "helics_comparison.py (Py-CoSim region)": 17
+    },
+    "pycosim": {
+      "python": 17,
+      "config": 0
+    },
+    "helics": {
+      "python": 131,
+      "config": 46
+    },
+    "helics_handaligned": {
+      "python": 133,
+      "config": 46
+    }
+  },
+  "loc_method": "non-blank lines holding Python tokens (comments and docstrings excluded); JSON: non-blank lines. Py-CoSim: imports + START/END + scenario function in helics_comparison.py. HELICS: building_fed.py + controller_fed.py + meter_fed.py (or meter_fed_aligned.py), plus the three federate JSON configs and runner.json. Measurement harness (timing, process management, result collection) is excluded for both.",
+  "wall_method": "wall_s: launch of the process(es) to exit of all of them (fresh Python interpreter(s) incl. imports; HELICS includes the broker); core_wall_s: Py-CoSim CoSimulation.run() (meta wall_time_s, incl. EnergyPlus worker start) vs. the HELICS building federate's run_energyplus() call (paces the federation); medians of the repetitions",
+  "core_walls_s": {
+    "pycosim_naive": [
+      7.339840200031176,
+      10.952979800058529,
+      9.067740400088951
+    ],
+    "pycosim_aligned": [
+      6.983692599926144,
+      13.547214600024745,
+      9.033756999997422
+    ],
+    "helics": [
+      6.8429,
+      7.8115,
+      7.2822
+    ],
+    "helics_default": [
+      6.8247,
+      7.1981,
+      8.264
+    ],
+    "helics_handaligned": [
+      6.9749,
+      7.304,
+      7.9674
+    ],
+    "reference_1min": [
+      49.73996789986268
+    ],
+    "pycosim_naive_ep1min": [
+      38.77250809990801
+    ],
+    "pycosim_aligned_ep1min": [
+      41.97381120012142
+    ]
+  },
+  "alignment_report_aligned_meter": [
+    {
+      "input": "meter.P_load",
+      "read": "past",
+      "sources": "office.P_facility",
+      "reads": 672,
+      "extrapolated_reads": 0,
+      "min_coverage": 1.0
+    },
+    {
+      "input": "meter.price",
+      "read": "past",
+      "sources": "tariff.price",
+      "reads": 672,
+      "extrapolated_reads": 1,
+      "min_coverage": 0.0
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+﻿{'publish_plus_latest_us': 4.320648999419063, 'publish_plus_window15_us': 58.10211899923161}
+{'mode': 'latest', 'wall_s': 4.896782499970868, 'n_steps': 2880, 'us_per_component_step': 33.83625276375669, 'meter_reads': 720, 'messages_recorded': 0}
+{'mode': 'aligned', 'wall_s': 5.633661600062624, 'n_steps': 2880, 'us_per_component_step': 38.92800995068148, 'meter_reads': 720, 'messages_recorded': 0}
+{'mode': 'aligned+record', 'wall_s': 8.831560400081798, 'n_steps': 2880, 'us_per_component_step': 61.02515478221254, 'meter_reads': 720, 'messages_recorded': 144720}
+{'mode': 'aligned+trace', 'wall_s': 9.248675900045782, 'n_steps': 2880, 'us_per_component_step': 63.90737907715438, 'meter_reads': 720, 'messages_recorded': 144720}

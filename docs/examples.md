@@ -1,6 +1,6 @@
 # Examples
 
-Nine runnable examples live in `examples/`. Each is a single `run.py` (example 08 is a YAML
+The runnable examples live in `examples/`. Each is a single `run.py` (example 08 is a YAML
 file) with a docstring that explains it. Run them **from the repository root** with the
 environment activated:
 
@@ -35,6 +35,7 @@ first EnergyPlus run also converts the IDF files (a few seconds, cached afterwar
 | 07 | reinforcement learning (Gymnasium) | optional | 20–60 s |
 | 08 | YAML scenario and the CLI | no (optional) | ~1 s |
 | 09 | writing your own component (EV charger) | no | ~1 s |
+| 11 | messages and time (SMMM): alignment, patterns, topics, quality, async AI stand-in, replay, lineage | no | ~15 s |
 
 ---
 
@@ -277,3 +278,37 @@ household cost, peak demand and minimum SOC.
 **Make it your own:** change the charger power, battery size or driving distances; make the
 smart rule respond to PV output; add one charger per house with different names (each gets
 its own random stream from `ctx.rng`).
+
+## 11 — Messages and time
+
+**Demonstrates:** the SMMM 2.0 messaging features in one script without EnergyPlus
+([Messages and time](smmm.md)). An RC house, PV, a battery, a time-of-use tariff and a
+"stochastic AI supervisor" are coupled. The supervisor is **not an LLM**: it picks set-points
+at random, sometimes answers nonsense (40 °C) and sleeps to imitate a slow remote model. It is
+made asynchronous with `make_async(delay="15min")`. An hourly `GridMeter` (aligned) subscribes
+to `"*.P_elec"`, `"*.P_ac"`, the battery power and the price topic `"grid/price"`, and is
+compared with a 15-minute meter. The live run is recorded (`record=["ai"]`, `trace=True`),
+replayed (and checked to be identical), replayed again on a house with more PV
+(counterfactual), and one battery decision is traced back with `lineage()`.
+
+```bash
+python examples/11_messages_and_time/run.py
+python examples/11_messages_and_time/run.py --latency 0.1 --deadline 0.12
+```
+
+Options: `--days N` (3), `--latency S` (0.03 s per AI answer), `--deadline S` (none).
+
+**Run time:** about 15 s (four runs of three days, most of it the AI stand-in's sleep).
+
+**Output:** `describe()` with the kinds of every port; the alignment table (each meter input
+read `past`, one extrapolated read at the start); the net grid import of the hourly and the
+15-minute meter (identical); the quality table (nonsense set-points clipped, and with
+`--deadline` some answers `late`); the cost of the live run, a second live run (different) and
+the replay (identical); the counterfactual cost; and the lineage of the battery power at 16:15
+on the first day — back through the AI's decision to the zone temperature, price and state of
+charge it saw at 16:00, and to the weather before that.
+
+**Make it your own:** replace `StochasticSupervisor` by an `LLMSupervisor` (keep
+`make_async`); add a second `RCBuilding` and watch the meters pick it up through the pattern;
+change `delay=` and see when the decisions apply; replay the recorded decisions into your own
+variant of the house.

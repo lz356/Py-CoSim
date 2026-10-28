@@ -84,6 +84,11 @@ class Message:
 
 def _num(v: Any) -> Optional[float]:
     """Return ``v`` as a finite float, or None if it is not a usable number."""
+    tv = type(v)
+    if tv is float:
+        return v if v - v == 0.0 else None  # False for inf and nan
+    if tv is int:
+        return float(v)
     if v is None or isinstance(v, bool):
         return None if v is None else float(v)
     if isinstance(v, numbers.Number) and not isinstance(v, complex):
@@ -102,7 +107,7 @@ class Signal:
     Times are seconds since the start of the co-simulation.
     """
 
-    __slots__ = ("ref", "kind", "interval", "step_s", "initial", "ks", "vs", "a", "b", "q", "origin",
+    __slots__ = ("ref", "kind", "interval", "step_s", "initial", "ks", "vs", "fv", "a", "b", "q", "origin",
                  "_order", "_monotonic")
 
     def __init__(self, ref: str, kind: Optional[str], interval: Optional[str], step_s: float, initial: Any):
@@ -113,6 +118,7 @@ class Signal:
         self.initial = initial
         self.ks: List[int] = []          # master step of publication
         self.vs: List[Any] = []          # values
+        self.fv: List[Optional[float]] = []  # values as finite floats (None if not numeric)
         self.a: List[float] = []         # start of validity
         self.b: List[Optional[float]] = []  # end of validity (None = until replaced / a point)
         self.q: List[int] = []           # quality codes
@@ -137,6 +143,7 @@ class Signal:
         if ks and ks[-1] == k and self.a[-1] == start:
             i = len(ks) - 1
             self.vs[i], self.b[i], self.q[i], self.origin[i] = value, end, quality, origin
+            self.fv[i] = _num(value)
             return i
         i = len(ks)
         if self._monotonic and self.a and start < self.a[-1]:
@@ -144,6 +151,7 @@ class Signal:
             self._order = [(s, j) for j, s in enumerate(self.a)]
         ks.append(k)
         self.vs.append(value)
+        self.fv.append(_num(value))
         self.a.append(start)
         self.b.append(end)
         self.q.append(quality)
@@ -252,7 +260,7 @@ class Signal:
             nxt += 1
         if nxt < len(starts):
             j2 = idx[nxt]
-            v1, v2 = _num(self.vs[j]), _num(self.vs[j2])
+            v1, v2 = self.fv[j], self.fv[j2]
             if v1 is not None and v2 is not None:
                 frac = (s - starts[pos]) / (starts[nxt] - starts[pos])
                 return v1 + frac * (v2 - v1), 1.0, [j, j2]
@@ -279,7 +287,7 @@ class Signal:
         pts.append((w0, f0))
         used.extend(ids0)
         for p in range(lo, hi):
-            f = _num(self.vs[idx[p]])
+            f = self.fv[idx[p]]
             if f is not None and w0 < starts[p] < w1:
                 pts.append((starts[p], f))
                 used.append(idx[p])
@@ -302,7 +310,7 @@ class Signal:
         if starts[pos] == s or pos + 1 >= len(starts):
             return self.vs[j], 1.0, [j]
         j2 = idx[pos + 1]
-        v1, v2 = _num(self.vs[j]), _num(self.vs[j2])
+        v1, v2 = self.fv[j], self.fv[j2]
         if v1 is None or v2 is None:
             return self.vs[j], 1.0, [j]
         frac = (s - starts[pos]) / (starts[pos + 1] - starts[pos])
@@ -339,7 +347,8 @@ class Signal:
         if not segments:
             return _MISSING, 0.0, []
         used = [j for _, _, j in segments if j is not None]
-        values = [_num(v) for _, v, _ in segments]
+        fv = self.fv
+        values = [(fv[j] if j is not None else _num(v)) for _, v, j in segments]
         if any(v is None for v in values):
             return segments[-1][1], 1.0, used  # non-numeric: the value in effect at the end of the window
         area = defined = 0.0
@@ -366,22 +375,28 @@ class Signal:
         # step back over messages that start before w0 but still overlap it (variable interval lengths)
         while p > 0 and (self.b[idx[p - 1]] or 0.0) > w0:
             p -= 1
-        while p < len(starts) and starts[p] < w1:
+        n = len(starts)
+        bs, fv, step = self.b, self.fv, self.step_s
+        while p < n:
+            a = starts[p]
+            if a >= w1:
+                break
             j = idx[p]
             p += 1
             if upto is not None and j > upto:
                 continue
-            a, b = starts[p - 1], self.b[j]
+            b = bs[j]
             if b is None:
-                b = a + self.step_s
-            v = _num(self.vs[j])
+                b = a + step
+            v = fv[j]
             if v is None:
                 continue
             rate = v / (b - a) if (amount and b > a) else v
             if b <= w0:
                 prev_rate = rate
                 continue
-            lo, hi = max(a, w0), min(b, w1)
+            lo = a if a > w0 else w0
+            hi = b if b < w1 else w1
             if hi > lo:
                 pieces.append((lo, hi, rate, j))
         if not pieces:

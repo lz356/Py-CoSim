@@ -1,0 +1,1613 @@
+TY  - JOUR
+ID  - ahn2023
+AU  - Ahn, Ki Uhn
+AU  - Kim, Deuk-Woo
+AU  - Cho, Hyun Mi
+AU  - Chae, Chang-U
+TI  - Alternative Approaches to HVAC Control of Chat Generative Pre-Trained Transformer (ChatGPT) for Autonomous Building System Operations
+T2  - Buildings
+J2  - Buildings
+PY  - 2023
+VL  - 13
+IS  - 11
+SP  - 2680
+PB  - MDPI
+DO  - 10.3390/buildings13112680
+ER  - 
+
+TY  - JOUR
+ID  - benedikt2013
+AU  - Benedikt, Martin
+AU  - Watzenig, Daniel
+AU  - Hofer, Anton
+TI  - Modelling and analysis of the non-iterative coupling process for co-simulation
+T2  - Mathematical and Computer Modelling of Dynamical Systems
+J2  - Math. Comput. Model. Dyn. Syst.
+PY  - 2013
+VL  - 19
+IS  - 5
+SP  - 451
+EP  - 470
+PB  - Taylor & Francis
+DO  - 10.1080/13873954.2013.784340
+ER  - 
+
+TY  - CPAPER
+ID  - benedikt2013nepce
+AU  - Benedikt, M.
+AU  - Watzenig, D.
+AU  - Zehetner, J.
+AU  - Hofer, A.
+TI  - NEPCE – a nearly energy-preserving coupling element for weak-coupled problems and co-simulations
+T2  - V International Conference on Computational Methods for Coupled Problems in Science and Engineering (COUPLED 2013)
+PY  - 2013
+SP  - 1021
+EP  - 1032
+PB  - CIMNE
+CY  - Santa Eulària, Ibiza, Spain
+SN  - 978-84-941407-6-1
+UR  - https://hdl.handle.net/2117/192675
+ER  - 
+
+TY  - RPRT
+ID  - benne2024
+AU  - Benne, Kyle
+AU  - Shapinsky, Tobias
+AU  - Petersen, Anya
+TI  - Alfalfa Virtual Building Service: Software Engineering Best Practices Applied to Runtime Interaction with Building Energy Models
+T2  - IBPSA-USA SimBuild 2024 Conference, Denver, Colorado, 21–23 May 2024
+PY  - 2024
+M3  - Presentation
+PB  - National Renewable Energy Laboratory
+CY  - Golden, CO
+SN  - NREL/PR-5500-89738
+UR  - https://www.osti.gov/biblio/2407013
+ER  - 
+
+TY  - CPAPER
+ID  - bernal2012
+AU  - Bernal, Willy
+AU  - Behl, Madhur
+AU  - Nghiem, Truong X.
+AU  - Mangharam, Rahul
+TI  - MLE+: A tool for integrated design and deployment of energy efficient building controls
+T2  - Proceedings of the Fourth ACM Workshop on Embedded Sensing Systems for Energy-Efficiency in Buildings (BuildSys '12)
+PY  - 2012
+SP  - 123
+EP  - 130
+PB  - ACM
+CY  - Toronto, Ontario, Canada
+DO  - 10.1145/2422531.2422553
+ER  - 
+
+TY  - CPAPER
+ID  - blochwitz2011
+AU  - Blochwitz, T.
+AU  - Otter, M.
+AU  - Arnold, M.
+AU  - Bausch, C.
+AU  - Clauss, C.
+AU  - Elmqvist, H.
+AU  - Junghanns, A.
+AU  - Mauss, J.
+AU  - Monteiro, M.
+AU  - Neidhold, T.
+AU  - Neumerkel, D.
+AU  - Olsson, H.
+AU  - Peetz, J.-V.
+AU  - Wolf, S.
+TI  - The Functional Mockup Interface for Tool independent Exchange of Simulation Models
+T2  - Proceedings of the 8th International Modelica Conference
+PY  - 2011
+VL  - 63
+SP  - 105
+EP  - 114
+PB  - Linköping University Electronic Press
+CY  - Dresden, Germany
+DO  - 10.3384/ecp11063105
+ER  - 
+
+TY  - JOUR
+ID  - blum2021
+AU  - Blum, David
+AU  - Arroyo, Javier
+AU  - Huang, Sen
+AU  - Drgoňa, Ján
+AU  - Jorissen, Filip
+AU  - Walnum, Harald Taxt
+AU  - Chen, Yan
+AU  - Benne, Kyle
+AU  - Vrabie, Draguna
+AU  - Wetter, Michael
+AU  - Helsen, Lieve
+TI  - Building optimization testing framework (BOPTEST) for simulation-based benchmarking of control strategies in buildings
+T2  - Journal of Building Performance Simulation
+J2  - J. Build. Perform. Simul.
+PY  - 2021
+VL  - 14
+IS  - 5
+SP  - 586
+EP  - 610
+PB  - Taylor & Francis
+DO  - 10.1080/19401493.2021.1986574
+ER  - 
+
+TY  - CPAPER
+ID  - broman2013
+AU  - Broman, David
+AU  - Brooks, Christopher
+AU  - Greenberg, Lev
+AU  - Lee, Edward A.
+AU  - Masin, Michael
+AU  - Tripakis, Stavros
+AU  - Wetter, Michael
+TI  - Determinate composition of FMUs for co-simulation
+T2  - 2013 Proceedings of the International Conference on Embedded Software (EMSOFT)
+PY  - 2013
+SP  - 1
+EP  - 12
+PB  - IEEE
+CY  - Montreal, QC, Canada
+DO  - 10.1109/EMSOFT.2013.6658580
+ER  - 
+
+TY  - JOUR
+ID  - campoy2025
+AU  - Campoy-Nieves, Alejandro
+AU  - Manjavacas, Antonio
+AU  - Jiménez-Raboso, Javier
+AU  - Molina-Solana, Miguel
+AU  - Gómez-Romero, Juan
+TI  - Sinergym – A virtual testbed for building energy optimization with Reinforcement Learning
+T2  - Energy and Buildings
+J2  - Energy Build.
+PY  - 2025
+VL  - 327
+SP  - 115075
+PB  - Elsevier
+DO  - 10.1016/j.enbuild.2024.115075
+ER  - 
+
+TY  - ELEC
+ID  - cf2023
+AU  - Eaton, Brian
+AU  - Gregory, Jonathan
+AU  - Drach, Bob
+AU  - Taylor, Karl
+AU  - Hankin, Steve
+AU  - Blower, Jon
+AU  - Caron, John
+AU  - Signell, Rich
+AU  - Bentley, Phil
+AU  - Rappa, Greg
+AU  - Höck, Heinke
+AU  - Pamment, Alison
+AU  - Juckes, Martin
+AU  - Raspaud, Martin
+AU  - Horne, Randy
+AU  - Whiteaker, Timothy
+AU  - Blodgett, David
+AU  - Zender, Charlie
+AU  - Lee, Daniel
+AU  - Hassell, David
+AU  - Snow, Alan D.
+AU  - Kölling, Tobias
+AU  - Allured, Dave
+AU  - Jelenak, Aleksandar
+AU  - Meier Soerensen, Anders
+AU  - Gaultier, Lucile
+AU  - Herlédan, Sylvain
+AU  - Manzano, Fernando
+AU  - Bärring, Lars
+AU  - Barker, Christopher
+AU  - Bartholomew, Sadie
+TI  - NetCDF Climate and Forecast (CF) Metadata Conventions
+PY  - 2023
+C2  - 1.11
+UR  - https://cfconventions.org/Data/cf-conventions/cf-conventions-1.11/cf-conventions.html
+Y2  - 2026-10-28
+ER  - 
+
+TY  - JOUR
+ID  - chandy1979
+AU  - Chandy, K. M.
+AU  - Misra, J.
+TI  - Distributed Simulation: A Case Study in Design and Verification of Distributed Programs
+T2  - IEEE Transactions on Software Engineering
+J2  - IEEE Trans. Softw. Eng.
+PY  - 1979
+VL  - SE-5
+IS  - 5
+SP  - 440
+EP  - 452
+PB  - IEEE
+DO  - 10.1109/TSE.1979.230182
+ER  - 
+
+TY  - JOUR
+ID  - chen2015replay
+AU  - Chen, Yunji
+AU  - Zhang, Shijin
+AU  - Guo, Qi
+AU  - Li, Ling
+AU  - Wu, Ruiyang
+AU  - Chen, Tianshi
+TI  - Deterministic Replay: A Survey
+T2  - ACM Computing Surveys
+J2  - ACM Comput. Surv.
+PY  - 2015
+VL  - 48
+IS  - 2
+SP  - 1
+EP  - 47
+PB  - ACM
+DO  - 10.1145/2790077
+ER  - 
+
+TY  - JOUR
+ID  - crawley2001
+AU  - Crawley, Drury B.
+AU  - Lawrie, Linda K.
+AU  - Winkelmann, Frederick C.
+AU  - Buhl, W. F.
+AU  - Huang, Y. Joe
+AU  - Pedersen, Curtis O.
+AU  - Strand, Richard K.
+AU  - Liesen, Richard J.
+AU  - Fisher, Daniel E.
+AU  - Witte, Michael J.
+AU  - Glazer, Jason
+TI  - EnergyPlus: creating a new-generation building energy simulation program
+T2  - Energy and Buildings
+J2  - Energy Build.
+PY  - 2001
+VL  - 33
+IS  - 4
+SP  - 319
+EP  - 331
+PB  - Elsevier
+DO  - 10.1016/S0378-7788(00)00114-6
+ER  - 
+
+TY  - JOUR
+ID  - dai2025
+AU  - Dai, Xilei
+AU  - Chen, Ruotian
+AU  - Guan, Songze
+AU  - Li, Wen-Tai
+AU  - Yuen, Chau
+TI  - BuildingGym: An open-source toolbox for AI-based building energy management using reinforcement learning
+T2  - Building Simulation
+J2  - Build. Simul.
+PY  - 2025
+VL  - 18
+IS  - 8
+SP  - 1909
+EP  - 1927
+PB  - Springer
+DO  - 10.1007/s12273-025-1306-y
+ER  - 
+
+TY  - RPRT
+ID  - deru2011
+AU  - Deru, M.
+AU  - Field, K.
+AU  - Studer, D.
+AU  - Benne, K.
+AU  - Griffith, B.
+AU  - Torcellini, P.
+AU  - Liu, B.
+AU  - Halverson, M.
+AU  - Winiarski, D.
+AU  - Rosenberg, M.
+AU  - Yazdanian, M.
+AU  - Huang, J.
+AU  - Crawley, D.
+TI  - U.S. Department of Energy Commercial Reference Building Models of the National Building Stock
+PY  - 2011
+M3  - Technical Report
+PB  - National Renewable Energy Laboratory
+CY  - Golden, CO
+SN  - NREL/TP-5500-46861
+DO  - 10.2172/1009264
+ER  - 
+
+TY  - CPAPER
+ID  - dieng2026
+AU  - Dieng, Ousmane
+AU  - Zhao, Kaiwen
+AU  - Lee, Stephen
+TI  - Knowledge-Guided Self-Reflection LLM Agents for HVAC Simulation in EnergyPlus
+T2  - Proceedings of the 13th ACM International Conference on Systems for Energy-Efficient Buildings, Cities, and Transportation (BuildSys '26)
+PY  - 2026
+SP  - 103
+EP  - 114
+PB  - ACM
+CY  - Banff, Canada
+DO  - 10.1145/3744256.3812593
+ER  - 
+
+TY  - RPRT
+ID  - dobos2014
+AU  - Dobos, A. P.
+TI  - PVWatts Version 5 Manual
+PY  - 2014
+M3  - Technical Report
+PB  - National Renewable Energy Laboratory
+CY  - Golden, CO
+SN  - NREL/TP-6A20-62641
+DO  - 10.2172/1158421
+ER  - 
+
+TY  - ELEC
+ID  - doe_extif
+AU  - U.S. Department of Energy
+TI  - EnergyPlus External Interface(s) Application Guide: BCVTB Examples
+PY  - 2018
+C2  - 9.0
+UR  - https://bigladdersoftware.com/epx/docs/9-0/external-interfaces-application-guide/bcvtb-examples.html
+Y2  - 2026-10-28
+ER  - 
+
+TY  - ELEC
+ID  - doe2022
+AU  - U.S. Department of Energy
+TI  - EnergyPlus Input Output Reference: Group – Python Plugins / Python EMS
+PY  - 2022
+C2  - 22.2
+UR  - https://bigladdersoftware.com/epx/docs/22-2/input-output-reference/group-python-plugins.html
+Y2  - 2026-10-28
+ER  - 
+
+TY  - ELEC
+ID  - doe2024rdd
+AU  - U.S. Department of Energy
+TI  - EnergyPlus Output Details and Examples: eplusout.rdd
+PY  - 2024
+C2  - 24.1
+UR  - https://bigladdersoftware.com/epx/docs/24-1/output-details-and-examples/eplusout-rdd.html
+Y2  - 2026-10-28
+ER  - 
+
+TY  - GEN
+ID  - feng2025agentrr
+AU  - Feng, Erhu
+AU  - Zhou, Wenbo
+AU  - Liu, Zibin
+AU  - Chen, Le
+AU  - Dong, Yunpeng
+AU  - Zhang, Cheng
+AU  - Zhao, Yisheng
+AU  - Du, Dong
+AU  - Hua, Zhichao
+AU  - Xia, Yubin
+AU  - Chen, Haibo
+TI  - Get Experience from Practice: LLM Agents with Record & Replay
+T2  - arXiv
+PY  - 2025
+M3  - arXiv:2505.17716
+DO  - 10.48550/arXiv.2505.17716
+UR  - https://arxiv.org/abs/2505.17716
+ER  - 
+
+TY  - ELEC
+ID  - fhwa2017
+AU  - Federal Highway Administration
+TI  - 2017 National Household Travel Survey
+PY  - 2017
+PB  - U.S. Department of Transportation
+UR  - https://nhts.ornl.gov
+Y2  - 2026-10-28
+ER  - 
+
+TY  - STAND
+ID  - fmi3_2022
+AU  - Modelica Association
+TI  - Functional Mock-up Interface Specification, Version 3.0
+PY  - 2022
+UR  - https://fmi-standard.org/docs/3.0/
+ER  - 
+
+TY  - JOUR
+ID  - fujimoto1990
+AU  - Fujimoto, Richard M.
+TI  - Parallel discrete event simulation
+T2  - Communications of the ACM
+J2  - Commun. ACM
+PY  - 1990
+VL  - 33
+IS  - 10
+SP  - 30
+EP  - 53
+PB  - ACM
+DO  - 10.1145/84537.84545
+ER  - 
+
+TY  - BOOK
+ID  - fujimoto2000
+AU  - Fujimoto, Richard M.
+TI  - Parallel and Distributed Simulation Systems
+T2  - Wiley Series on Parallel and Distributed Computing
+PY  - 2000
+PB  - John Wiley & Sons
+SN  - 978-0-471-18383-9
+ER  - 
+
+TY  - JOUR
+ID  - gomes2018
+AU  - Gomes, Cláudio
+AU  - Thule, Casper
+AU  - Broman, David
+AU  - Larsen, Peter Gorm
+AU  - Vangheluwe, Hans
+TI  - Co-Simulation: A Survey
+T2  - ACM Computing Surveys
+J2  - ACM Comput. Surv.
+PY  - 2018
+VL  - 51
+IS  - 3
+SP  - 49
+PB  - ACM
+DO  - 10.1145/3179993
+ER  - 
+
+TY  - JOUR
+ID  - gomes2019semantic
+AU  - Gomes, Cláudio
+AU  - Meyers, Bart
+AU  - Denil, Joachim
+AU  - Thule, Casper
+AU  - Lausdahl, Kenneth
+AU  - Vangheluwe, Hans
+AU  - De Meulenaere, Paul
+TI  - Semantic adaptation for FMI co-simulation with hierarchical simulators
+T2  - Simulation
+J2  - Simulation
+PY  - 2019
+VL  - 95
+IS  - 3
+SP  - 241
+EP  - 269
+PB  - SAGE Publications
+DO  - 10.1177/0037549718759775
+ER  - 
+
+TY  - CPAPER
+ID  - gomes2021clocks
+AU  - Gomes, Cláudio
+AU  - Najafi, Masoud
+AU  - Sommer, Torsten
+AU  - Blesken, Matthias
+AU  - Zacharias, Irina
+AU  - Kotte, Oliver
+AU  - Mai, Pierre R.
+AU  - Schuch, Klaus
+AU  - Wernersson, Karl
+AU  - Bertsch, Christian
+AU  - Blochwitz, Torsten
+AU  - Junghanns, Andreas
+TI  - The FMI 3.0 Standard Interface for Clocked and Scheduled Simulations
+T2  - Proceedings of the 14th International Modelica Conference
+PY  - 2021
+VL  - 181
+SP  - 27
+EP  - 36
+PB  - Linköping University Electronic Press
+CY  - Linköping, Sweden
+DO  - 10.3384/ecp2118127
+ER  - 
+
+TY  - JOUR
+ID  - hardy2024
+AU  - Hardy, Trevor D.
+AU  - Palmintier, Bryan
+AU  - Top, Philip L.
+AU  - Krishnamurthy, Dheepak
+AU  - Fuller, Jason C.
+TI  - HELICS: A Co-Simulation Framework for Scalable Multi-Domain Modeling and Analysis
+T2  - IEEE Access
+J2  - IEEE Access
+PY  - 2024
+VL  - 12
+SP  - 24325
+EP  - 24347
+PB  - IEEE
+DO  - 10.1109/ACCESS.2024.3363615
+ER  - 
+
+TY  - JOUR
+ID  - harris2020
+AU  - Harris, Charles R.
+AU  - Millman, K. Jarrod
+AU  - van der Walt, Stéfan J.
+AU  - Gommers, Ralf
+AU  - Virtanen, Pauli
+AU  - Cournapeau, David
+AU  - Wieser, Eric
+AU  - Taylor, Julian
+AU  - Berg, Sebastian
+AU  - Smith, Nathaniel J.
+AU  - Kern, Robert
+AU  - Picus, Matti
+AU  - Hoyer, Stephan
+AU  - van Kerkwijk, Marten H.
+AU  - Brett, Matthew
+AU  - Haldane, Allan
+AU  - Fernández del Río, Jaime
+AU  - Wiebe, Mark
+AU  - Peterson, Pearu
+AU  - Gérard-Marchant, Pierre
+AU  - Sheppard, Kevin
+AU  - Reddy, Tyler
+AU  - Weckesser, Warren
+AU  - Abbasi, Hameer
+AU  - Gohlke, Christoph
+AU  - Oliphant, Travis E.
+TI  - Array programming with NumPy
+T2  - Nature
+J2  - Nature
+PY  - 2020
+VL  - 585
+IS  - 7825
+SP  - 357
+EP  - 362
+PB  - Springer
+DO  - 10.1038/s41586-020-2649-2
+ER  - 
+
+TY  - ELEC
+ID  - helics_docs
+AU  - HELICS developers (GMLC-TDC)
+TI  - HELICS documentation
+PY  - 2026
+UR  - https://docs.helics.org/en/latest/
+Y2  - 2026-10-28
+ER  - 
+
+TY  - CPAPER
+ID  - henderson2018
+AU  - Henderson, Peter
+AU  - Islam, Riashat
+AU  - Bachman, Philip
+AU  - Pineau, Joelle
+AU  - Precup, Doina
+AU  - Meger, David
+TI  - Deep Reinforcement Learning That Matters
+T2  - Proceedings of the AAAI Conference on Artificial Intelligence
+PY  - 2018
+VL  - 32
+IS  - 1
+SP  - 3207
+EP  - 3214
+PB  - AAAI Press
+DO  - 10.1609/aaai.v32i1.11694
+ER  - 
+
+TY  - JOUR
+ID  - henzinger2003
+AU  - Henzinger, T. A.
+AU  - Horowitz, B.
+AU  - Kirsch, C. M.
+TI  - Giotto: a time-triggered language for embedded programming
+T2  - Proceedings of the IEEE
+J2  - Proc. IEEE
+PY  - 2003
+VL  - 91
+IS  - 1
+SP  - 84
+EP  - 99
+PB  - IEEE
+DO  - 10.1109/JPROC.2002.805825
+ER  - 
+
+TY  - JOUR
+ID  - hong2018
+AU  - Hong, Tianzhen
+AU  - Langevin, Jared
+AU  - Sun, Kaiyu
+TI  - Building simulation: Ten challenges
+T2  - Building Simulation
+J2  - Build. Simul.
+PY  - 2018
+VL  - 11
+IS  - 5
+SP  - 871
+EP  - 898
+PB  - Springer
+DO  - 10.1007/s12273-018-0444-x
+ER  - 
+
+TY  - JOUR
+ID  - hong2025
+AU  - Hong, Tianzhen
+AU  - Lee, Sang Hoon
+AU  - Zhang, Wanni
+AU  - Li, Han
+AU  - Sun, Kaiyu
+AU  - Kace, Joshua
+TI  - Informing electrification strategies of residential neighborhoods with urban building energy modeling
+T2  - Building Simulation
+J2  - Build. Simul.
+PY  - 2025
+VL  - 18
+IS  - 1
+SP  - 3
+EP  - 18
+PB  - Springer
+DO  - 10.1007/s12273-024-1214-6
+ER  - 
+
+TY  - STAND
+ID  - iec61850_7_3
+AU  - International Electrotechnical Commission
+TI  - Communication networks and systems for power utility automation – Part 7-3: Basic communication structure – Common data classes
+T2  - IEC 61850-7-3:2010, Edition 2.0
+PY  - 2010
+SN  - 978-2-88912-258-5
+UR  - https://webstore.iec.ch/en/publication/6016
+ER  - 
+
+TY  - STAND
+ID  - ieee1516_1_2010
+AU  - IEEE
+TI  - IEEE Standard for Modeling and Simulation (M&S) High Level Architecture (HLA) – Federate Interface Specification
+T2  - IEEE Std 1516.1-2010
+PY  - 2010
+SN  - 978-0-7381-6247-8
+DO  - 10.1109/IEEESTD.2010.5557728
+UR  - https://ieeexplore.ieee.org/document/5557728
+ER  - 
+
+TY  - STAND
+ID  - ieee1516_2010
+AU  - IEEE
+TI  - IEEE Standard for Modeling and Simulation (M&S) High Level Architecture (HLA) – Framework and Rules
+T2  - IEEE Std 1516-2010
+PY  - 2010
+SN  - 978-0-7381-6251-5
+DO  - 10.1109/IEEESTD.2010.5553440
+UR  - https://ieeexplore.ieee.org/document/5553440
+ER  - 
+
+TY  - JOUR
+ID  - jefferson1985
+AU  - Jefferson, David R.
+TI  - Virtual time
+T2  - ACM Transactions on Programming Languages and Systems
+J2  - ACM Trans. Program. Lang. Syst.
+PY  - 1985
+VL  - 7
+IS  - 3
+SP  - 404
+EP  - 425
+PB  - ACM
+DO  - 10.1145/3916.3988
+ER  - 
+
+TY  - JOUR
+ID  - jiang2024
+AU  - Jiang, Gang
+AU  - Ma, Zhihao
+AU  - Zhang, Liang
+AU  - Chen, Jianli
+TI  - EPlus-LLM: A large language model-based computing platform for automated building energy modeling
+T2  - Applied Energy
+J2  - Appl. Energy
+PY  - 2024
+VL  - 367
+SP  - 123431
+PB  - Elsevier
+DO  - 10.1016/j.apenergy.2024.123431
+ER  - 
+
+TY  - CPAPER
+ID  - jimenez2021
+AU  - Jiménez-Raboso, Javier
+AU  - Campoy-Nieves, Alejandro
+AU  - Manjavacas-Lucas, Antonio
+AU  - Gómez-Romero, Juan
+AU  - Molina-Solana, Miguel
+TI  - Sinergym: A building simulation and control framework for training reinforcement learning agents
+T2  - Proceedings of the 8th ACM International Conference on Systems for Energy-Efficient Buildings, Cities, and Transportation (BuildSys '21)
+PY  - 2021
+SP  - 319
+EP  - 323
+PB  - ACM
+CY  - Coimbra, Portugal
+DO  - 10.1145/3486611.3488729
+ER  - 
+
+TY  - CPAPER
+ID  - junghanns2021
+AU  - Junghanns, Andreas
+AU  - Blochwitz, Torsten
+AU  - Bertsch, Christian
+AU  - Sommer, Torsten
+AU  - Wernersson, Karl
+AU  - Pillekeit, Andreas
+AU  - Zacharias, Irina
+AU  - Blesken, Matthias
+AU  - Mai, Pierre R.
+AU  - Schuch, Klaus
+AU  - Schulze, Christian
+AU  - Gomes, Cláudio
+AU  - Najafi, Masoud
+TI  - The Functional Mock-up Interface 3.0 – New Features Enabling New Applications
+T2  - Proceedings of the 14th International Modelica Conference
+PY  - 2021
+VL  - 181
+SP  - 17
+EP  - 26
+PB  - Linköping University Electronic Press
+CY  - Linköping, Sweden
+DO  - 10.3384/ecp2118117
+ER  - 
+
+TY  - JOUR
+ID  - kahn1962
+AU  - Kahn, A. B.
+TI  - Topological sorting of large networks
+T2  - Communications of the ACM
+J2  - Commun. ACM
+PY  - 1962
+VL  - 5
+IS  - 11
+SP  - 558
+EP  - 562
+PB  - ACM
+DO  - 10.1145/368996.369025
+ER  - 
+
+TY  - JOUR
+ID  - katipamula2016
+AU  - Katipamula, Srinivas
+AU  - Haack, Jereme
+AU  - Hernandez, George
+AU  - Akyol, Bora
+AU  - Hagerman, Joseph
+TI  - VOLTTRON: An Open-Source Software Platform of the Future
+T2  - IEEE Electrification Magazine
+J2  - IEEE Electrif. Mag.
+PY  - 2016
+VL  - 4
+IS  - 4
+SP  - 15
+EP  - 22
+PB  - IEEE
+DO  - 10.1109/MELE.2016.2614178
+ER  - 
+
+TY  - JOUR
+ID  - katsikopoulos2003
+AU  - Katsikopoulos, K. V.
+AU  - Engelbrecht, S. E.
+TI  - Markov decision processes with delays and asynchronous cost collection
+T2  - IEEE Transactions on Automatic Control
+J2  - IEEE Trans. Autom. Control
+PY  - 2003
+VL  - 48
+IS  - 4
+SP  - 568
+EP  - 574
+PB  - IEEE
+DO  - 10.1109/TAC.2003.809799
+ER  - 
+
+TY  - CPAPER
+ID  - ko2025
+AU  - Ko, Yun-Dam
+AU  - Jain, Rishee
+TI  - DARLIN: Domain-guided Augmented Retrieval for LLM-based INterpretable HVAC Control
+T2  - Proceedings of the 12th ACM International Conference on Systems for Energy-Efficient Buildings, Cities, and Transportation (BuildSys '25)
+PY  - 2025
+SP  - 440
+EP  - 443
+PB  - ACM
+CY  - Golden, CO, USA
+DO  - 10.1145/3736425.3772322
+ER  - 
+
+TY  - JOUR
+ID  - kubler2000
+AU  - Kübler, R.
+AU  - Schiehlen, W.
+TI  - Two Methods of Simulator Coupling
+T2  - Mathematical and Computer Modelling of Dynamical Systems
+J2  - Math. Comput. Model. Dyn. Syst.
+PY  - 2000
+VL  - 6
+IS  - 2
+SP  - 93
+EP  - 113
+PB  - Taylor & Francis
+DO  - 10.1076/1387-3954(200006)6:2;1-M;FT093
+ER  - 
+
+TY  - ELEC
+ID  - lbnl_fmuexport
+AU  - Lawrence Berkeley National Laboratory
+TI  - FMU Export of EnergyPlus User Guide, Section 5: Usage of EnergyPlus as an FMU
+PY  - 2021
+UR  - https://simulationresearch.lbl.gov/fmu/EnergyPlus/export/userGuide/usage.html
+Y2  - 2026-10-28
+ER  - 
+
+TY  - JOUR
+ID  - lee1998
+AU  - Lee, E. A.
+AU  - Sangiovanni-Vincentelli, A.
+TI  - A framework for comparing models of computation
+T2  - IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems
+J2  - IEEE Trans. Comput.-Aided Des. Integr. Circuits Syst.
+PY  - 1998
+VL  - 17
+IS  - 12
+SP  - 1217
+EP  - 1229
+PB  - IEEE
+DO  - 10.1109/43.736561
+ER  - 
+
+TY  - JOUR
+ID  - li2025mcp
+AU  - Li, Han
+AU  - Xu, Yujie
+AU  - Hong, Tianzhen
+TI  - EnergyPlus-MCP: A model-context-protocol server for ai-driven building energy modeling
+T2  - SoftwareX
+J2  - SoftwareX
+PY  - 2025
+VL  - 32
+SP  - 102367
+PB  - Elsevier
+DO  - 10.1016/j.softx.2025.102367
+ER  - 
+
+TY  - JOUR
+ID  - liu2025llm
+AU  - Liu, Mingzhe
+AU  - Zhang, Liang
+AU  - Chen, Jianli
+AU  - Chen, Wei-An
+AU  - Yang, Zhiyao
+AU  - Lo, L. James
+AU  - Wen, Jin
+AU  - O'Neill, Zheng
+TI  - Large language models for building energy applications: Opportunities and challenges
+T2  - Building Simulation
+J2  - Build. Simul.
+PY  - 2025
+VL  - 18
+IS  - 2
+SP  - 225
+EP  - 234
+PB  - Springer
+DO  - 10.1007/s12273-025-1235-9
+ER  - 
+
+TY  - JOUR
+ID  - liu2026colllm
+AU  - Liu, Guangyu
+AU  - Wang, Yunzhe
+AU  - Lu, You
+AU  - Wu, Hongjie
+AU  - Liu, Ke
+AU  - Liu, Lanhui
+AU  - Chen, Jianping
+AU  - Fu, Qiming
+TI  - Co-LLM: A retrieval-augmented language model framework for chiller optimization control
+T2  - Journal of Building Engineering
+J2  - J. Build. Eng.
+PY  - 2026
+VL  - 121
+SP  - 115683
+PB  - Elsevier
+DO  - 10.1016/j.jobe.2026.115683
+ER  - 
+
+TY  - JOUR
+ID  - lohstroh2021
+AU  - Lohstroh, Marten
+AU  - Menard, Christian
+AU  - Bateni, Soroush
+AU  - Lee, Edward A.
+TI  - Toward a Lingua Franca for Deterministic Concurrent Systems
+T2  - ACM Transactions on Embedded Computing Systems
+J2  - ACM Trans. Embed. Comput. Syst.
+PY  - 2021
+VL  - 20
+IS  - 4
+SP  - 1
+EP  - 27
+PB  - ACM
+DO  - 10.1145/3448128
+ER  - 
+
+TY  - ELEC
+ID  - mathworks_rt
+AU  - The MathWorks, Inc.
+TI  - Rate Transition: Handle transfer of data between blocks operating at different rates (Simulink documentation)
+PY  - 2026
+C2  - R2026b
+UR  - https://www.mathworks.com/help/simulink/slref/ratetransition.html
+Y2  - 2026-10-28
+ER  - 
+
+TY  - STAND
+ID  - moreau2013prov
+AU  - Moreau, Luc
+AU  - Missier, Paolo
+TI  - PROV-DM: The PROV Data Model
+T2  - W3C Recommendation 30 April 2013
+PY  - 2013
+PB  - World Wide Web Consortium (W3C)
+UR  - https://www.w3.org/TR/2013/REC-prov-dm-20130430/
+ER  - 
+
+TY  - ELEC
+ID  - mosaik_docs
+AU  - OFFIS
+TI  - mosaik documentation
+PY  - 2025
+C2  - 3.5.0
+UR  - https://mosaik.readthedocs.io/en/3.5.0/
+Y2  - 2026-10-28
+ER  - 
+
+TY  - GEN
+ID  - neubauer2026
+AU  - Neubauer, Alexander
+AU  - Hong, Tianzhen
+AU  - Li, Han
+AU  - Yu, Mengbo
+AU  - Darbandi, Amin
+AU  - Fürst, Yannick
+AU  - Kriegel, Martin
+TI  - Large Language Models for HVAC Operations in Building Energy Systems: A Critical Review of Methods, Applications, and Deployment Readiness
+T2  - arXiv
+PY  - 2026
+M3  - arXiv:2609.05314
+DO  - 10.48550/arXiv.2609.05314
+UR  - https://arxiv.org/abs/2609.05314
+ER  - 
+
+TY  - RPRT
+ID  - neukomm2019
+AU  - Neukomm, Monica
+AU  - Nubbe, Valerie
+AU  - Fares, Robert
+TI  - Grid-Interactive Efficient Buildings Technical Report Series: Overview of Research Challenges and Gaps
+PY  - 2019
+M3  - Technical Report
+PB  - National Renewable Energy Laboratory
+CY  - Golden, CO
+SN  - NREL/TP-5500-75470; DOE/GO-102019-5227
+DO  - 10.2172/1577966
+ER  - 
+
+TY  - JOUR
+ID  - nouidui2014
+AU  - Nouidui, Thierry
+AU  - Wetter, Michael
+AU  - Zuo, Wangda
+TI  - Functional mock-up unit for co-simulation import in EnergyPlus
+T2  - Journal of Building Performance Simulation
+J2  - J. Build. Perform. Simul.
+PY  - 2014
+VL  - 7
+IS  - 3
+SP  - 192
+EP  - 202
+PB  - Taylor & Francis
+DO  - 10.1080/19401493.2013.808265
+ER  - 
+
+TY  - JOUR
+ID  - nweye2025
+AU  - Nweye, Kingsley
+AU  - Kaspar, Kathryn
+AU  - Buscemi, Giacomo
+AU  - Fonseca, Tiago
+AU  - Pinto, Giuseppe
+AU  - Ghose, Dipanjan
+AU  - Duddukuru, Satvik
+AU  - Pratapa, Pavani
+AU  - Li, Han
+AU  - Mohammadi, Javad
+AU  - Lino Ferreira, Luis
+AU  - Hong, Tianzhen
+AU  - Ouf, Mohamed
+AU  - Capozzoli, Alfonso
+AU  - Nagy, Zoltan
+TI  - CityLearn v2: energy-flexible, resilient, occupant-centric, and carbon-aware management of grid-interactive communities
+T2  - Journal of Building Performance Simulation
+J2  - J. Build. Perform. Simul.
+PY  - 2025
+VL  - 18
+IS  - 1
+SP  - 17
+EP  - 38
+PB  - Taylor & Francis
+DO  - 10.1080/19401493.2024.2418813
+ER  - 
+
+TY  - STAND
+ID  - oasis_mqtt2019
+AU  - OASIS
+A2  - Banks, Andrew
+A2  - Briggs, Ed
+A2  - Borgendale, Ken
+A2  - Gupta, Rahul
+TI  - MQTT Version 5.0
+T2  - OASIS Standard, 07 March 2019
+PY  - 2019
+UR  - https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html
+ER  - 
+
+TY  - CPAPER
+ID  - ofenloch2022
+AU  - Ofenloch, Annika
+AU  - Schwarz, Jan Sören
+AU  - Tolk, Deborah
+AU  - Brandt, Tobias
+AU  - Eilers, Reef
+AU  - Ramirez, Rebeca
+AU  - Raub, Thomas
+AU  - Lehnhoff, Sebastian
+TI  - MOSAIK 3.0: Combining Time-Stepped and Discrete Event Simulation
+T2  - 2022 Open Source Modelling and Simulation of Energy Systems (OSMSES)
+PY  - 2022
+SP  - 1
+EP  - 5
+PB  - IEEE
+CY  - Aachen, Germany
+DO  - 10.1109/OSMSES54027.2022.9769116
+ER  - 
+
+TY  - STAND
+ID  - ogc_waterml2014
+AU  - Open Geospatial Consortium
+A2  - Taylor, Peter
+TI  - OGC WaterML 2.0: Part 1 – Timeseries, Version 2.0.1
+T2  - OGC 10-126r4
+PY  - 2014
+UR  - https://docs.ogc.org/is/10-126r4/10-126r4.pdf
+ER  - 
+
+TY  - STAND
+ID  - omg_dds2015
+AU  - Object Management Group
+TI  - Data Distribution Service (DDS), Version 1.4
+T2  - OMG document formal/15-04-10
+PY  - 2015
+UR  - https://www.omg.org/spec/DDS/1.4/
+ER  - 
+
+TY  - STAND
+ID  - opcua_part8
+AU  - OPC Foundation
+TI  - OPC Unified Architecture – Part 8: Data Access
+T2  - OPC 10000-8, Release 1.05.07
+PY  - 2026
+UR  - https://reference.opcfoundation.org/specs/OPC-10000-8
+ER  - 
+
+TY  - JOUR
+ID  - ouyang2025
+AU  - Ouyang, Shuyin
+AU  - Zhang, Jie M.
+AU  - Harman, Mark
+AU  - Wang, Meng
+TI  - An Empirical Study of the Non-Determinism of ChatGPT in Code Generation
+T2  - ACM Transactions on Software Engineering and Methodology
+J2  - ACM Trans. Softw. Eng. Methodol.
+PY  - 2025
+VL  - 34
+IS  - 2
+SP  - 1
+EP  - 28
+PB  - ACM
+DO  - 10.1145/3697010
+ER  - 
+
+TY  - CPAPER
+ID  - paduani2023
+AU  - Paduani, Victor
+AU  - Kadavil, Rahul
+AU  - Hooshyar, Hossein
+AU  - Haddadi, Aboutaleb
+AU  - Jakaria, A. H. M.
+AU  - Huque, Aminul
+TI  - Real-Time T&D Co-Simulation for Testing Grid Impact of High DER Participation
+T2  - 2023 IEEE PES Grid Edge Technologies Conference & Exposition (Grid Edge)
+PY  - 2023
+SP  - 1
+EP  - 5
+PB  - IEEE
+CY  - San Diego, CA, USA
+DO  - 10.1109/GridEdge54130.2023.10102714
+ER  - 
+
+TY  - CPAPER
+ID  - palmintier2017
+AU  - Palmintier, Bryan
+AU  - Krishnamurthy, Dheepak
+AU  - Top, Philip
+AU  - Smith, Steve
+AU  - Daily, Jeff
+AU  - Fuller, Jason
+TI  - Design of the HELICS high-performance transmission-distribution-communication-market co-simulation framework
+T2  - 2017 Workshop on Modeling and Simulation of Cyber-Physical Energy Systems (MSCPES)
+PY  - 2017
+SP  - 1
+EP  - 6
+PB  - IEEE
+CY  - Pittsburgh, PA, USA
+DO  - 10.1109/MSCPES.2017.8064542
+ER  - 
+
+TY  - CPAPER
+ID  - ramstedt2019
+AU  - Ramstedt, Simon
+AU  - Pal, Christopher
+A2  - Wallach, H.
+A2  - Larochelle, H.
+A2  - Beygelzimer, A.
+A2  - d'Alché-Buc, F.
+A2  - Fox, E.
+A2  - Garnett, R.
+TI  - Real-Time Reinforcement Learning
+T2  - Advances in Neural Information Processing Systems 32 (NeurIPS 2019)
+PY  - 2019
+VL  - 32
+SP  - 3073
+EP  - 3082
+PB  - Curran Associates, Inc.
+UR  - https://proceedings.neurips.cc/paper_files/paper/2019/hash/54e36c5ff5f6a1802925ca009f3ebb68-Abstract.html
+ER  - 
+
+TY  - CPAPER
+ID  - ruscheinski2017
+AU  - Ruscheinski, Andreas
+AU  - Uhrmacher, Adelinde
+TI  - Provenance in modeling and simulation studies – Bridging gaps
+T2  - 2017 Winter Simulation Conference (WSC)
+PY  - 2017
+SP  - 872
+EP  - 883
+PB  - IEEE
+CY  - Las Vegas, NV, USA
+DO  - 10.1109/WSC.2017.8247839
+ER  - 
+
+TY  - JOUR
+ID  - sadjina2017
+AU  - Sadjina, Severin
+AU  - Kyllingstad, Lars T.
+AU  - Skjong, Stian
+AU  - Pedersen, Eilif
+TI  - Energy conservation and power bonds in co-simulations: non-iterative adaptive step size control and error estimation
+T2  - Engineering with Computers
+J2  - Eng. Comput.
+PY  - 2017
+VL  - 33
+IS  - 3
+SP  - 607
+EP  - 620
+PB  - Springer
+DO  - 10.1007/s00366-016-0492-8
+ER  - 
+
+TY  - CPAPER
+ID  - sasaki2025
+AU  - Sasaki, Shinnosuke
+AU  - Techasarntikul, Nattaon
+AU  - Ohsita, Yuichi
+AU  - Shimonishi, Hideyuki
+TI  - LLM-Driven Agent-Based Evaluation Framework for Occupant-Centric HVAC Control Considering Individual Differences and Movement Behavior
+T2  - Proceedings of the 12th ACM International Conference on Systems for Energy-Efficient Buildings, Cities, and Transportation (BuildSys '25)
+PY  - 2025
+SP  - 376
+EP  - 383
+PB  - ACM
+CY  - Golden, CO, USA
+DO  - 10.1145/3736425.3772325
+ER  - 
+
+TY  - CPAPER
+ID  - sawada2024
+AU  - Sawada, Tomoya
+AU  - Hasegawa, Takaomi
+AU  - Yokoyama, Keiichi
+AU  - Mizuno, Masahiro
+TI  - Office-in-the-Loop for Building HVAC Control with Multimodal Foundation Models
+T2  - Proceedings of the 11th ACM International Conference on Systems for Energy-Efficient Buildings, Cities, and Transportation (BuildSys '24)
+PY  - 2024
+SP  - 110
+EP  - 120
+PB  - ACM
+CY  - Hangzhou, China
+DO  - 10.1145/3671127.3698182
+ER  - 
+
+TY  - JOUR
+ID  - sawada2025
+AU  - Sawada, Tomoya
+AU  - Mizuno, Masahiro
+AU  - Hasegawa, Takaomi
+AU  - Yokoyama, Keiichi
+AU  - Kono, Mayuka
+TI  - Office-in-the-Loop: an investigation into Agentic AI for advanced building HVAC control systems
+T2  - Data-Centric Engineering
+J2  - Data-Centric Eng.
+PY  - 2025
+VL  - 6
+SP  - e31
+PB  - Cambridge University Press
+DO  - 10.1017/dce.2025.10010
+ER  - 
+
+TY  - JOUR
+ID  - scharnhorst2021
+AU  - Scharnhorst, Paul
+AU  - Schubnel, Baptiste
+AU  - Fernández Bandera, Carlos
+AU  - Salom, Jaume
+AU  - Taddeo, Paolo
+AU  - Boegli, Max
+AU  - Gorecki, Tomasz
+AU  - Stauffer, Yves
+AU  - Peppas, Antonis
+AU  - Politi, Chrysa
+TI  - Energym: A Building Model Library for Controller Benchmarking
+T2  - Applied Sciences
+J2  - Appl. Sci.
+PY  - 2021
+VL  - 11
+IS  - 8
+SP  - 3518
+PB  - MDPI
+DO  - 10.3390/app11083518
+ER  - 
+
+TY  - GEN
+ID  - song2023
+AU  - Song, Lei
+AU  - Zhang, Chuheng
+AU  - Zhao, Li
+AU  - Bian, Jiang
+TI  - Pre-Trained Large Language Models for Industrial Control
+T2  - arXiv
+PY  - 2023
+M3  - arXiv:2308.03028
+DO  - 10.48550/arXiv.2308.03028
+UR  - https://arxiv.org/abs/2308.03028
+ER  - 
+
+TY  - STAND
+ID  - ssp2_2024
+AU  - Modelica Association
+TI  - System Structure and Parameterization (SSP), Version 2.0
+PY  - 2024
+UR  - https://ssp-standard.org/docs/2.0/
+ER  - 
+
+TY  - JOUR
+ID  - steinbrink2019
+AU  - Steinbrink, Cornelius
+AU  - Blank-Babazadeh, Marita
+AU  - El-Ama, André
+AU  - Holly, Stefanie
+AU  - Lüers, Bengt
+AU  - Nebel-Wenner, Marvin
+AU  - Ramírez Acosta, Rebeca P.
+AU  - Raub, Thomas
+AU  - Schwarz, Jan Sören
+AU  - Stark, Sanja
+AU  - Nieße, Astrid
+AU  - Lehnhoff, Sebastian
+TI  - CPES Testing with mosaik: Co-Simulation Planning, Execution and Analysis
+T2  - Applied Sciences
+J2  - Appl. Sci.
+PY  - 2019
+VL  - 9
+IS  - 5
+SP  - 923
+PB  - MDPI
+DO  - 10.3390/app9050923
+ER  - 
+
+TY  - CPAPER
+ID  - towers2025
+AU  - Towers, Mark
+AU  - Kwiatkowski, Ariel
+AU  - Balis, John U.
+AU  - De Cola, Gianluca
+AU  - Deleu, Tristan
+AU  - Goulão, Manuel
+AU  - Kallinteris, Andreas
+AU  - Krimmel, Markus
+AU  - KG, Arjun
+AU  - Perez-Vicente, Rodrigo
+AU  - Terry, Jordan K.
+AU  - Pierré, Andrea
+AU  - Schulhoff, Sander
+AU  - Tai, Jun Jet
+AU  - Tan, Hannah
+AU  - Younis, Omar G.
+TI  - Gymnasium: A Standard Interface for Reinforcement Learning Environments
+T2  - Advances in Neural Information Processing Systems 38 (NeurIPS 2025), Datasets and Benchmarks Track
+PY  - 2025
+SP  - 163114
+EP  - 163129
+PB  - Neural Information Processing Systems Foundation, Inc.
+CY  - San Diego, California, USA and Mexico City, Mexico
+DO  - 10.52202/085713-4916
+UR  - https://proceedings.neurips.cc/paper_files/paper/2025/hash/d7ff1795e8527f6443371c3933bdb52b-Abstract-Datasets_and_Benchmarks_Track.html
+ER  - 
+
+TY  - JOUR
+ID  - trcka2009
+AU  - Trčka, Marija
+AU  - Hensen, Jan L. M.
+AU  - Wetter, Michael
+TI  - Co-simulation of innovative integrated HVAC systems in buildings
+T2  - Journal of Building Performance Simulation
+J2  - J. Build. Perform. Simul.
+PY  - 2009
+VL  - 2
+IS  - 3
+SP  - 209
+EP  - 230
+PB  - Taylor & Francis
+DO  - 10.1080/19401490903051959
+ER  - 
+
+TY  - CPAPER
+ID  - tripakis2015
+AU  - Tripakis, Stavros
+TI  - Bridging the semantic gap between heterogeneous modeling formalisms and FMI
+T2  - 2015 International Conference on Embedded Computer Systems: Architectures, Modeling, and Simulation (SAMOS)
+PY  - 2015
+SP  - 60
+EP  - 69
+PB  - IEEE
+CY  - Samos, Greece
+DO  - 10.1109/SAMOS.2015.7363660
+ER  - 
+
+TY  - CPAPER
+ID  - vazquez2019
+AU  - Vázquez-Canteli, José R.
+AU  - Kämpf, Jérôme
+AU  - Henze, Gregor
+AU  - Nagy, Zoltan
+TI  - CityLearn v1.0: An OpenAI Gym Environment for Demand Response with Deep Reinforcement Learning
+T2  - Proceedings of the 6th ACM International Conference on Systems for Energy-Efficient Buildings, Cities, and Transportation (BuildSys '19)
+PY  - 2019
+SP  - 356
+EP  - 357
+PB  - ACM
+CY  - New York, NY, USA
+DO  - 10.1145/3360322.3360998
+ER  - 
+
+TY  - JOUR
+ID  - wang2020
+AU  - Wang, Zhe
+AU  - Hong, Tianzhen
+TI  - Reinforcement learning for building controls: The opportunities and challenges
+T2  - Applied Energy
+J2  - Appl. Energy
+PY  - 2020
+VL  - 269
+SP  - 115036
+PB  - Elsevier
+DO  - 10.1016/j.apenergy.2020.115036
+ER  - 
+
+TY  - JOUR
+ID  - wen2024
+AU  - Wen, Jianfeng
+AU  - Jiang, Lin
+AU  - Chen, Yuying
+AU  - Chu, Chia-Chi
+AU  - Zhu, Jietong
+AU  - Qiu, Zitian
+TI  - Design of Data Distributed Service-Based Distributed Co-Simulation Platform of Power Systems
+T2  - IEEE Transactions on Industry Applications
+J2  - IEEE Trans. Ind. Appl.
+PY  - 2024
+VL  - 60
+IS  - 6
+SP  - 8115
+EP  - 8127
+PB  - IEEE
+DO  - 10.1109/TIA.2024.3429466
+ER  - 
+
+TY  - JOUR
+ID  - wetter2011
+AU  - Wetter, Michael
+TI  - Co-simulation of building energy and control systems with the Building Controls Virtual Test Bed
+T2  - Journal of Building Performance Simulation
+J2  - J. Build. Perform. Simul.
+PY  - 2011
+VL  - 4
+IS  - 3
+SP  - 185
+EP  - 203
+PB  - Taylor & Francis
+DO  - 10.1080/19401493.2010.518631
+ER  - 
+
+TY  - CPAPER
+ID  - wetter2020
+AU  - Wetter, Michael
+AU  - Benne, Kyle
+AU  - Gautier, Antoine
+AU  - Nouidui, Thierry S.
+AU  - Ramle, Agnes
+AU  - Roth, Amir
+AU  - Tummescheit, Hubertus
+AU  - Mentzer, Stuart
+AU  - Winther, Christian
+TI  - Lifting the Garage Door on Spawn, an Open-Source BEM-Controls Engine
+T2  - Proceedings of SimBuild Conference 2020, ASHRAE/IBPSA-USA Building Simulation Conference
+PY  - 2020
+VL  - 9
+PB  - IBPSA-USA
+DO  - 10.26868/25746308.2020.C063
+ER  - 
+
+TY  - CPAPER
+ID  - xiao2020
+AU  - Xiao, Ted
+AU  - Jang, Eric
+AU  - Kalashnikov, Dmitry
+AU  - Levine, Sergey
+AU  - Ibarz, Julian
+AU  - Hausman, Karol
+AU  - Herzog, Alexander
+TI  - Thinking While Moving: Deep Reinforcement Learning with Concurrent Control
+T2  - International Conference on Learning Representations (ICLR 2020)
+PY  - 2020
+UR  - https://openreview.net/forum?id=SJexHkSFPS
+ER  - 
+
+TY  - CPAPER
+ID  - xie2025
+AU  - Xie, Zhiqiang
+AU  - Kang, Hao
+AU  - Sheng, Ying
+AU  - Krishna, Tushar
+AU  - Fatahalian, Kayvon
+AU  - Kozyrakis, Christos
+TI  - AI Metropolis: Scaling Large Language Model-based Multi-Agent Simulation with Out-of-order Execution
+T2  - Proceedings of Machine Learning and Systems 7 (MLSys 2025)
+PY  - 2025
+VL  - 7
+UR  - https://proceedings.mlsys.org/paper_files/paper/2025/hash/4f31327e046913c7238d5b671f5d820e-Abstract-Conference.html
+ER  - 
+
+TY  - JOUR
+ID  - yan2015
+AU  - Yan, Da
+AU  - O'Brien, William
+AU  - Hong, Tianzhen
+AU  - Feng, Xiaohang
+AU  - Gunay, H. Burak
+AU  - Tahmasebi, Farhang
+AU  - Mahdavi, Ardeshir
+TI  - Occupant behavior modeling for building performance simulation: Current state and future challenges
+T2  - Energy and Buildings
+J2  - Energy Build.
+PY  - 2015
+VL  - 107
+SP  - 264
+EP  - 278
+PB  - Elsevier
+DO  - 10.1016/j.enbuild.2015.08.032
+ER  - 
+
+TY  - CPAPER
+ID  - zhang2020cobs
+AU  - Zhang, Tianyu
+AU  - Ardakanian, Omid
+TI  - COBS: COmprehensive Building Simulator
+T2  - Proceedings of the 7th ACM International Conference on Systems for Energy-Efficient Buildings, Cities, and Transportation (BuildSys '20)
+PY  - 2020
+SP  - 314
+EP  - 315
+PB  - ACM
+CY  - Virtual Event, Japan
+DO  - 10.1145/3408308.3431119
+ER  - 
+
+TY  - GEN
+ID  - zhang2023
+AU  - Zhang, Liang
+AU  - Haroon, Saquib Mohammed
+AU  - Ryan, Alyssa
+TI  - Py-CoSim: Python-Based Building Energy Co-Simulation Infrastructure
+T2  - SSRN
+PY  - 2023
+M3  - Preprint
+DO  - 10.2139/ssrn.4572925
+UR  - https://www.ssrn.com/abstract=4572925
+ER  - 
+
+TY  - JOUR
+ID  - zhang2024bem
+AU  - Zhang, Liang
+AU  - Chen, Zhelun
+AU  - Ford, Vitaly
+TI  - Advancing building energy modeling with large language models: Exploration and case studies
+T2  - Energy and Buildings
+J2  - Energy Build.
+PY  - 2024
+VL  - 323
+SP  - 114788
+PB  - Elsevier
+DO  - 10.1016/j.enbuild.2024.114788
+ER  - 
+
+TY  - JOUR
+ID  - zhang2025agentic
+AU  - Zhang, Liang
+AU  - Ford, Vitaly
+AU  - Chen, Zhelun
+AU  - Chen, Jianli
+TI  - Automatic building energy model development and debugging using large language models agentic workflow
+T2  - Energy and Buildings
+J2  - Energy Build.
+PY  - 2025
+VL  - 327
+SP  - 115116
+PB  - Elsevier
+DO  - 10.1016/j.enbuild.2024.115116
+ER  - 
+
+TY  - JOUR
+ID  - zhangchen2024
+AU  - Zhang, Liang
+AU  - Chen, Zhelun
+TI  - Large language model-based interpretable machine learning control in building energy systems
+T2  - Energy and Buildings
+J2  - Energy Build.
+PY  - 2024
+VL  - 313
+SP  - 114278
+PB  - Elsevier
+DO  - 10.1016/j.enbuild.2024.114278
+ER  - 
+
+TY  - CPAPER
+ID  - zhao2007
+AU  - Zhao, Yang
+AU  - Liu, Jie
+AU  - Lee, Edward A.
+TI  - A Programming Model for Time-Synchronized Distributed Real-Time Systems
+T2  - 13th IEEE Real Time and Embedded Technology and Applications Symposium (RTAS'07)
+PY  - 2007
+SP  - 259
+EP  - 268
+PB  - IEEE
+CY  - Bellevue, WA, USA
+DO  - 10.1109/RTAS.2007.5
+ER  - 
+
+TY  - JOUR
+ID  - zhu2025
+AU  - Zhu, Xuanrong
+AU  - Li, Hui
+TI  - Heating, Ventilation, and Air Conditioning (HVAC) Temperature and Humidity Control Optimization Based on Large Language Models (LLMs)
+T2  - Energies
+J2  - Energies
+PY  - 2025
+VL  - 18
+IS  - 7
+SP  - 1813
+PB  - MDPI
+DO  - 10.3390/en18071813
+ER  - 

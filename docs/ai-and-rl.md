@@ -170,11 +170,43 @@ experiment can be reviewed decision by decision afterwards.
   produces. At the time of writing, `claude-opus-5-5` costs $4 per million input tokens and
   $20 per million output tokens — check the provider's current price list and multiply out
   before a large study.
-* **Latency**: each call usually takes seconds. The co-simulation waits for the answer (up to
-  `timeout`), and supervisors are called one after the other, so latency adds directly to
-  the wall time: 168 calls × 3 s ≈ 8 minutes.
+* **Latency**: each call usually takes seconds. By default the co-simulation waits for the
+  answer (up to `timeout`), and supervisors are called one after the other, so latency adds
+  directly to the wall time: 168 calls × 3 s ≈ 8 minutes. An
+  [asynchronous supervisor](#asynchronous-supervisors-make_async) lets the simulation go on
+  while the model thinks, and several supervisors think at the same time.
 * Ways to save: use a longer `step_size`; develop with `OfflineStandInBackend`; record a run
   once and replay it for analysis and plots; run a local model with `OllamaBackend`.
+
+### Asynchronous supervisors: `make_async`
+
+A real supervisor also needs time to act, and its answer applies to the future. Model that
+explicitly and let the LLM think in the background:
+
+```python
+llm = LLMSupervisor("llm", AnthropicBackend(), intent=..., setpoints=..., observations=...,
+                    step_size="1h", timeout=60.0)
+sim.add(llm.make_async(delay="15min"))
+```
+
+At 16:00 the supervisor receives the observations and the call starts in a background
+thread; the master keeps simulating. Its set-points are published at 16:15 (the **decision
+delay**, in simulation time) and apply until 17:15. If the answer is not back when the master
+reaches 16:15, the master waits for it — so the results never depend on how fast the API
+answers that day. With ten buildings, ten supervisors call the model at the same time instead
+of one after the other.
+
+* `delay` must be a multiple of the master step (default: one master step).
+* `make_async(..., deadline=s)` adds a wall-clock limit on top of the supervisor's own
+  `timeout`: a late answer is replaced by the previous set-points and flagged `late`.
+  Keep `deadline` larger than `timeout` if you want the supervisor's own guardrails (and its
+  event-log entry) to handle slow calls.
+* The event log entry of a decision carries the time the observations were taken (16:00);
+  the set-points appear in `res.df` at 16:15.
+
+Details, rules and pitfalls: [Asynchronous components](smmm.md#asynchronous-components).
+[Example 11](examples.md#11--messages-and-time) uses an asynchronous random stand-in (not an
+LLM) with an artificial latency.
 
 ### Reproducibility: record and replay
 
@@ -197,6 +229,32 @@ scenario (time window, seed, components, observations, `decimals`) must be uncha
 otherwise it raises `KeyError` (and the supervisor falls back). With `strict=False`, unknown
 prompts get the answer `"{}"` instead. Keep the `.jsonl` file with your results — it is the
 evidence of what the model said.
+
+**Replaying the supervisor's messages instead.** SMMM can also record and replay what the
+supervisor *published* (its set-points, `valid`, `latency` and `reason`), independent of the
+backend:
+
+```python
+sim = build(name="live", record=["llm"])          # your own function that builds the scenario
+live = sim.run()                                  # real API calls; messages.jsonl in the run folder
+
+sim = build(name="replay")
+sim.replay("llm", live)                           # or the run folder: "pycosim_runs/live"
+again = sim.run()                                 # no API calls, identical results
+```
+
+| | `RecordingBackend` / `ReplayBackend` | SMMM `record=` / `sim.replay()` |
+|---|---|---|
+| What is stored | each prompt (hashed) and the model's raw answer | the supervisor's published messages |
+| The supervisor runs during replay | yes (prompt building, guardrails, event log) | no, its messages are replayed |
+| Needs identical prompts | yes | no |
+| Counterfactual (same decisions, another building or tariff) | no — prompts change | yes |
+| Works for other components (ML models, web APIs) | no | yes |
+
+Use the backend recording to keep the evidence of what the model said and to re-run the
+guardrails; use SMMM replay to repeat a run bit for bit, including asynchronous and late
+answers, or to test the same decisions on a modified building
+([Record and replay](smmm.md#record-and-replay)).
 
 ---
 

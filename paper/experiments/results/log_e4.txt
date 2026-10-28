@@ -1,0 +1,51 @@
+﻿{'n_buildings': 1, 'mode': 'blocking', 'repeat': 1, 'wall_s': 33.84139259997755, 'ai_calls': 48, 'ai_wall_s_sum': 25.073691699421033, 'energy_kWh': 550.1255602980063, 'cost_usd': 78.41859489219114}
+{'n_buildings': 1, 'mode': 'async', 'repeat': 1, 'wall_s': 34.1252661999315, 'ai_calls': 48, 'ai_wall_s_sum': 25.649658600334078, 'energy_kWh': 551.9115114388094, 'cost_usd': 79.01641761717843}
+{'n_buildings': 1, 'mode': 'async', 'repeat': 2, 'wall_s': 31.961198200006038, 'ai_calls': 48, 'ai_wall_s_sum': 25.29680879879743, 'energy_kWh': 551.9115114388094, 'cost_usd': 79.01641761717843}
+n 1 async repeats identical: True 0.0
+{'n_buildings': 2, 'mode': 'blocking', 'repeat': 1, 'wall_s': 62.768020999850705, 'ai_calls': 96, 'ai_wall_s_sum': 54.5529654994607, 'energy_kWh': 1100.2511205960127, 'cost_usd': 156.83718978438228}
+{'n_buildings': 2, 'mode': 'async', 'repeat': 1, 'wall_s': 49.10157379996963, 'ai_calls': 96, 'ai_wall_s_sum': 54.583802299108356, 'energy_kWh': 1103.8230228776188, 'cost_usd': 158.03283523435687}
+{'n_buildings': 2, 'mode': 'async', 'repeat': 2, 'wall_s': 47.471935800043866, 'ai_calls': 96, 'ai_wall_s_sum': 58.59388729860075, 'energy_kWh': 1103.8230228776188, 'cost_usd': 158.03283523435687}
+n 2 async repeats identical: True 0.0
+{'n_buildings': 4, 'mode': 'blocking', 'repeat': 1, 'wall_s': 124.38929780013859, 'ai_calls': 192, 'ai_wall_s_sum': 112.64279339998029, 'energy_kWh': 2200.5022411920254, 'cost_usd': 313.67437956876455}
+{'n_buildings': 4, 'mode': 'async', 'repeat': 1, 'wall_s': 56.99099220009521, 'ai_calls': 192, 'ai_wall_s_sum': 106.76800030074082, 'energy_kWh': 2207.6460457552375, 'cost_usd': 316.06567046871373}
+{'n_buildings': 4, 'mode': 'async', 'repeat': 2, 'wall_s': 52.677632600069046, 'ai_calls': 192, 'ai_wall_s_sum': 108.20626239920966, 'energy_kWh': 2207.6460457552375, 'cost_usd': 316.06567046871373}
+n 4 async repeats identical: True 0.0
+{'n_buildings': 8, 'mode': 'blocking', 'repeat': 1, 'wall_s': 237.69746439997107, 'ai_calls': 384, 'ai_wall_s_sum': 215.05904969968833, 'energy_kWh': 4401.004482384051, 'cost_usd': 627.3487591375291}
+{'n_buildings': 8, 'mode': 'async', 'repeat': 1, 'wall_s': 82.20616340008564, 'ai_calls': 384, 'ai_wall_s_sum': 225.1447717049159, 'energy_kWh': 4415.292091510475, 'cost_usd': 632.1313409374275}
+{'n_buildings': 8, 'mode': 'async', 'repeat': 2, 'wall_s': 74.18695600004867, 'ai_calls': 384, 'ai_wall_s_sum': 221.15462629892863, 'energy_kWh': 4415.292091510475, 'cost_usd': 632.1313409374275}
+n 8 async repeats identical: True 0.0
+{
+  "latency_median_s": 0.5,
+  "wall_s": {
+    "async": {
+      "1": 34.1252661999315,
+      "2": 49.10157379996963,
+      "4": 56.99099220009521,
+      "8": 82.20616340008564
+    },
+    "blocking": {
+      "1": 33.84139259997755,
+      "2": 62.768020999850705,
+      "4": 124.38929780013859,
+      "8": 237.69746439997107
+    }
+  },
+  "speedup": {
+    "1": 0.9916814245992748,
+    "2": 1.2783301255384514,
+    "4": 2.1826133042816336,
+    "8": 2.891479842492241
+  },
+  "async_repeats_identical": {
+    "1": true,
+    "2": true,
+    "4": true,
+    "8": true
+  },
+  "energy_change_async_vs_blocking_pct": {
+    "1": 0.3246442757241841,
+    "2": 0.3246442757241841,
+    "4": 0.3246442757241841,
+    "8": 0.3246442757241841
+  }
+}

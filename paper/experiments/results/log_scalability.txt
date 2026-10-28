@@ -1,38 +1,7 @@
-                        mean       std
+﻿                        mean       std
 mode                                  
-EnergyPlus CLI      4.537779  1.188506
-Py-CoSim (process)  8.296328  0.759755
-Py-CoSim (thread)   7.480629  0.414328
-{'n_buildings': 1, 'serial_s': 8.545472200028598, 'parallel_s': 9.555054500000551, 'speedup': 0.8943404980084735, 'max_abs_diff_parallel_vs_serial': 0.0}
-{'n_buildings': 2, 'serial_s': 14.756799999973737, 'parallel_s': 9.38107680005487, 'speedup': 1.5730390353362658, 'max_abs_diff_parallel_vs_serial': 0.0}
-{'n_buildings': 4, 'serial_s': 32.44371790008154, 'parallel_s': 11.443502299953252, 'speedup': 2.8351213684130663, 'max_abs_diff_parallel_vs_serial': 0.0}
-{'n_buildings': 8, 'serial_s': 56.455796999973245, 'parallel_s': 20.552961600013077, 'speedup': 2.746844863464218, 'max_abs_diff_parallel_vs_serial': 0.0}
-{'n_buildings': 16, 'serial_s': 114.87504690000787, 'parallel_s': 38.98786949994974, 'speedup': 2.9464304762832954, 'max_abs_diff_parallel_vs_serial': 0.0}
-{
-  "machine": {
-    "cpu": "11th Gen Intel(R) Core(TM) i7-1185G7 @ 3.00GHz",
-    "physical_cores": 4,
-    "logical_cores": 8,
-    "memory_gb": 16,
-    "os": "Windows-11-10.0.26200-SP0",
-    "python": "3.12.10"
-  },
-  "overhead": {
-    "mean": {
-      "EnergyPlus CLI": 4.537778999966879,
-      "Py-CoSim (process)": 8.296328100026585,
-      "Py-CoSim (thread)": 7.480629133332211
-    },
-    "std": {
-      "EnergyPlus CLI": 1.1885061901979235,
-      "Py-CoSim (process)": 0.759754675396893,
-      "Py-CoSim (thread)": 0.41432801992606305
-    }
-  },
-  "master_overhead_s_per_step_per_component": 2.2846730308342495e-05,
-  "exchange": {
-    "Py-CoSim 2 data bus (publish + read)": 3.3269000123254956e-06,
-    "Py-CoSim 0.x CSV file (write + read)": 0.03061975633337473
-  },
-  "steps": 672
-}
+EnergyPlus CLI      6.370393  0.927313
+Py-CoSim (process)  9.393062  0.605146
+Py-CoSim (thread)   9.385688  0.750075
+{'n_buildings': 1, 'serial_s': 10.425278099952266, 'parallel_s': 8.74558570003137, 'speedup': 1.1920617392057424, 'max_abs_diff_parallel_vs_serial': 0.0}
+{'n_buildings': 2, 'serial_s': 33.606249700067565, 'parallel_s': 15.930581799941137, 'speedup': 2.1095431492773065, 'max_abs_diff_parallel_vs_serial': 0.0}

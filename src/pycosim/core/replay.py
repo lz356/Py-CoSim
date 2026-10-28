@@ -23,7 +23,7 @@ from .component import Component
 from .errors import ConfigurationError
 from .messages import QUALITY, Message
 
-__all__ = ["ReplayComponent", "load_messages", "write_messages"]
+__all__ = ["ReplayComponent", "load_messages", "load_recording_meta", "write_messages"]
 
 
 def _jsonable(value: Any) -> Any:
@@ -77,6 +77,21 @@ def load_messages(source: Any, component: Optional[str] = None) -> List[Dict[str
         prefix = component + "."
         records = [r for r in records if r["ref"].startswith(prefix)]
     return records
+
+
+def load_recording_meta(source: Any) -> Dict[str, Any]:
+    """Clock of the recorded run (``start``, ``step_s``), if it can be found."""
+    meta = getattr(source, "meta", None)
+    if isinstance(meta, dict):
+        return meta
+    path = Path(source)
+    folder = path if path.is_dir() else path.parent
+    if (folder / "meta.json").exists():
+        try:
+            return json.loads((folder / "meta.json").read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return {}
+    return {}
 
 
 class ReplayComponent(Component):

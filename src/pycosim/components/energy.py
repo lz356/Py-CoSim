@@ -214,6 +214,9 @@ class GridMeter(Component):
         self._e_imp = self._e_exp = self._cost = self._peak = 0.0
         self._window = []
 
+    def run_metadata(self):
+        return {"aligned": self.aligned}
+
     def step(self, t, inputs):
         dt = self.ctx.step_size
         get = inputs.get

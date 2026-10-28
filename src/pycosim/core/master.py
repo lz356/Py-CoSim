@@ -7,8 +7,9 @@ other: they publish *messages* to the data bus (the messaging half of SMMM,
 master executes
 
 0. *deliver* -- answers of asynchronous components whose decision delay ends
-   at ``t_k`` are published (and replayed components publish their records);
-1. *output*  -- non-feedthrough components report their state at ``t_k``;
+   at ``t_k`` are published;
+1. *output*  -- non-feedthrough components report their state at ``t_k``
+   (replayed components publish their recorded messages here);
 2. *step*    -- feedthrough components run in topological order (asynchronous
    ones are handed to a background thread);
 3. *update*  -- non-feedthrough components advance to ``t_{k+1}``.
@@ -275,9 +276,9 @@ class CoSimulation:
             raise ConfigurationError("replay() must be called before the simulation is initialized")
         if name not in self._components:
             raise KeyError(f"No component named {name!r}")
-        from .replay import load_messages
+        from .replay import load_messages, load_recording_meta
 
-        self._replays[name] = load_messages(source, name)
+        self._replays[name] = (load_messages(source, name), load_recording_meta(source))
         return self._components[name]
 
     # ================================================================== status
@@ -461,7 +462,16 @@ class CoSimulation:
             return
         from .replay import ReplayComponent
 
-        for name, records in self._replays.items():
+        for name, (records, meta) in self._replays.items():
+            rec_step, rec_start = meta.get("step_s"), meta.get("start")
+            if rec_step is not None and abs(float(rec_step) - self.dt) > 1e-9:
+                raise ConfigurationError(
+                    f"replay of {name!r}: the recording used a master step of {float(rec_step):g}s, this "
+                    f"simulation uses {self.dt:g}s; replay needs the same step")
+            if rec_start is not None and str(rec_start) != str(self.start):
+                raise ConfigurationError(
+                    f"replay of {name!r}: the recording started at {rec_start}, this simulation at {self.start}; "
+                    "replay needs the same start")
             original = self._components[name]
             self._components[name] = ReplayComponent(original, records)
             logger.info("Replaying '%s' (%s) from %d recorded messages", name, type(original).__name__,
@@ -473,8 +483,8 @@ class CoSimulation:
             raise ConfigurationError(f"Cannot initialize a simulation in state {self.status!r}")
         if not self._components:
             raise ConfigurationError("No components were added")
-        self._apply_replays()
         self._resolve_clock()
+        self._apply_replays()
         self._resolve_patterns()
         self._validate_connections()
         comps = self.components
@@ -532,6 +542,7 @@ class CoSimulation:
                 try:
                     comp.setup(comp.ctx)
                 except Exception as exc:
+                    _safe(comp.abort)  # release whatever a half-finished setup started (processes, files)
                     raise ComponentError(comp.name, "setup", None, exc) from exc
                 set_up.append(comp)
                 self._timing[comp.name][1] += time.perf_counter() - t0
@@ -713,23 +724,23 @@ class CoSimulation:
                     timeout = max(0.0, state.deadline - (time.perf_counter() - submitted))
                 try:
                     result = future.result(timeout=timeout)
-                except cf.TimeoutError:
+                except (cf.TimeoutError, cf.CancelledError) as exc:
                     state.late += 1
+                    abandoned = isinstance(exc, cf.CancelledError)
                     if state.policy == "error":
                         raise ComponentError(name, "step", self.times[k_in], SynchronizationError(
-                            f"no answer within the deadline of {state.deadline:g}s"))
-                    self.bus.log_event(t, name, "late",
-                                       f"answer for {self.times[k_in]} missed its {state.deadline:g}s deadline; "
-                                       "previous outputs kept")
-                    # keep the previous outputs, flagged late; abandon the hung call
+                            f"no answer within the deadline of {state.deadline:g}s")) from None
+                    why = ("queued behind a call that missed its deadline" if abandoned
+                           else f"missed its {state.deadline:g}s deadline")
+                    self.bus.log_event(t, name, "late", f"answer for {self.times[k_in]} {why}; previous outputs kept")
+                    # keep the previous outputs, flagged late
                     held = {p: Message(self.bus.latest(r), quality=QUALITY["late"])
                             for p, r in self._out_refs[name].items()}
                     self._publish(comp, held, "deliver", t, origin=k_in)
-                    state.pool.shutdown(wait=False, cancel_futures=True)
-                    state.pool = None
-                    for _d, f, _s, _k in list(state.pending):  # queued calls of the abandoned pool
-                        f.cancel()
-                    state.pending.clear()
+                    if not abandoned and state.pool is not None:
+                        # abandon the hung call; calls queued behind it are cancelled and reported late in turn
+                        state.pool.shutdown(wait=False, cancel_futures=True)
+                        state.pool = None
                     continue
                 except PyCoSimError as exc:
                     raise ComponentError(name, "step", self.times[k_in], exc) from exc

@@ -55,6 +55,7 @@ accepted by the function, or the function must take `**inputs`).
 | a dict `{"a": 1.0, "b": 2.0}` | values by name (you may return only some of them) |
 | `None` | single output: the output becomes `None` (e.g. *release* an EnergyPlus actuator). Several outputs: publish nothing new, the outputs keep their previous values |
 | `pycosim.HOLD` | publish nothing new this step: the outputs keep their previous values |
+| `pycosim.Message(value, start=..., end=...)` | a value for another time span than the default, e.g. a price announced for 16:00 ([details](smmm.md#publishing-a-value-for-another-time-pcmessage)) |
 
 Class components (`step()` methods) follow the dict/tuple/value rules above, and returning
 `None` from `step()` keeps the previous outputs.
@@ -143,6 +144,30 @@ inputs = {"T_out": {"default": 25.0, "unit": "C", "description": "outdoor air"}}
 outputs = {"P": 0.0, "soc": None}                           # name -> initial value
 ```
 
+The dictionary form also carries the SMMM settings described in
+[Messages and time](smmm.md):
+
+```python
+outputs = {
+    "T_tank": {"default": 55.0, "unit": "C", "kind": "instant"},                  # state at t
+    "P_heater": {"default": 0.0, "unit": "W", "kind": "average", "interval": "ahead",
+                 "bounds": (0.0, 4500.0)},                                         # mean over [t, t+h), checked
+    "price": {"default": 0.1, "kind": "hold", "topic": "grid/price"},             # global name
+}
+inputs = {"P_house": {"default": 0.0, "read": "past"}}     # mean over this component's last step
+```
+
+| Key | On | Meaning |
+|---|---|---|
+| `kind` | outputs | what a value means in time: `instant`, `average`, `amount`, `hold`, `event` (default `None` = like `hold`) |
+| `interval` | `average`/`amount` outputs | `"past"` (default: the value describes `[t-h, t)`) or `"ahead"` (`[t, t+h)`) |
+| `bounds`, `on_invalid` | outputs | valid range and what to do with values outside it: `"clip"` (default), `"last"`, `"default"`, `"error"` |
+| `topic` | outputs | a global name consumers can subscribe to (`"grid/price"`) |
+| `read` | inputs | `"latest"` (default), `"at"`, `"past"` or `"ahead"`; a connection's `read=` overrides it |
+
+Declare a `kind` on every output that others may add up, average or price over time (power,
+energy, prices, set-points); it costs nothing for readers that use the default `latest`.
+
 Or in `__init__` when the ports depend on arguments (after `super().__init__(name)`):
 
 ```python
@@ -151,7 +176,7 @@ class ZoneAverager(pc.Component):
         super().__init__(name)
         for z in zones:
             self.add_input(f"T_{z}", default=None, unit="C")
-        self.add_output("T_mean", initial=None, unit="C")
+        self.add_output("T_mean", initial=None, unit="C", kind="instant")
 
     def step(self, t, inputs):
         values = [v for v in inputs.values() if v is not None]
@@ -159,6 +184,10 @@ class ZoneAverager(pc.Component):
 ```
 
 Units are free text; they appear in `describe()`, in plot legends and in `res.units`.
+`add_input(..., read=...)` and `add_output(..., kind=..., interval=..., bounds=...,
+on_invalid=..., topic=...)` take the SMMM settings as keywords. To change a port of a
+component you did not write, use `set_port`, e.g.
+`ev.set_port("P_ev", kind="average", interval="ahead")`.
 
 ### A non-feedthrough (state-based) class component
 
@@ -257,6 +286,8 @@ Before `setup` is called, the master gives each component a context, available a
 | `ctx.log(message, kind="info", **data)` | write to the Python log *and* the run's event log (`res.events`); extra keywords become columns |
 | `ctx.latest("comp.port", default=None)` | latest value of any output port on the data bus |
 | `ctx.history("comp.port", n=None)` | published values of any output port as a pandas Series (last `n`) |
+| `ctx.at("comp.port", when=None)` | value of any output port in effect at `when` (default: now), aligned by its time meaning |
+| `ctx.window("comp.port", start, end=None)` | mean (or total, for `amount` outputs) of any output port over `[start, end)` (default end: now) |
 | `ctx.output_dir` | a folder reserved for this component's files: `<output_dir>/<run>/<component>/` (created on first use) |
 | `ctx.step_size` | this component's own step in seconds |
 | `ctx.dt` | the master step in seconds |
@@ -306,6 +337,26 @@ Rules:
 Your own subclass only accepts `step_size=` in its constructor if you pass it on:
 `super().__init__(name, step_size=step_size)`.
 
+## Slow components: `make_async`
+
+A component that calls a remote service (an LLM, a forecast API, an optimiser on another
+machine) may take seconds per call. Make it asynchronous, and the master hands its inputs to
+a background thread and keeps simulating; the answer is published a fixed **simulation** time
+later, however long the call took:
+
+```python
+advisor = SlowAdvisor("ai", step_size="1h").make_async(delay="15min", deadline=30.0)
+```
+
+* `delay` — when the answer applies (a multiple of the master step; default one master step);
+* `deadline` — optional wall-clock seconds; a late answer is replaced by the previous outputs,
+  flagged `late` (or `on_deadline="error"` stops the run).
+
+Only feedthrough components (`step()`) can be asynchronous. Inside `step()`, `self.ctx`
+shows the simulation as it was when the inputs were taken. A complete example (with the
+`SlowAdvisor` class) and the pitfalls are in
+[Asynchronous components](smmm.md#asynchronous-components).
+
 ## Wrapping an ML model
 
 Load the model once in `setup` (or `__init__`), predict in `step`:
@@ -334,7 +385,10 @@ class LoadForecaster(pc.Component):
 ```
 
 The same pattern works for PyTorch (`torch.load` + `model.eval()` in `setup`, `with
-torch.no_grad():` in `step`) or any other library.
+torch.no_grad():` in `step`) or any other library. ML models can return implausible values
+for inputs they were not trained on; give their outputs `bounds` (e.g.
+`outputs = {"P_forecast": {"default": None, "bounds": (0.0, 2e5)}}`) and check `res.quality`
+after the run ([Quality flags and bounds](smmm.md#quality-flags-and-bounds)).
 
 ## Common mistakes and the messages they produce
 
@@ -357,6 +411,12 @@ torch.no_grad():` in `step`) or any other library.
 | Using `np.random` / `random` directly | no error, but runs are not reproducible → use `self.ctx.rng` |
 | Reusing a component object in a second simulation | no error, but its internal state (e.g. a battery's SOC) carries over → build fresh components for every run (write a `build()` function) |
 | Not calling `super().__init__(name)` in `__init__` | the name falls back to the class name in snake case; always call it |
+| A pattern that matches nothing (e.g. a typo) | `ConfigurationError: Connection to meter.P_load: '*.P_elc' matches no output port or topic` |
+| `delay=True` together with `read="past"` (or `at`/`ahead`) | `ConfigurationError: Connection ... (delayed): delay=True only applies to read='latest' ...` → drop `delay=True`; a `past` read already looks at the previous step |
+| An unknown `kind` | `ConfigurationError: port 'x': kind must be one of ('instant', 'average', 'amount', 'hold', 'event') (got 'power')` |
+| An asynchronous decision delay that is not a multiple of the master step | `ConfigurationError: ai: decision delay 600s must be a positive multiple of the master step 900s` |
+| `make_async()` on a state-based component | `ConfigurationError: house: only feedthrough components (step()) can be asynchronous` |
+| An out-of-range value with `on_invalid="error"` | `ComponentError: Component 'bad' failed during 'step' at ...: ConfigurationError: bad.sp: value 99.0 outside (21.0, 30.0)` |
 | Missing `start`/`end` without an EnergyPlus component | `ConfigurationError: Simulation start/end unknown: pass start=... and end=... to CoSimulation` |
 
 When a component fails, open `error_report.txt` in the run folder first: it shows the

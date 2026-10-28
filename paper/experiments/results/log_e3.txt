@@ -1,0 +1,52 @@
+﻿{'run': 'live_1', 'building': 'base', 'decisions': 'live 1', 'wall_s': 12.469851900124922, 'energy_kWh': 1730.2260754797105, 'cost_usd': 232.35929642633792, 'mean_clg_sp_occupied': 23.558333333333334, 'overheat_Kh': 1.227154580713247}
+{'run': 'live_2', 'building': 'base', 'decisions': 'live 2', 'wall_s': 9.719241700135171, 'energy_kWh': 1740.154326993994, 'cost_usd': 233.32082075016407, 'mean_clg_sp_occupied': 23.433333333333334, 'overheat_Kh': 0.9815957477398669}
+{'run': 'live_3', 'building': 'base', 'decisions': 'live 3', 'wall_s': 10.057685100007802, 'energy_kWh': 1736.6658115482714, 'cost_usd': 233.8276631336387, 'mean_clg_sp_occupied': 23.416666666666668, 'overheat_Kh': 1.3267018001639892}
+{'run': 'live_4', 'building': 'base', 'decisions': 'live 4', 'wall_s': 10.376017299946398, 'energy_kWh': 1742.0507470430653, 'cost_usd': 234.23042829441079, 'mean_clg_sp_occupied': 23.308333333333334, 'overheat_Kh': 0.9121062766373536}
+{'run': 'live_5', 'building': 'base', 'decisions': 'live 5', 'wall_s': 8.329248500056565, 'energy_kWh': 1742.0085335547903, 'cost_usd': 233.0882903616225, 'mean_clg_sp_occupied': 23.358333333333334, 'overheat_Kh': 0.8189405947667883}
+replay max abs diff: {'office.P_facility': 0.0, 'office.T_core_zn': 0.0, 'ai.clg_sp': 0.0, 'grid.E_import': 0.0, 'grid.cost': 0.0}
+{'run': 'retro_live_1', 'building': 'retrofit', 'decisions': 'live (new draw) 1', 'energy_kWh': 1577.4954569693164, 'cost_usd': 209.72167377129844, 'mean_clg_sp_occupied': 23.65, 'overheat_Kh': 0.7769352605767406} {'run': 'retro_replay_1', 'building': 'retrofit', 'decisions': 'replay of live 1', 'energy_kWh': 1581.723999888973, 'cost_usd': 211.97768039135633, 'mean_clg_sp_occupied': 23.558333333333334, 'overheat_Kh': 0.8758811507090032}
+{'run': 'retro_live_2', 'building': 'retrofit', 'decisions': 'live (new draw) 2', 'energy_kWh': 1590.9552541538296, 'cost_usd': 213.18552113453524, 'mean_clg_sp_occupied': 23.308333333333334, 'overheat_Kh': 0.6683158789834511} {'run': 'retro_replay_2', 'building': 'retrofit', 'decisions': 'replay of live 2', 'energy_kWh': 1591.1931693156992, 'cost_usd': 212.88659603168654, 'mean_clg_sp_occupied': 23.433333333333334, 'overheat_Kh': 0.7043198394950307}
+{'run': 'retro_live_3', 'building': 'retrofit', 'decisions': 'live (new draw) 3', 'energy_kWh': 1597.5899815887922, 'cost_usd': 213.09334946428052, 'mean_clg_sp_occupied': 23.216666666666665, 'overheat_Kh': 0.6548894960023626} {'run': 'retro_replay_3', 'building': 'retrofit', 'decisions': 'replay of live 3', 'energy_kWh': 1588.1535712907585, 'cost_usd': 213.40449395393173, 'mean_clg_sp_occupied': 23.416666666666668, 'overheat_Kh': 1.033419951129754}
+{'run': 'retro_live_4', 'building': 'retrofit', 'decisions': 'live (new draw) 4', 'energy_kWh': 1594.8660353036128, 'cost_usd': 215.1520438764152, 'mean_clg_sp_occupied': 23.308333333333334, 'overheat_Kh': 0.650666598691493} {'run': 'retro_replay_4', 'building': 'retrofit', 'decisions': 'replay of live 4', 'energy_kWh': 1593.2064746880371, 'cost_usd': 213.76210850291318, 'mean_clg_sp_occupied': 23.308333333333334, 'overheat_Kh': 0.6329302560774348}
+{'run': 'retro_live_5', 'building': 'retrofit', 'decisions': 'live (new draw) 5', 'energy_kWh': 1585.2454721421134, 'cost_usd': 212.17478643300484, 'mean_clg_sp_occupied': 23.441666666666666, 'overheat_Kh': 0.7019310589208212} {'run': 'retro_replay_5', 'building': 'retrofit', 'decisions': 'replay of live 5', 'energy_kWh': 1593.1578103594954, 'cost_usd': 212.66254248642957, 'mean_clg_sp_occupied': 23.358333333333334, 'overheat_Kh': 0.5979620284802092}
+{
+  "live_runs": 5,
+  "live_energy_kWh_mean": 1738.221098923966,
+  "live_energy_kWh_std": 4.977136608151857,
+  "live_energy_kWh_range": 11.824671563354741,
+  "live_cost_range_usd": 1.8711318680728652,
+  "live_clg_sp_mean_range": 0.25,
+  "replay_max_abs_diff": {
+    "office.P_facility": 0.0,
+    "office.T_core_zn": 0.0,
+    "ai.clg_sp": 0.0,
+    "grid.E_import": 0.0,
+    "grid.cost": 0.0
+  },
+  "live1_vs_live2_max_abs_diff": {
+    "office.P_facility": 6197.287693196513,
+    "office.T_core_zn": 3.9994591647015127,
+    "ai.clg_sp": 4.0,
+    "grid.E_import": 10.730629852020911,
+    "grid.cost": 1.146454066906017
+  },
+  "retrofit_savings_live_pct": [
+    8.827205916894364,
+    8.573898908029387,
+    8.008209123175547,
+    8.448933648418787,
+    8.99898355220924
+  ],
+  "retrofit_savings_replay_pct": [
+    8.58281340775453,
+    8.560226835490836,
+    8.551572747615232,
+    8.544198417162907,
+    8.544775776244107
+  ],
+  "retrofit_savings_live_mean": 8.571446229745465,
+  "retrofit_savings_live_std": 0.3809371884252506,
+  "retrofit_savings_replay_mean": 8.556717436853523,
+  "retrofit_savings_replay_std": 0.015961770856838742,
+  "messages_recorded_live_1": 672
+}

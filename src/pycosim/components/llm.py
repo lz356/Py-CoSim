@@ -53,6 +53,7 @@ __all__ = [
     "OpenAIBackend",
     "OllamaBackend",
     "OfflineStandInBackend",
+    "StochasticStandInBackend",
     "FaultInjectionBackend",
     "RecordingBackend",
     "ReplayBackend",
@@ -229,6 +230,53 @@ class OfflineStandInBackend(LLMBackend):
             sp["clg_sp"] += 1.0
         sp["reason"] = f"rule profile '{profile}'" + (" (unoccupied setback)" if occupied is False else "")
         return json.dumps(sp)
+
+
+class StochasticStandInBackend(LLMBackend):
+    """Imitates two properties of hosted LLMs: sampled answers and variable latency.
+
+    **This is not a language model.** It asks ``inner`` (default:
+    :class:`OfflineStandInBackend`) for an answer, adds a random offset to
+    every numeric set-point (normal with standard deviation ``spread``,
+    rounded to 0.5 like a model that prefers round numbers) and waits a
+    log-normally distributed time (median ``latency_s``, shape
+    ``latency_sigma``) before answering. With ``seed=None`` the draws are not
+    reproducible -- like a hosted LLM sampled at a temperature above zero. It
+    is meant for testing record/replay, asynchronous execution and
+    guardrails without an API key or cost.
+    """
+
+    name = "stochastic-stand-in"
+
+    def __init__(self, inner: Optional[LLMBackend] = None, spread: float = 1.0, latency_s: float = 0.0,
+                 latency_sigma: float = 0.5, seed: Optional[int] = None):
+        import threading
+
+        self.inner = inner if inner is not None else OfflineStandInBackend()
+        self.spread = float(spread)
+        self.latency_s = float(latency_s)
+        self.latency_sigma = float(latency_sigma)
+        self.rng = np.random.default_rng(seed)
+        self._lock = threading.Lock()
+
+    def complete(self, system: str, prompt: str) -> str:
+        with self._lock:
+            noise = self.rng.normal(0.0, self.spread, size=8) if self.spread > 0 else np.zeros(8)
+            wait = float(self.latency_s * np.exp(self.rng.normal(0.0, self.latency_sigma))) if self.latency_s > 0 else 0.0
+        if wait > 0:
+            time.sleep(wait)
+        data = extract_json(self.inner.complete(system, prompt)) or {}
+        i = 0
+        for key, value in list(data.items()):
+            if isinstance(value, (int, float)) and not isinstance(value, bool):
+                data[key] = round((float(value) + noise[i % len(noise)]) * 2.0) / 2.0
+                i += 1
+        if "reason" in data:
+            data["reason"] = str(data["reason"]) + " (sampled)"
+        return json.dumps(data)
+
+    def describe(self) -> str:
+        return (f"stochastic({self.inner.describe()}, spread={self.spread:g}, latency={self.latency_s:g}s)")
 
 
 class FaultInjectionBackend(LLMBackend):

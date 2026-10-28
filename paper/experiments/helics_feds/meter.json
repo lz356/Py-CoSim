@@ -1,0 +1,12 @@
+{
+  "name": "meter",
+  "coreType": "zmq",
+  "coreInitString": "--federates=1",
+  "period": 900,
+  "wait_for_current_time_update": true,
+  "terminate_on_error": true,
+  "subscriptions": [
+    {"key": "building/P_facility", "type": "double", "unit": "W"},
+    {"key": "controller/price", "type": "double", "unit": "$/kWh"}
+  ]
+}

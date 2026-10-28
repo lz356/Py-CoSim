@@ -34,6 +34,7 @@ from datetime import datetime
 from typing import Any, Callable, ClassVar, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple, Union
 
 from .errors import ConfigurationError
+from .messages import Message
 from .timeutils import DurationLike, parse_duration
 
 __all__ = ["Port", "PortRef", "Inputs", "Component", "FunctionComponent", "component", "HOLD"]
@@ -564,8 +565,14 @@ def coerce_outputs(comp: Component, result: Any) -> Optional[Dict[str, Any]]:
     if result is None:
         return None
     ports = comp.output_ports
-    from .messages import Message
-
+    if type(result) is dict:  # fast path for the common case
+        for key in result:
+            if key not in ports:
+                unknown = [k for k in result if k not in ports]
+                raise ConfigurationError(
+                    f"Component '{comp.name}' returned unknown outputs {unknown}; declared outputs are {list(ports)}"
+                )
+        return result
     if isinstance(result, Message):
         if len(ports) == 1:
             return {next(iter(ports)): result}
