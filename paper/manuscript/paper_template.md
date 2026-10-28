@@ -1,10 +1,12 @@
 ---
 title: Py-CoSim: time-aware message-based co-simulation of building energy and artificial intelligence models
 author: Liang Zhang | 1,2 | corresponding
-author: Saquib Mohammed Haroon | 1
-author: Alyssa Ryan | 1
+author: Saquib Mohammed Haroon | 3
+author: Alyssa Ryan | 4
 affiliation: 1 | University of Arizona, Tucson, Arizona, USA
-affiliation: 2 | National Renewable Energy Laboratory, Golden, Colorado, USA
+affiliation: 2 | National Laboratory of the Rockies (formerly National Renewable Energy Laboratory), Golden, Colorado, USA
+affiliation: 3 | AAA Foundation for Traffic Safety, Washington, DC, USA
+affiliation: 4 | Michigan State University, East Lansing, Michigan, USA
 email: liangzhang1@arizona.edu
 keywords: co-simulation; EnergyPlus; time semantics; large language models; reproducibility; grid-interactive buildings
 bibliography: references.ris
