@@ -1,0 +1,21 @@
+﻿{'sizing': 'default', 'timesteps_per_hour': 60, 'facility_kWh': 2077.602577254548, 'total_cooling_capacity_kW': 54.526759899999995, 'wall_s': 36.50746999983676}
+{'sizing': 'default', 'timesteps_per_hour': 12, 'facility_kWh': 1847.565340769498, 'total_cooling_capacity_kW': 35.66141856, 'wall_s': 18.960306499851868}
+{'sizing': 'default', 'timesteps_per_hour': 4, 'facility_kWh': 1813.6840113098513, 'total_cooling_capacity_kW': 33.117545559999996, 'wall_s': 7.334235900081694}
+{'sizing': 'default', 'timesteps_per_hour': 2, 'facility_kWh': 1801.2146961425246, 'total_cooling_capacity_kW': 32.25822159, 'wall_s': 6.923043000046164}
+{'sizing': 'default', 'timesteps_per_hour': 1, 'facility_kWh': 1778.4102067875888, 'total_cooling_capacity_kW': 31.03635865, 'wall_s': 6.121608899906278}
+{'sizing': 'fixed-90min', 'timesteps_per_hour': 60, 'facility_kWh': 1824.6671244307543, 'total_cooling_capacity_kW': 33.469498460000004, 'wall_s': 44.41801400016993}
+{'sizing': 'fixed-90min', 'timesteps_per_hour': 12, 'facility_kWh': 1813.0758409814246, 'total_cooling_capacity_kW': 33.11359289, 'wall_s': 11.042791899992153}
+{'sizing': 'fixed-90min', 'timesteps_per_hour': 4, 'facility_kWh': 1813.6840113098513, 'total_cooling_capacity_kW': 33.117545559999996, 'wall_s': 5.883064500056207}
+{'sizing': 'fixed-90min', 'timesteps_per_hour': 2, 'facility_kWh': 1815.0524538413765, 'total_cooling_capacity_kW': 33.12027936, 'wall_s': 4.791089500067756}
+{'sizing': 'fixed-90min', 'timesteps_per_hour': 1, 'facility_kWh': 1812.440742154344, 'total_cooling_capacity_kW': 32.95680286, 'wall_s': 4.401523699983954}
+        sizing  timesteps_per_hour  facility_kWh  total_cooling_capacity_kW  wall_s  diff_vs_60_pct
+0      default                  60      2077.603                     54.527  36.507           0.000
+1      default                  12      1847.565                     35.661  18.960         -11.072
+2      default                   4      1813.684                     33.118   7.334         -12.703
+3      default                   2      1801.215                     32.258   6.923         -13.303
+4      default                   1      1778.410                     31.036   6.122         -14.401
+5  fixed-90min                  60      1824.667                     33.469  44.418           0.000
+6  fixed-90min                  12      1813.076                     33.114  11.043          -0.635
+7  fixed-90min                   4      1813.684                     33.118   5.883          -0.602
+8  fixed-90min                   2      1815.052                     33.120   4.791          -0.527
+9  fixed-90min                   1      1812.441                     32.957   4.402          -0.670

@@ -1,0 +1,41 @@
+{
+  "live_runs": 5,
+  "live_energy_kWh_mean": 1738.221098923966,
+  "live_energy_kWh_std": 4.977136608151857,
+  "live_energy_kWh_range": 11.824671563354741,
+  "live_cost_range_usd": 1.8711318680728652,
+  "live_clg_sp_mean_range": 0.25,
+  "replay_max_abs_diff": {
+    "office.P_facility": 0.0,
+    "office.T_core_zn": 0.0,
+    "ai.clg_sp": 0.0,
+    "grid.E_import": 0.0,
+    "grid.cost": 0.0
+  },
+  "live1_vs_live2_max_abs_diff": {
+    "office.P_facility": 6197.287693196513,
+    "office.T_core_zn": 3.9994591647015127,
+    "ai.clg_sp": 4.0,
+    "grid.E_import": 10.730629852020911,
+    "grid.cost": 1.146454066906017
+  },
+  "retrofit_savings_live_pct": [
+    8.827205916894364,
+    8.573898908029387,
+    8.008209123175547,
+    8.448933648418787,
+    8.99898355220924
+  ],
+  "retrofit_savings_replay_pct": [
+    8.58281340775453,
+    8.560226835490836,
+    8.551572747615232,
+    8.544198417162907,
+    8.544775776244107
+  ],
+  "retrofit_savings_live_mean": 8.571446229745465,
+  "retrofit_savings_live_std": 0.3809371884252506,
+  "retrofit_savings_replay_mean": 8.556717436853523,
+  "retrofit_savings_replay_std": 0.015961770856838742,
+  "messages_recorded_live_1": 672
+}

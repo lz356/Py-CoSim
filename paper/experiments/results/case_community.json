@@ -1,0 +1,40 @@
+{
+  "cost_naive_vs_aligned_pct": {
+    "baseline": 0.46432380628109726,
+    "precool": 1.3940955797039134,
+    "battery": -1.4884252298955514,
+    "coordinated": -3.303639651543544
+  },
+  "on_peak_naive_vs_aligned_pct": {
+    "baseline": 1.139126455280115,
+    "precool": 4.274007343885877,
+    "battery": -4.427982069543379,
+    "coordinated": -17.32818632174603
+  },
+  "savings_aligned_pct": {
+    "baseline": -0.0,
+    "precool": 12.416301051729262,
+    "battery": 19.62828517581131,
+    "coordinated": 30.115548166539398
+  },
+  "savings_naive_pct": {
+    "baseline": -0.0,
+    "precool": 11.605736186423588,
+    "battery": 21.190489376393284,
+    "coordinated": 32.73659861312711
+  },
+  "on_peak_reduction_aligned_pct": {
+    "baseline": -0.0,
+    "precool": 27.827324700342395,
+    "battery": 55.38281272349168,
+    "coordinated": 79.54318533611722
+  },
+  "on_peak_reduction_naive_pct": {
+    "baseline": -0.0,
+    "precool": 25.59028006285994,
+    "battery": 57.83872402455007,
+    "coordinated": 83.27845978488972
+  },
+  "components_coordinated": 18,
+  "mean_wall_s": 30.18121323751984
+}

@@ -26,6 +26,17 @@ class Results:
         Start/end, step, wall time, versions, connections, ...
     error : str or None
         Text of the error report if the run failed.
+    messages : pandas.DataFrame or None
+        Every message of the recorded components (``record=...``): value,
+        validity interval, quality flag and originating step.
+    quality : pandas.DataFrame
+        Number of messages per port that were clipped, replaced by a fallback,
+        late or replayed.
+    alignment : pandas.DataFrame
+        For every input read with ``at``/``past``/``ahead``: how often TIDE
+        had to extrapolate because no message covered the whole window yet.
+    trace : pandas.DataFrame or None
+        Which messages each component read at each step (``trace=True``).
     """
 
     def __init__(
@@ -36,6 +47,11 @@ class Results:
         meta: Dict[str, Any],
         error: Optional[str] = None,
         units: Optional[Dict[str, Optional[str]]] = None,
+        *,
+        messages: Optional[pd.DataFrame] = None,
+        quality: Optional[pd.DataFrame] = None,
+        alignment: Optional[pd.DataFrame] = None,
+        trace: Optional[pd.DataFrame] = None,
     ):
         self.df = df
         self.events = events
@@ -43,6 +59,11 @@ class Results:
         self.meta = meta
         self.error = error
         self.units = units or {}
+        self.messages = messages
+        self.quality = quality if quality is not None else pd.DataFrame(columns=["ref", "quality", "messages"])
+        self.alignment = alignment if alignment is not None else pd.DataFrame()
+        self.trace = trace
+        self._raw_messages: Optional[List[Dict[str, Any]]] = None
 
     # ------------------------------------------------------------- accessors
     def __getitem__(self, key: Union[str, Sequence[str]]):
@@ -91,9 +112,62 @@ class Results:
     def __repr__(self) -> str:
         return self.summary()
 
+    # ------------------------------------------------------------ provenance
+    def lineage(self, ref: str, when: Any = None, depth: int = 4) -> pd.DataFrame:
+        """Trace a message back through the messages that produced it.
+
+        Needs a run made with ``trace=True``. Returns one row per link: the
+        message (``ref`` and its index), the input of its producer that read
+        another message, and that message. ``when`` selects the last message
+        of ``ref`` published at or before that time (default: the last one).
+        """
+        if self.trace is None or self.messages is None:
+            raise ValueError("lineage() needs a run made with CoSimulation(..., trace=True)")
+        msgs = self.messages
+        own = msgs[msgs["ref"] == ref]
+        if own.empty:
+            raise KeyError(f"No messages recorded for {ref!r}")
+        if when is not None:
+            own = own[own["time"] <= pd.Timestamp(when)]
+            if own.empty:
+                raise KeyError(f"No message of {ref!r} at or before {when}")
+        start_idx = int(own["index"].iloc[-1])
+        lookup = msgs.set_index(["ref", "index"]).sort_index()
+        trace = self.trace
+        rows: List[Dict[str, Any]] = []
+        seen = set()
+        frontier = [(ref, start_idx, 0)]
+        while frontier:
+            r, i, level = frontier.pop(0)
+            if (r, i) in seen or level >= depth:
+                continue
+            seen.add((r, i))
+            try:
+                row = lookup.loc[(r, i)]
+            except KeyError:
+                continue
+            origin, t_msg, value = int(row["origin_step"]), row["time"], row["value"]
+            producer = r.split(".", 1)[0]
+            reads = trace[(trace["consumer"] == producer) & (trace["step"] == origin)]
+            for read in reads.itertuples(index=False):
+                first, last = int(read.first_index), int(read.last_index)
+                if first < 0:
+                    continue
+                for j in range(first, last + 1):
+                    try:
+                        src = lookup.loc[(read.source, j)]
+                    except KeyError:
+                        continue
+                    rows.append({"level": level, "message": r, "index": i, "time": t_msg, "value": value,
+                                 "via_input": f"{producer}.{read.input}", "source": read.source, "source_index": j,
+                                 "source_time": src["time"], "source_value": src["value"]})
+                    frontier.append((read.source, j, level + 1))
+        return pd.DataFrame(rows, columns=["level", "message", "index", "time", "value", "via_input", "source",
+                                           "source_index", "source_time", "source_value"])
+
     # ------------------------------------------------------------------- I/O
     def save(self, folder: Union[str, Path]) -> Path:
-        """Write ``timeseries.csv``, ``events.csv``, ``timing.csv`` and ``meta.json``."""
+        """Write ``timeseries.csv``, ``events.csv``, ``timing.csv``, ``meta.json`` and the TIDE tables."""
         folder = Path(folder)
         folder.mkdir(parents=True, exist_ok=True)
         self.df.to_csv(folder / "timeseries.csv")
@@ -103,6 +177,19 @@ class Results:
             json.dump({**self.meta, "units": self.units}, fh, indent=2, default=str)
         if self.error:
             (folder / "error_report.txt").write_text(self.error, encoding="utf-8")
+        if self.quality is not None and len(self.quality):
+            self.quality.to_csv(folder / "quality.csv", index=False)
+        if self.alignment is not None and len(self.alignment):
+            self.alignment.to_csv(folder / "alignment.csv", index=False)
+        if self.trace is not None:
+            self.trace.to_csv(folder / "trace.csv", index=False)
+        if self._raw_messages is not None:
+            from .replay import _jsonable
+
+            with open(folder / "messages.jsonl", "w", encoding="utf-8") as fh:
+                for rec in self._raw_messages:
+                    fh.write(json.dumps({**rec, "value": _jsonable(rec["value"])}))
+                    fh.write("\n")
         return folder
 
     @classmethod
@@ -115,7 +202,16 @@ class Results:
         meta = json.loads((folder / "meta.json").read_text(encoding="utf-8")) if (folder / "meta.json").exists() else {}
         err = (folder / "error_report.txt").read_text(encoding="utf-8") if (folder / "error_report.txt").exists() else None
         units = meta.pop("units", {}) or {}
-        return cls(df, events, timing, meta, err, units)
+        quality = pd.read_csv(folder / "quality.csv") if (folder / "quality.csv").exists() else None
+        alignment = pd.read_csv(folder / "alignment.csv") if (folder / "alignment.csv").exists() else None
+        trace = pd.read_csv(folder / "trace.csv") if (folder / "trace.csv").exists() else None
+        res = cls(df, events, timing, meta, err, units, quality=quality, alignment=alignment, trace=trace)
+        if (folder / "messages.jsonl").exists():
+            with open(folder / "messages.jsonl", "r", encoding="utf-8") as fh:
+                raw = [json.loads(line) for line in fh if line.strip()]
+            res._raw_messages = raw
+            res.messages = _messages_frame(raw, meta)
+        return res
 
     # -------------------------------------------------------------- plotting
     def plot(
@@ -147,3 +243,24 @@ class Results:
         fig.autofmt_xdate()
         fig.tight_layout()
         return fig
+
+
+def _messages_frame(raw: List[Dict[str, Any]], meta: Dict[str, Any]) -> pd.DataFrame:
+    """Rebuild the messages table from ``messages.jsonl`` records."""
+    from .messages import QUALITY_NAMES
+
+    start = pd.Timestamp(meta.get("start")) if meta.get("start") else pd.Timestamp(0)
+    step_s = float(meta.get("step_s") or 1.0)
+    rows = []
+    for r in raw:
+        end = r.get("end_s")
+        rows.append({
+            "ref": r["ref"], "index": r["i"], "step": r["step"],
+            "time": start + pd.Timedelta(seconds=r["step"] * step_s), "value": r["value"],
+            "start": start + pd.Timedelta(seconds=r["start_s"]),
+            "end": None if end is None else start + pd.Timedelta(seconds=end),
+            "quality": QUALITY_NAMES.get(r.get("quality", 0), str(r.get("quality"))),
+            "origin_step": r.get("origin", r["step"]),
+        })
+    return pd.DataFrame(rows, columns=["ref", "index", "step", "time", "value", "start", "end", "quality",
+                                       "origin_step"])

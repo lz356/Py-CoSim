@@ -12,6 +12,21 @@ output port. Built-in components do not take a `step_size=` argument; set
 `comp.step_size = "1h"` after creating one to make it run slower (see
 [Writing components](writing-components.md#step-sizes)).
 
+**Time meaning of the outputs.** Every library output declares what its value means in time
+(its [kind](tide.md#the-five-kinds-what-a-time-stamp-means)), so TIDE can align it for
+readers with another step size or timing convention (`read="past"` etc.):
+
+| Kind | Library outputs |
+|---|---|
+| `instant` — the state at `t` | `EPWWeather` (all fields, solar angles), `RCBuilding.T_zone`/`T_mass`, `PVSystem.P_ac`/`POA` |
+| `average`, `interval="past"` — mean over the step that ended, `[t-h, t)` | `RCBuilding.Q_cool`/`Q_heat`/`P_hvac`/`P_elec`, `GridMeter.P_import`/`P_export`, EnergyPlus sensors and W/kW meters |
+| `average`, `interval="ahead"` — mean over the step that starts, `[t, t+h)` | `Battery.P`, `HouseholdOccupancy` outputs (15-minute diary slots) |
+| `hold` — valid from `t` until replaced | `TimeOfUseTariff.price`/`is_peak`, `Constant`, `DailyProfile` (default), the controllers' set-points and `P_set`, `LLMSupervisor` set-points, `ExternalAgent` actions |
+| untyped (behaves like `hold`) | `Battery.soc`/`energy`, `GridMeter.E_import`/`E_export`/`cost`/`peak` (running totals), `LLMSupervisor.valid`/`latency`/`reason`, `TimeSeriesSource` (unless you pass `kind=`) |
+
+`describe()` shows the kind next to each port, e.g. `P_elec [W] (average/past)`. To change
+one, use `comp.set_port("port", kind=..., interval=...)`.
+
 | Group | Components |
 |---|---|
 | [Weather and data](#weather-and-data) | `EPWWeather`, `TimeSeriesSource`, `DailyProfile`, `Constant` |
@@ -46,7 +61,7 @@ EPWWeather(name, path, fields=None, interpolate=True, solar=True)
 Available fields: `T_out` [C], `T_dew` [C], `RH` [%], `pressure` [Pa], `IR_horizontal`,
 `GHI`, `DNI`, `DHI` [W/m2], `wind_direction` [deg], `wind_speed` [m/s], `sky_cover`
 [tenths], `precipitation` [mm]. Out: the chosen fields, plus `solar_zenith`, `solar_azimuth`
-[deg, azimuth clockwise from north] if `solar=True`.
+[deg, azimuth clockwise from north] if `solar=True` — all `instant`.
 
 The value at `t` equals what EnergyPlus reports at `t` (EPW record *h* describes the hour
 ending at *h*:00). The EPW year is ignored: data are mapped by month, day and hour onto any
@@ -63,7 +78,8 @@ sim.connect("weather.T_out", "house.T_out")
 Plays back measured or pre-computed data: each column becomes an output port.
 
 ```python
-TimeSeriesSource(name, data, method="previous", repeat_yearly=False, columns=None, units=None)
+TimeSeriesSource(name, data, method="previous", repeat_yearly=False, columns=None, units=None,
+                 kind=None, interval=None)
 ```
 
 | Parameter | Default | Meaning |
@@ -73,6 +89,7 @@ TimeSeriesSource(name, data, method="previous", repeat_yearly=False, columns=Non
 | `repeat_yearly` | `False` | map the simulation time onto the data's year (typical-year data) |
 | `columns` | `None` | use only these columns |
 | `units` | `None` | `{column: unit}` for plots |
+| `kind`, `interval` | `None` | time meaning of every published value, e.g. `kind="instant"` for measured temperatures, `kind="hold"` for prices ([kinds](tide.md#the-five-kinds-what-a-time-stamp-means)) |
 
 Before the first sample the first value is used, after the last sample the last value.
 
@@ -87,7 +104,7 @@ sim.connect("rtp.price", "controller.price")
 A value that follows a 24-hour profile, optionally with a different weekend profile.
 
 ```python
-DailyProfile(name, profile, weekend=None, output="value", unit=None)
+DailyProfile(name, profile, weekend=None, output="value", unit=None, kind="hold")
 ```
 
 `profile` is either 24 hourly values or a dict of change points `{hour: value}` (the last
@@ -139,8 +156,9 @@ RCBuilding(name, floor_area=100.0, *, H_ae=None, H_me=None, H_am=None, C_air=Non
 
 In: `T_out` [25.0], `GHI` [0.0], `Q_int` [0.0, W internal gains], `clg_sp` [None], `htg_sp`
 [None]. Out: `T_zone`, `T_mass` [C], `Q_cool`, `Q_heat` [W thermal], `P_hvac`, `P_elec` [W
-electric; `P_elec = P_hvac + base_load`]. Outputs at `t` are the state at `t` and the average
-HVAC power over the previous step. The ideal HVAC keeps the air temperature at the end of
+electric; `P_elec = P_hvac + base_load`]. Outputs at `t` are the state at `t` (temperatures:
+`instant`) and the average powers over the previous step (`average`, `interval="past"`), like
+EnergyPlus. The ideal HVAC keeps the air temperature at the end of
 each step between the set-points, within capacity.
 
 ```python
@@ -177,7 +195,7 @@ PVSystem(name, capacity_kw, tilt=20.0, azimuth=180.0, losses=0.14, temp_coeff=-0
 | `albedo` | 0.2 | ground reflectance |
 
 In: `GHI`, `DNI`, `DHI` [0.0], `T_out` [25.0], `solar_zenith` [90.0], `solar_azimuth`
-[180.0] — all provided by `EPWWeather`. Out: `P_ac` [W], `POA` [W/m2].
+[180.0] — all provided by `EPWWeather`. Out: `P_ac` [W], `POA` [W/m2], both `instant`.
 
 ```python
 pv = sim.add(PVSystem("pv", capacity_kw=6))
@@ -195,8 +213,9 @@ Battery(name, capacity_kwh, max_charge_kw, max_discharge_kw=None, eff_charge=0.9
 ```
 
 `max_discharge_kw` defaults to `max_charge_kw`. In: `P_set` [0.0, W; **positive = charge**,
-negative = discharge]. Out: `P` [W, the power actually exchanged after limits], `soc` [-],
-`energy` [kWh stored].
+negative = discharge]. Out: `P` [W, the power actually exchanged after limits, `average` over
+the step that *starts*, `interval="ahead"`], `soc` [-] and `energy` [kWh stored], both at the
+end of that step.
 
 The battery is a feedthrough component: at `t` it applies `P_set` over `[t, t + step)` and
 reports the resulting SOC. A dispatch controller that reads `soc` and writes `P_set`
@@ -206,8 +225,12 @@ therefore forms a loop — connect `soc` with `delay=True`:
 sim.add(Battery("battery", capacity_kwh=500, max_charge_kw=125))
 sim.connect("dispatch.P_set", "battery.P_set")
 sim.connect("battery.soc", "dispatch.soc", delay=True)
-sim.connect(["net_load.P_net", "battery.P"], "grid.P_net", reduce="sum")
+sim.connect("battery.P", "grid.P_bat")    # GridMeter: aligned with the building's power
 ```
+
+Because `P` describes the coming step while EnergyPlus and `RCBuilding` powers describe the
+step that ended, connect it to the meter's `P_bat` input (read `past`, so TIDE lines the two
+up) rather than adding it to `P_net`.
 
 ### TimeOfUseTariff
 
@@ -224,7 +247,9 @@ TimeOfUseTariff(name, peak_hours=(16, 21), peak_price=0.30, offpeak_price=0.10,
 | `weekdays_only` | `True` | weekends are off-peak all day |
 | `months` | `None` | months in which the peak and shoulder windows apply, e.g. `range(5, 11)`; other months are off-peak |
 
-Out: `price` [$/kWh], `is_peak` [0/1].
+Out: `price` [$/kWh], `is_peak` [0/1], both `hold` (valid from `t` until the next value).
+To let consumers subscribe without naming the tariff, give the price a topic:
+`tariff.set_port("price", topic="grid/price")` ([topics](tide.md#patterns-and-topics)).
 
 ### GridMeter
 
@@ -232,20 +257,56 @@ The point of connection to the grid: splits import/export and integrates energy,
 peak demand.
 
 ```python
-GridMeter(name, demand_window="15min")
+GridMeter(name, demand_window="15min", aligned=True)
 ```
 
-In: `P_net` [0.0, W; positive = import], `price` [0.0, $/kWh], `export_price` [0.0, $/kWh].
-Out: `P_import`, `P_export` [W], `E_import`, `E_export` [kWh, cumulative], `cost` [$,
-cumulative, import cost minus export revenue], `peak` [kW, running maximum of the import
-averaged over `demand_window`].
+At each of its steps the meter accounts for the interval that just ended, `[t-h, t)`, with
+the net import `P_net + P_load - P_gen + P_bat`.
+
+| In | Default | Read with `aligned=True` | Meaning |
+|---|---|---|---|
+| `P_load` | 0.0 W | `past` | consumption (connect several with `reduce="sum"` or a pattern) |
+| `P_gen` | 0.0 W | `past` | generation, e.g. PV (positive) |
+| `P_bat` | 0.0 W | `past` | battery power, positive = charging |
+| `P_net` | 0.0 W | `latest` | net import (positive = import), the Py-CoSim 2.0 input; added to the others |
+| `price` | 0.0 $/kWh | `past` | import price |
+| `export_price` | 0.0 $/kWh | `past` | export price |
+
+Out: `P_import`, `P_export` [W, mean over the step that ended: `average`, `interval="past"`],
+`E_import`, `E_export` [kWh, cumulative], `cost` [$, cumulative, import cost minus export
+revenue], `peak` [kW, running maximum of the import averaged over `demand_window`].
+
+With `aligned=True` (the default) each `past` input is the mean over the meter's step that
+just ended, whatever the producers' steps and time meanings are: an EnergyPlus meter
+(`average`/`past`) is used as it is, `Battery.P` (`average`/`ahead`) contributes the power of
+the same interval, PV power (`instant`) is averaged with the trapezoid rule and the price
+(`hold`) is time-weighted — so energy is priced with the tariff of its own interval, also
+for an hourly meter on a 15-minute building ([example](tide.md#alignment-across-step-sizes)).
+`aligned=False` reads every input as the latest value (the Py-CoSim 2.0 meter).
 
 ```python
 sim.add(GridMeter("meter"))
-sim.connect("office.P_facility", "meter.P_net")
-sim.connect("tariff.price", "meter.price")
+sim.subscribe("meter.P_load", "*.P_elec", reduce="sum")    # every building's P_elec
+sim.subscribe("meter.P_gen", "pv.P_ac")
+sim.subscribe("meter.P_bat", "battery.P")
+sim.subscribe("meter.price", "tariff.price")
 # after the run: res["meter.cost"].iloc[-1], res["meter.peak"].iloc[-1]
 ```
+
+**Pitfalls.**
+
+* `P_net` is still read `latest`, but the price is now read `past`. That is right for
+  EnergyPlus meters and `RCBuilding.P_elec` (their value at `t` describes `[t-h, t)`), but
+  power from a component that describes the *coming* step (`Battery.P`, an EV charger written
+  as a feedthrough component) is then priced with the previous step's price. In a one-week
+  test with the smart EV charger of example 09, adding the EV to `P_net` overstated the cost
+  by 3.6 %; connecting house and EV to `P_load` gave the exact cost. Use `P_load`, `P_gen`
+  and `P_bat` for new models.
+* `delay=True` on a connection to an aligned input (the old advice for exact pricing) now
+  raises a `ConfigurationError`; drop it — the `past` read already does the job — or pass
+  `read="latest"` on that connection.
+* At the first step the meter accounts for the interval *before* the start; TIDE fills it
+  with the first known values (one extrapolated read in `res.alignment`).
 
 ---
 
@@ -260,7 +321,7 @@ ThermostatSchedule(name, occupied_hours=(6, 22), cooling=(24.0, 29.4), heating=(
                    weekend_occupied=False)
 ```
 
-`cooling` and `heating` are `(occupied, unoccupied)` pairs. Out: `clg_sp`, `htg_sp`.
+`cooling` and `heating` are `(occupied, unoccupied)` pairs. Out: `clg_sp`, `htg_sp` (`hold`).
 
 ### PrecoolingController
 
@@ -427,7 +488,10 @@ LLMSupervisor(name, backend, intent, setpoints, observations=(), step_size="1h",
 | `occupied_hours` | `None` | adds an `occupied` flag (weekdays within these hours) to the prompt |
 | `decimals` | 2 | rounding of observations in the prompt |
 
-In: one port per observation. Out: one port per set-point (initial = its default), `valid`
+`LLMSupervisor(...).make_async(delay="15min")` lets it think in the background while the
+simulation goes on ([asynchronous components](tide.md#asynchronous-components)).
+
+In: one port per observation. Out: one port per set-point (initial = its default, `hold`), `valid`
 [1 if the LLM answer was used, 0 on fallback], `latency` [s], `reason` [text from the
 model].
 

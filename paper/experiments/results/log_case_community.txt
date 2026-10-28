@@ -1,0 +1,48 @@
+﻿{'strategy': 'baseline', 'coupling': 'aligned', 'wall_s': 29.828, 'load_MWh': np.float64(18.507), 'import_MWh': np.float64(10.629), 'on_peak_import_MWh': np.float64(2.474), 'peak_import_kW': np.float64(131.197), 'energy_cost_$': np.float64(1394.593), 'demand_charge_$': np.float64(1967.96), 'pv_self_consumption_%': np.float64(90.356), 'discomfort_Kh_per_bldg': np.float64(0.0), 'components': 16, 'connections': 21}
+{'strategy': 'precool', 'coupling': 'aligned', 'wall_s': 27.065, 'load_MWh': np.float64(18.246), 'import_MWh': np.float64(10.357), 'on_peak_import_MWh': np.float64(1.786), 'peak_import_kW': np.float64(123.765), 'energy_cost_$': np.float64(1221.437), 'demand_charge_$': np.float64(1856.475), 'pv_self_consumption_%': np.float64(90.47), 'discomfort_Kh_per_bldg': np.float64(3.487), 'components': 16, 'connections': 21}
+{'strategy': 'battery', 'coupling': 'aligned', 'wall_s': 29.637, 'load_MWh': np.float64(18.507), 'import_MWh': np.float64(10.975), 'on_peak_import_MWh': np.float64(1.104), 'peak_import_kW': np.float64(135.294), 'energy_cost_$': np.float64(1120.859), 'demand_charge_$': np.float64(2029.407), 'pv_self_consumption_%': np.float64(90.892), 'discomfort_Kh_per_bldg': np.float64(0.0), 'components': 18, 'connections': 26}
+{'strategy': 'coordinated', 'coupling': 'aligned', 'wall_s': 31.86, 'load_MWh': np.float64(18.246), 'import_MWh': np.float64(10.791), 'on_peak_import_MWh': np.float64(0.506), 'peak_import_kW': np.float64(135.294), 'energy_cost_$': np.float64(974.604), 'demand_charge_$': np.float64(2029.407), 'pv_self_consumption_%': np.float64(90.006), 'discomfort_Kh_per_bldg': np.float64(3.487), 'components': 18, 'connections': 26}
+{'strategy': 'baseline', 'coupling': 'naive', 'wall_s': 32.696, 'load_MWh': np.float64(18.507), 'import_MWh': np.float64(10.632), 'on_peak_import_MWh': np.float64(2.502), 'peak_import_kW': np.float64(135.747), 'energy_cost_$': np.float64(1401.069), 'demand_charge_$': np.float64(2036.207), 'pv_self_consumption_%': np.float64(90.317), 'discomfort_Kh_per_bldg': np.float64(0.0), 'components': 16, 'connections': 20}
+{'strategy': 'precool', 'coupling': 'naive', 'wall_s': 30.915, 'load_MWh': np.float64(18.246), 'import_MWh': np.float64(10.36), 'on_peak_import_MWh': np.float64(1.862), 'peak_import_kW': np.float64(123.724), 'energy_cost_$': np.float64(1238.465), 'demand_charge_$': np.float64(1855.861), 'pv_self_consumption_%': np.float64(90.436), 'discomfort_Kh_per_bldg': np.float64(3.487), 'components': 16, 'connections': 20}
+{'strategy': 'battery', 'coupling': 'naive', 'wall_s': 29.46, 'load_MWh': np.float64(18.507), 'import_MWh': np.float64(10.901), 'on_peak_import_MWh': np.float64(1.055), 'peak_import_kW': np.float64(132.786), 'energy_cost_$': np.float64(1104.176), 'demand_charge_$': np.float64(1991.79), 'pv_self_consumption_%': np.float64(91.742), 'discomfort_Kh_per_bldg': np.float64(0.0), 'components': 18, 'connections': 24}
+{'strategy': 'coordinated', 'coupling': 'naive', 'wall_s': 29.99, 'load_MWh': np.float64(18.246), 'import_MWh': np.float64(10.629), 'on_peak_import_MWh': np.float64(0.418), 'peak_import_kW': np.float64(120.0), 'energy_cost_$': np.float64(942.407), 'demand_charge_$': np.float64(1800.0), 'pv_self_consumption_%': np.float64(91.856), 'discomfort_Kh_per_bldg': np.float64(3.487), 'components': 18, 'connections': 24}
+{
+  "cost_naive_vs_aligned_pct": {
+    "baseline": 0.46432380628109726,
+    "precool": 1.3940955797039134,
+    "battery": -1.4884252298955514,
+    "coordinated": -3.303639651543544
+  },
+  "on_peak_naive_vs_aligned_pct": {
+    "baseline": 1.139126455280115,
+    "precool": 4.274007343885877,
+    "battery": -4.427982069543379,
+    "coordinated": -17.32818632174603
+  },
+  "savings_aligned_pct": {
+    "baseline": -0.0,
+    "precool": 12.416301051729262,
+    "battery": 19.62828517581131,
+    "coordinated": 30.115548166539398
+  },
+  "savings_naive_pct": {
+    "baseline": -0.0,
+    "precool": 11.605736186423588,
+    "battery": 21.190489376393284,
+    "coordinated": 32.73659861312711
+  },
+  "on_peak_reduction_aligned_pct": {
+    "baseline": -0.0,
+    "precool": 27.827324700342395,
+    "battery": 55.38281272349168,
+    "coordinated": 79.54318533611722
+  },
+  "on_peak_reduction_naive_pct": {
+    "baseline": -0.0,
+    "precool": 25.59028006285994,
+    "battery": 57.83872402455007,
+    "coordinated": 83.27845978488972
+  },
+  "components_coordinated": 18,
+  "mean_wall_s": 30.18121323751984
+}

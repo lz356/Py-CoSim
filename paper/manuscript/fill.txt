@@ -1,0 +1,29 @@
+@@ABSTRACT@@ =
+Building energy models are increasingly co-simulated with photovoltaic systems, batteries, tariffs, occupant and machine-learning models, and large language model agents. Co-simulation tools connect such programs but exchange values as numbers stamped with an instant, leaving users to decide which interval each value belongs to, and offer no rules for artificial intelligence (AI) components that answer differently on every call, return invalid values or respond slowly. This paper presents Py-CoSim, an open-source Python co-simulation framework in which components exchange messages through a time-aware hub, TIDE (Time-aware Interval Data Exchange). Each message states whether its value is an instantaneous sample, an interval average, an interval amount, a value held until replaced or an event, and each input declares the window it needs. TIDE aligns the data automatically, flags their quality, records them for exact replay, traces their provenance and delivers the answers of slow components at a declared simulation time. Co-simulated EnergyPlus results were identical to standalone runs. Aligned exchange computed energy and cost exactly when a consumer's step was a multiple of its producer's, whereas exchanging latest values erred by up to 6 %. In a ten-office community with photovoltaics and a battery, naive exchange overstated the battery's peak reduction (peak import 120 kW instead of 135 kW). Replay reproduced runs with a stochastic AI supervisor exactly and cut the spread of a retrofit-savings estimate 24-fold; asynchronous delivery shortened runs with eight slow AI supervisors 2.9-fold without changing results. The code is available at https://github.com/lz356/Py-CoSim.
+====
+@@ACK@@ =
+[Funding and acknowledgements to be added by the authors.]
+====
+@@N_TESTS@@ =
+more than 450
+====
+@@E2A_NAIVE_ENERGY@@ =
+0.19
+====
+@@E2A_ALIGNED_TOU@@ =
+10^−7^
+====
+@@CONCLUSION_LIST@@ =
+1. Co-simulated EnergyPlus results were identical to standalone EnergyPlus (maximum absolute difference zero), including actuation through Python.
+2. Exchanging the latest values charged energy at the wrong price interval and mixed powers of different intervals: cost errors reached 6 % on synthetic signals and 4.8 % (export 8.2 %) in an EnergyPlus case at a 60-min exchange step. Aligned exchange was exact whenever the consumer's step was a multiple of the producer's and reduced the EnergyPlus-case errors to 1.3 % and 0.5 %.
+3. In a community of ten offices with PV and a battery, naive exchange made a peak-shaving controller look as if it had perfect foresight (peak import 120 kW instead of 135 kW) and overstated the cost savings of the coordinated strategy (32.7 % instead of 30.1 %).
+4. The EnergyPlus time step changed the weekly electricity of the test building by up to 14 % through autosizing alone; fixing the sizing window in minutes, or keeping EnergyPlus's own step and exchanging at a coarser step, avoids this pitfall.
+5. Recording the messages of a stochastic AI supervisor made its runs exactly repeatable and reduced the spread of a retrofit-savings estimate from 0.38 to 0.016 percentage points.
+6. Asynchronous delivery with a declared decision delay overlapped slow AI calls (2.9 times faster with eight supervisors) while keeping results independent of their latency.
+7. @@CONCL_OVERHEAD@@
+====
+@@SCALING@@ =
+With EnergyPlus, the master adds little. One building-week took 9.4 ± 0.6 s in Py-CoSim (five repetitions, EnergyPlus in a worker process) against 6.4 ± 0.9 s for the same model run from the EnergyPlus command line; the difference is process start-up, the exchange at each of the 672 steps and Python imports. Because every EnergyPlus instance runs in its own process, buildings advance in parallel: eight buildings took 22 s instead of 74 s when run one after the other (3.4 times faster), and sixteen took 45 s instead of 124 s (2.8 times, limited by the four physical cores), with results identical to the sequential runs.
+====
+@@CONCL_OVERHEAD@@ =
+Aligned reads cost about 15 % more master time than latest-value reads in a stress test without EnergyPlus, and recording every message about 80 %; next to EnergyPlus, whose co-simulation of a building-week took 9.4 s against 6.4 s standalone, these costs are small, and EnergyPlus instances run in parallel (3.4 times faster for eight buildings).

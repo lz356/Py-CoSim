@@ -9,6 +9,7 @@ from .errors import (
     SynchronizationError,
 )
 from .master import CoSimulation
+from .messages import Message
 from .results import Results
 
 __all__ = [
@@ -16,6 +17,7 @@ __all__ = [
     "FunctionComponent",
     "Inputs",
     "Port",
+    "Message",
     "component",
     "Context",
     "CoSimulation",

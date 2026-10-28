@@ -67,9 +67,12 @@ class RCBuilding(Component):
         self.T_init = float(T_init)
         self.T_a = self.T_m = float(T_init)
         self._q_cool = self._q_heat = 0.0
-        for port, unit, init in (("T_zone", "C", self.T_a), ("T_mass", "C", self.T_m), ("Q_cool", "W", 0.0),
-                                 ("Q_heat", "W", 0.0), ("P_hvac", "W", 0.0), ("P_elec", "W", self.base_load)):
-            self.add_output(port, initial=init, unit=unit)
+        # temperatures are states at t; powers are means over the step that just ended (like EnergyPlus)
+        for port, unit, init, kind in (("T_zone", "C", self.T_a, "instant"), ("T_mass", "C", self.T_m, "instant"),
+                                       ("Q_cool", "W", 0.0, "average"), ("Q_heat", "W", 0.0, "average"),
+                                       ("P_hvac", "W", 0.0, "average"), ("P_elec", "W", self.base_load, "average")):
+            self.add_output(port, initial=init, unit=unit, kind=kind,
+                            interval="past" if kind == "average" else None)
 
     def setup(self, ctx) -> None:
         self.T_a = self.T_m = self.T_init

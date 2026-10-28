@@ -71,24 +71,38 @@ class Connection:
     transform: Optional[Callable[[Any], Any]] = None
     reduce: Optional[Callable[[Sequence[Any]], Any]] = None
     label: str = field(default="", compare=False)
+    #: How the target reads the sources (overrides the input port's ``read``).
+    read: Optional[str] = None
+    #: Source names, topics or glob patterns resolved when the simulation is initialized.
+    patterns: List[str] = field(default_factory=list)
 
     def __str__(self) -> str:
-        src = ", ".join(map(str, self.sources))
-        if len(self.sources) > 1:
+        names = [str(s) for s in self.sources] if self.sources else list(self.patterns)
+        if not self.sources and not names:
+            names = ["?"]
+        src = ", ".join(names)
+        if len(names) > 1:
             src = f"[{src}]"
         extra = " (delayed)" if self.delay else ""
+        if self.read and self.read != "latest":
+            extra += f" (read={self.read})"
         return f"{src} -> {self.target}{extra}"
 
 
-def build_execution_order(components: Sequence[Component], connections: Sequence[Connection]) -> List[Component]:
+def build_execution_order(components: Sequence[Component], connections: Sequence[Connection],
+                          instantaneous: Optional[Callable[[Connection, PortRef], bool]] = None) -> List[Component]:
     """Topologically sort feedthrough components (Kahn's algorithm).
 
     Ties are broken by ``(priority, insertion order)`` so the schedule is
-    deterministic and controllable.
+    deterministic and controllable. ``instantaneous(conn, source)`` may say
+    that a link does not need the source's value of the *current* step (e.g. a
+    ``read="past"`` link to a value that only becomes valid at ``t``), in
+    which case it imposes no ordering.
     """
     feed = [c for c in components if c.direct_feedthrough]
     index = {c.name: i for i, c in enumerate(components)}
     by_name = {c.name: c for c in feed}
+    delayed_out = {c.name for c in feed if getattr(c, "asynchronous", False)}  # outputs appear in a later step
     succ: Dict[str, set] = {c.name: set() for c in feed}
     indeg: Dict[str, int] = {c.name: 0 for c in feed}
     for conn in connections:
@@ -98,8 +112,10 @@ def build_execution_order(components: Sequence[Component], connections: Sequence
         if tgt not in by_name:
             continue
         for src in conn.sources:
-            if src.component not in by_name:
-                continue  # non-feedthrough sources are available before phase 2
+            if src.component not in by_name or src.component in delayed_out:
+                continue  # non-feedthrough and asynchronous sources are available before phase 2
+            if instantaneous is not None and not instantaneous(conn, src):
+                continue
             if src.component == tgt:
                 raise AlgebraicLoopError([tgt])
             if tgt not in succ[src.component]:

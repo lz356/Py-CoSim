@@ -21,6 +21,9 @@ paper/experiments/results/verification/
 paper/experiments/results/scalability/
 paper/experiments/results/case_*/
 paper/experiments/results/overhead/
+paper/experiments/results/e[0-9]*/
+paper/experiments/results/helics*/
+paper/manuscript/render/
 *.jsonl
 
 # EnergyPlus by-products
@@ -39,3 +42,7 @@ Thumbs.db
 # Secrets
 .env
 *.key
+paper/experiments/helics_feds/*.log
+
+# Author's personal review folder
+Liang's Working Folder/

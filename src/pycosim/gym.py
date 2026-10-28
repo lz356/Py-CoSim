@@ -66,7 +66,7 @@ class ExternalAgent(Component):
         self.bounds: Dict[str, Tuple[float, float]] = {}
         for act, (lo, hi) in actions.items():
             self.bounds[act] = (float(lo), float(hi))
-            self.add_output(act, initial=(float(lo) + float(hi)) / 2.0)
+            self.add_output(act, initial=(float(lo) + float(hi)) / 2.0, kind="hold")
         self.policy = policy
         self.last_action: Optional[Dict[str, float]] = None
 

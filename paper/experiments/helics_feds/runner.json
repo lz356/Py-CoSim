@@ -1,0 +1,9 @@
+{
+  "name": "precooling_tou",
+  "broker": true,
+  "federates": [
+    {"name": "building", "directory": ".", "host": "localhost", "exec": "python building_fed.py"},
+    {"name": "controller", "directory": ".", "host": "localhost", "exec": "python controller_fed.py"},
+    {"name": "meter", "directory": ".", "host": "localhost", "exec": "python meter_fed.py"}
+  ]
+}

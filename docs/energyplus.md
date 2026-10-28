@@ -40,7 +40,7 @@ its outputs and drive its actuators without any special care.
 
 ```python
 pc.EnergyPlusComponent(name, model, weather, *, sensors=None, meters=None, actuators=None,
-                       internal_variables=None, timestep=None, sync_run_period=True,
+                       internal_variables=None, timestep=None, step_size=None, sync_run_period=True,
                        sizing="model", daylight_saving=None, preprocess=None,
                        executor="process", energyplus_dir=None, verbose=False,
                        timeout=600.0, extra_args=None)
@@ -55,7 +55,8 @@ pc.EnergyPlusComponent(name, model, weather, *, sensors=None, meters=None, actua
 | `meters` | `None` | `{output: meter_name}` or `{output: (meter_name, unit)}` |
 | `actuators` | `None` | `{input: (component_type, control_type, key)}` — EMS actuators |
 | `internal_variables` | `None` | `{output: (variable_name, key)}` — static values such as floor area |
-| `timestep` | `None` | EnergyPlus time steps per hour; by default derived from the component's step |
+| `timestep` | `None` | EnergyPlus time steps per hour (its *internal* step); by default derived from the exchange step |
+| `step_size` | `None` | exchange step with the co-simulation (default: the master step, or `3600 / timestep` s); may be a multiple of the EnergyPlus step ([sub-steps](#internal-sub-steps-timestep-and-step_size)) |
 | `sync_run_period` | `True` | rewrite the model's RunPeriod to match the co-simulation window |
 | `sizing` | `"model"` | `"weather_file"` sizes HVAC from the EPW file's extreme periods |
 | `daylight_saving` | `None` | `False` removes DST from the model; `None` keeps it (and logs a note) |
@@ -84,16 +85,23 @@ sensors={
 * A dict also works: `{"variable": "Zone Mean Air Temperature", "key": "Core_ZN"}`.
 * You do **not** need `Output:Variable` objects in the model; Py-CoSim requests the variables.
 * Units are guessed from the name for plots (`Temperature` → C, `Rate`/`Power` → W, …).
+* Every sensor is published as `kind="average"` with `interval="past"` (`"amount"` if its
+  unit is J): EnergyPlus reports time-step values as means (or sums) over the time step that
+  just ended. Give a different [kind](tide.md#the-five-kinds-what-a-time-stamp-means) as a
+  third element, `("Zone Mean Air Temperature", "Core_ZN", "instant")`, or as
+  `{"variable": ..., "key": ..., "kind": "instant"}`. This matters for aligned reads and
+  [sub-steps](#internal-sub-steps-timestep-and-step_size); `latest` readers get the same
+  value either way.
 
 ### Meters
 
 Meters (e.g. `Electricity:Facility`, `Electricity:HVAC`, `Cooling:Electricity`,
 `Cooling:EnergyTransfer:Zone:<zone>`) report energy per time step. Choose the unit:
 
-| Unit | Value published at `t` |
-|---|---|
-| `"J"` (default), `"Wh"`, `"kWh"`, `"MJ"` | energy used during the interval `[t-dt, t)` |
-| `"W"`, `"kW"` | **average power** over the interval `[t-dt, t)` |
+| Unit | Value published at `t` | Kind |
+|---|---|---|
+| `"J"` (default), `"Wh"`, `"kWh"`, `"MJ"` | energy used during the interval `[t-dt, t)` | `amount`, `interval="past"` |
+| `"W"`, `"kW"` | **average power** over the interval `[t-dt, t)` | `average`, `interval="past"` |
 
 ```python
 meters={
@@ -109,7 +117,7 @@ is created.
 
 ### Internal variables
 
-Static model data, read once at the start and published every step:
+Static model data, read once at the start and published every step (as `kind="hold"`):
 
 ```python
 internal_variables={"A_core": ("Zone Floor Area", "Core_ZN")}       # m2
@@ -184,8 +192,10 @@ Py-CoSim makes EnergyPlus follow the master clock:
   makes EnergyPlus run hourly).
 * **`timestep=`** fixes the EnergyPlus time step independently of the master, e.g.
   `timestep=4` with a 5-minute master step: EnergyPlus then exchanges data every 15 minutes
-  (a multi-rate component), while other components run every 5 minutes. The EnergyPlus step
+  (a multi-rate component), while other components run every 5 minutes. The exchange step
   must be a multiple of the master step.
+* **`timestep=` with `step_size=`** lets EnergyPlus run several internal steps per exchange,
+  e.g. `timestep=60, step_size="15min"` (see [below](#internal-sub-steps-timestep-and-step_size)).
 * **`sync_run_period=True`** (default) replaces all RunPeriods with one covering the
   co-simulation window (first day to last day, inclusive) **with the calendar year written
   explicitly**, so weekdays and holidays in EnergyPlus follow the same calendar as `t` in
@@ -204,6 +214,32 @@ Py-CoSim makes EnergyPlus follow the master clock:
   ```
 
 Sizing periods and warm-up days run before the co-simulation starts and are not exchanged.
+
+### Internal sub-steps: `timestep` and `step_size`
+
+```python
+office = pc.EnergyPlusComponent(
+    "office", "examples/models/small_office.idf",
+    "examples/weather/USA_AZ_Tucson.Intl.AP.722740_TMY3.epw",
+    sensors={"T_core": ("Zone Mean Air Temperature", "Core_ZN")},
+    meters={"P_elec": ("Electricity:Facility", "W")},
+    actuators={"clg_sp": ("Schedule:Compact", "Schedule Value", "CLGSETP_SCH")},
+    timestep=60, step_size="15min",          # EnergyPlus at 1 min, exchange every 15 min
+    daylight_saving=False)
+```
+
+EnergyPlus then runs fifteen 1-minute steps between two exchanges. Actuator values are held
+over all of them, and each output is aggregated by its kind: `average` values (sensors, W/kW
+meters) are averaged, `amount` values (J/kWh meters) summed, anything else reports its last
+value. `res.meta["component_metadata"]["office"]["exchange_every_timesteps"]` shows the ratio
+(15 here). Rules: the exchange step must be a whole multiple of `3600 / timestep` seconds, and
+a multiple of the master step.
+
+Use it when the HVAC system or its controls need a short time step but the rest of the
+co-simulation does not. Two things to keep in mind: a sensor such as `Zone Mean Air
+Temperature` is then the *mean* over 15 minutes (declare it `"instant"` to get the last
+1-minute value), and the run is not much faster than a 1-minute exchange, because EnergyPlus
+still computes every minute. More in [Messages and time](tide.md#energyplus-internal-sub-steps).
 
 ## Sizing from the weather file: `sizing="weather_file"`
 

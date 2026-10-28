@@ -34,6 +34,7 @@ from datetime import datetime
 from typing import Any, Callable, ClassVar, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple, Union
 
 from .errors import ConfigurationError
+from .messages import Message
 from .timeutils import DurationLike, parse_duration
 
 __all__ = ["Port", "PortRef", "Inputs", "Component", "FunctionComponent", "component", "HOLD"]
@@ -81,15 +82,71 @@ class Port:
         Free-text unit used in documentation and result metadata (e.g. ``"W"``).
     description : str, optional
         Human-readable description.
+    kind : {"instant", "average", "amount", "hold", "event"}, optional
+        *Outputs:* what a published value means in time (see
+        :mod:`pycosim.core.messages`). ``None`` (untyped) behaves like ``"hold"``.
+    interval : {"past", "ahead"}, optional
+        *Outputs* of kind ``average``/``amount``: whether a value published at
+        ``t`` covers the producer's step that just ended (``[t - h, t)``, the
+        default, as EnergyPlus reports) or the one that starts (``[t, t + h)``).
+    read : {"latest", "at", "past", "ahead"}, optional
+        *Inputs:* what the component needs relative to its own step ``[t, t+h)``:
+        the most recent message (``latest``, default), the value in effect at
+        ``t`` (``at``), or the aggregate over the step that just ended
+        (``past``) or starts (``ahead``). TIDE aligns the source accordingly.
+    bounds : (low, high), optional
+        *Outputs:* valid range. Values outside it are handled by ``on_invalid``
+        and the message is flagged.
+    on_invalid : {"clip", "last", "default", "error"}
+        What TIDE does with an out-of-range or non-finite output (only used when
+        ``bounds`` is given): clip it (non-finite values fall back to the last
+        valid value), keep the last valid value, use the port's initial value,
+        or stop the run.
+    topic : str, optional
+        *Outputs:* a global name (e.g. ``"grid/price"``) consumers can subscribe
+        to without knowing which component publishes it.
     """
 
     name: str
     default: Any = None
     unit: Optional[str] = None
     description: str = ""
+    kind: Optional[str] = None
+    interval: Optional[str] = None
+    read: Optional[str] = None
+    bounds: Optional[Tuple[float, float]] = None
+    on_invalid: str = "clip"
+    topic: Optional[str] = None
 
     def __post_init__(self) -> None:
         _check_name(self.name, "port")
+        from .messages import INTERVALS, KINDS, READS
+
+        if self.kind is not None and self.kind not in KINDS:
+            raise ConfigurationError(f"port {self.name!r}: kind must be one of {KINDS} (got {self.kind!r})")
+        if self.interval is not None and self.interval not in INTERVALS:
+            raise ConfigurationError(f"port {self.name!r}: interval must be one of {INTERVALS}")
+        if self.read is not None and self.read not in READS:
+            raise ConfigurationError(f"port {self.name!r}: read must be one of {READS} (got {self.read!r})")
+        if self.on_invalid not in ("clip", "last", "default", "error"):
+            raise ConfigurationError(f"port {self.name!r}: on_invalid must be 'clip', 'last', 'default' or 'error'")
+        if self.bounds is not None:
+            lo, hi = self.bounds
+            if lo is not None and hi is not None and lo > hi:
+                raise ConfigurationError(f"port {self.name!r}: bounds {self.bounds} are inverted")
+
+    def tags(self) -> str:
+        """Short description of the time meaning, e.g. ``"average/past"`` or ``"read=past"``."""
+        bits = []
+        if self.kind:
+            bits.append(self.kind + (f"/{self.interval}" if self.kind in ("average", "amount") else ""))
+        if self.read and self.read != "latest":
+            bits.append(f"read={self.read}")
+        if self.bounds is not None:
+            bits.append(f"bounds={tuple(self.bounds)}")
+        if self.topic:
+            bits.append(f"topic={self.topic}")
+        return ", ".join(bits)
 
 
 @dataclass(frozen=True)
@@ -134,6 +191,7 @@ class Inputs(dict):
 
 
 PortSpec = Union[Mapping[str, Any], Sequence[Union[str, Port]], str, None]
+_PORT_FIELDS = {"default", "unit", "description", "kind", "interval", "read", "bounds", "on_invalid", "topic"}
 
 
 def _normalize_ports(spec: PortSpec, kind: str) -> Dict[str, Port]:
@@ -148,7 +206,7 @@ def _normalize_ports(spec: PortSpec, kind: str) -> Dict[str, Port]:
             if isinstance(value, Port):
                 port = _copy.copy(value)
                 port.name = name
-            elif isinstance(value, Mapping) and set(value) <= {"default", "unit", "description"}:
+            elif isinstance(value, Mapping) and set(value) <= _PORT_FIELDS:
                 port = Port(name, **value)
             else:
                 port = Port(name, default=value)
@@ -191,6 +249,14 @@ class Component:
     direct_feedthrough: ClassVar[bool] = True
     #: Tie-breaker for the execution order of independent components (lower runs first).
     priority: ClassVar[int] = 0
+    #: Run ``step`` in the background and deliver its outputs ``decision_delay`` later (see :meth:`make_async`).
+    asynchronous: ClassVar[bool] = False
+    #: Simulation time between the inputs an asynchronous component sees and the moment its outputs apply.
+    decision_delay: ClassVar[Optional[DurationLike]] = None
+    #: Wall-clock seconds an asynchronous call may take before ``on_deadline`` applies (None = wait).
+    deadline: ClassVar[Optional[float]] = None
+    #: ``"fallback"`` (keep the previous outputs, flag them ``late``) or ``"error"``.
+    on_deadline: ClassVar[str] = "fallback"
 
     def __init__(
         self,
@@ -210,23 +276,65 @@ class Component:
         self._pc_initialized = True
 
     # ------------------------------------------------------------------ ports
-    def add_input(self, name: str, default: Any = None, unit: Optional[str] = None, description: str = "") -> Port:
+    def add_input(self, name: str, default: Any = None, unit: Optional[str] = None, description: str = "", *,
+                  read: Optional[str] = None) -> Port:
         """Declare an input port at runtime (call from ``__init__``)."""
         self._ensure_ports()
         if name in self.input_ports:
             raise ConfigurationError(f"{self.name}: input {name!r} already exists")
-        port = Port(name, default, unit, description)
+        port = Port(name, default, unit, description, read=read)
         self.input_ports[name] = port
         return port
 
-    def add_output(self, name: str, initial: Any = None, unit: Optional[str] = None, description: str = "") -> Port:
+    def add_output(self, name: str, initial: Any = None, unit: Optional[str] = None, description: str = "", *,
+                   kind: Optional[str] = None, interval: Optional[str] = None,
+                   bounds: Optional[Tuple[float, float]] = None, on_invalid: str = "clip",
+                   topic: Optional[str] = None) -> Port:
         """Declare an output port at runtime (call from ``__init__``)."""
         self._ensure_ports()
         if name in self.output_ports:
             raise ConfigurationError(f"{self.name}: output {name!r} already exists")
-        port = Port(name, initial, unit, description)
+        port = Port(name, initial, unit, description, kind=kind, interval=interval, bounds=bounds,
+                    on_invalid=on_invalid, topic=topic)
         self.output_ports[name] = port
         return port
+
+    def set_port(self, name: str, **attrs: Any) -> Port:
+        """Change metadata of an existing port, e.g. ``comp.set_port("P", kind="average", interval="ahead")``."""
+        self._ensure_ports()
+        port = self.output_ports.get(name) or self.input_ports.get(name)
+        if port is None:
+            raise ConfigurationError(f"{self.name}: no port named {name!r}")
+        unknown = set(attrs) - _PORT_FIELDS
+        if unknown:
+            raise ConfigurationError(f"{self.name}: unknown port attributes {sorted(unknown)}")
+        for key, value in attrs.items():
+            setattr(port, key, value)
+        port.__post_init__()
+        return port
+
+    def make_async(self, delay: Optional[DurationLike] = None, deadline: Optional[float] = None,
+                   on_deadline: str = "fallback") -> "Component":
+        """Run this (feedthrough) component asynchronously.
+
+        At each of its steps the master hands the inputs to a background thread
+        and keeps simulating. The outputs are published ``delay`` later in
+        *simulation* time (default: one master step), whatever the call took in
+        wall-clock time -- so results do not depend on how fast the computer or
+        the remote service is, and several slow components (LLMs, web APIs)
+        overlap. If ``deadline`` (wall-clock seconds) is given and missed, the
+        previous outputs are kept and flagged ``late`` (``on_deadline="fallback"``)
+        or the run stops (``"error"``).
+        """
+        if on_deadline not in ("fallback", "error"):
+            raise ConfigurationError("on_deadline must be 'fallback' or 'error'")
+        if deadline is not None and deadline <= 0:
+            raise ConfigurationError("deadline must be positive (seconds)")
+        self.asynchronous = True
+        self.decision_delay = delay
+        self.deadline = deadline
+        self.on_deadline = on_deadline
+        return self
 
     def __getitem__(self, port: str) -> PortRef:
         """``component["T_zone"]`` returns a :class:`PortRef` usable in ``connect``."""
@@ -286,10 +394,14 @@ class Component:
         """One-paragraph text description of the component's interface."""
         self._ensure_ports()
         kind = "feedthrough" if self.direct_feedthrough else "state-based (no feedthrough)"
+        if self.asynchronous:
+            kind += f", asynchronous (delay={self.decision_delay or 'one step'})"
         lines = [f"{self.name} [{type(self).__name__}, {kind}, step={self.step_size or 'master'}]"]
         for title, ports in (("inputs", self.input_ports), ("outputs", self.output_ports)):
             if ports:
-                desc = ", ".join(f"{p.name}{f' [{p.unit}]' if p.unit else ''}" for p in ports.values())
+                desc = ", ".join(
+                    f"{p.name}{f' [{p.unit}]' if p.unit else ''}{f' ({p.tags()})' if p.tags() else ''}"
+                    for p in ports.values())
                 lines.append(f"  {title}: {desc}")
         return "\n".join(lines)
 
@@ -446,10 +558,27 @@ def normalize_step_size(comp: Component, master_dt: float) -> int:
 
 
 def coerce_outputs(comp: Component, result: Any) -> Optional[Dict[str, Any]]:
-    """Normalize what a component returned into ``{output_name: value}``."""
+    """Normalize what a component returned into ``{output_name: value}``.
+
+    Values may be :class:`pycosim.Message` envelopes; they are passed through.
+    """
     if result is None:
         return None
     ports = comp.output_ports
+    if type(result) is dict:  # fast path for the common case
+        for key in result:
+            if key not in ports:
+                unknown = [k for k in result if k not in ports]
+                raise ConfigurationError(
+                    f"Component '{comp.name}' returned unknown outputs {unknown}; declared outputs are {list(ports)}"
+                )
+        return result
+    if isinstance(result, Message):
+        if len(ports) == 1:
+            return {next(iter(ports)): result}
+        raise ConfigurationError(
+            f"Component '{comp.name}' returned a single Message but declares {len(ports)} outputs; "
+            "return a dict {output: Message(...)}")
     if isinstance(result, Mapping):
         unknown = [k for k in result if k not in ports]
         if unknown:

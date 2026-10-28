@@ -22,7 +22,7 @@ class Constant(Component):
             raise ValueError("Constant needs at least one keyword value")
         self.values = values
         for key, value in values.items():
-            self.add_output(key, initial=value)
+            self.add_output(key, initial=value, kind="hold")
 
     def step(self, t, inputs):
         return dict(self.values)
@@ -44,12 +44,12 @@ class DailyProfile(Component):
 
     def __init__(self, name: str, profile: Union[Sequence[float], Mapping[int, float]],
                  weekend: Optional[Union[Sequence[float], Mapping[int, float]]] = None, output: str = "value",
-                 unit: Optional[str] = None):
+                 unit: Optional[str] = None, kind: Optional[str] = "hold"):
         super().__init__(name)
         self.weekday_profile = self._expand(profile)
         self.weekend_profile = self._expand(weekend) if weekend is not None else self.weekday_profile
         self.output_name = output
-        self.add_output(output, unit=unit)
+        self.add_output(output, unit=unit, kind=kind)
 
     @staticmethod
     def _expand(profile) -> np.ndarray:
@@ -86,7 +86,8 @@ class TimeSeriesSource(Component):
     """
 
     def __init__(self, name: str, data: Union[str, Path, pd.Series, pd.DataFrame], method: str = "previous",
-                 repeat_yearly: bool = False, columns: Optional[Sequence[str]] = None, units: Optional[Dict[str, str]] = None):
+                 repeat_yearly: bool = False, columns: Optional[Sequence[str]] = None, units: Optional[Dict[str, str]] = None,
+                 kind: Optional[str] = None, interval: Optional[str] = None):
         super().__init__(name)
         if isinstance(data, (str, Path)):
             data = pd.read_csv(data, index_col=0, parse_dates=True)
@@ -104,8 +105,8 @@ class TimeSeriesSource(Component):
         self.repeat_yearly = repeat_yearly
         self._t = data.index.values.astype("datetime64[ns]").astype(np.int64).astype(np.float64)
         self._v = {c: data[c].to_numpy(dtype=float) for c in data.columns}
-        for col in data.columns:
-            self.add_output(str(col), unit=(units or {}).get(str(col)))
+        for col in data.columns:  # kind/interval: what each data point means in time (see pycosim.Port)
+            self.add_output(str(col), unit=(units or {}).get(str(col)), kind=kind, interval=interval)
 
     def _map_time(self, t: datetime) -> datetime:
         if not self.repeat_yearly:

@@ -1,0 +1,75 @@
+{
+  "aligned": {
+    "5min": {
+      "cost_err_pct": -0.8195366514163749,
+      "import_err_pct": -0.750733712508167,
+      "building_err_pct": -0.6178990376854987
+    },
+    "15min": {
+      "cost_err_pct": -0.9176491301276735,
+      "import_err_pct": -0.7628033017910485,
+      "building_err_pct": -0.5500676736920118
+    },
+    "30min": {
+      "cost_err_pct": -0.9014131295935202,
+      "import_err_pct": -0.6608511372269144,
+      "building_err_pct": -0.39514746312963034
+    },
+    "60min": {
+      "cost_err_pct": -1.3276210598079485,
+      "import_err_pct": -0.7824240843611219,
+      "building_err_pct": -0.3545904216729956
+    }
+  },
+  "aligned+sub": {
+    "5min": {
+      "cost_err_pct": -0.11576869005988089,
+      "import_err_pct": -0.05468999721429668,
+      "building_err_pct": -2.220446049250313e-14
+    },
+    "15min": {
+      "cost_err_pct": -0.5218348956365415,
+      "import_err_pct": -0.21433752681462304,
+      "building_err_pct": 0.0
+    },
+    "30min": {
+      "cost_err_pct": -0.9323126286217565,
+      "import_err_pct": -0.39291774482366204,
+      "building_err_pct": 0.0
+    },
+    "60min": {
+      "cost_err_pct": -1.7233278539563135,
+      "import_err_pct": -0.9827713784701375,
+      "building_err_pct": 0.0
+    }
+  },
+  "naive": {
+    "5min": {
+      "cost_err_pct": -1.1093457433018483,
+      "import_err_pct": -0.9402797195232959,
+      "building_err_pct": -0.6178990376854987
+    },
+    "15min": {
+      "cost_err_pct": -1.7713875620444575,
+      "import_err_pct": -1.3214102150066465,
+      "building_err_pct": -0.5500676736920118
+    },
+    "30min": {
+      "cost_err_pct": -2.3605319822277093,
+      "import_err_pct": -1.6743804654711036,
+      "building_err_pct": -0.39514746312963034
+    },
+    "60min": {
+      "cost_err_pct": -4.8340574350024585,
+      "import_err_pct": -3.0359639618087852,
+      "building_err_pct": -0.3545904216729956
+    }
+  },
+  "reference": {
+    "grid_import_kWh": 1371.0142053542868,
+    "cost_usd": 154.76299664615004,
+    "building_kWh": 1910.3480830353542,
+    "peak_kW": 25.302238964252517,
+    "wall_s": 76.77780130016617
+  }
+}

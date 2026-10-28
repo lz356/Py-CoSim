@@ -1,0 +1,126 @@
+machine: {"cpu": "11th Gen Intel(R) Core(TM) i7-1185G7 @ 3.00GHz", "physical_cores": 4, "logical_cores": 8, "memory_gb": 16, "os": "Windows-11-10.0.26200-SP0", "python": "3.12.10"}
+HELICS 3.6.1 (2025-02-24) | Py-CoSim 2.1.0
+other python.exe processes on the machine at start: 3
+rep 0 reference_1min         E=1920.0839 kWh  cost=$242.2892  wall=58.16 s
+rep 0 pycosim_naive_ep1min   E=1917.7937 kWh  cost=$244.6954  wall=44.63 s
+rep 0 pycosim_aligned_ep1min E=1917.7937 kWh  cost=$242.0602  wall=47.24 s
+rep 0 pycosim_naive          E=1907.2010 kWh  cost=$243.2879  wall=13.05 s
+rep 0 pycosim_aligned        E=1907.2010 kWh  cost=$240.6352  wall=13.27 s
+rep 0 helics                 E=1907.2010 kWh  cost=$243.2879  wall=11.56 s
+rep 0 helics_default         E=1905.4869 kWh  cost=$244.3205  wall=11.43 s
+rep 0 helics_handaligned     E=1907.2010 kWh  cost=$240.6352  wall=10.54 s
+rep 1 pycosim_naive          E=1907.2010 kWh  cost=$243.2879  wall=15.86 s
+rep 1 pycosim_aligned        E=1907.2010 kWh  cost=$240.6352  wall=24.18 s
+rep 1 helics                 E=1907.2010 kWh  cost=$243.2879  wall=13.34 s
+rep 1 helics_default         E=1905.4869 kWh  cost=$244.3205  wall=12.43 s
+rep 1 helics_handaligned     E=1907.2010 kWh  cost=$240.6352  wall=12.18 s
+rep 2 pycosim_naive          E=1907.2010 kWh  cost=$243.2879  wall=15.33 s
+rep 2 pycosim_aligned        E=1907.2010 kWh  cost=$240.6352  wall=14.84 s
+rep 2 helics                 E=1907.2010 kWh  cost=$243.2879  wall=11.89 s
+rep 2 helics_default         E=1905.4869 kWh  cost=$244.3205  wall=13.04 s
+rep 2 helics_handaligned     E=1907.2010 kWh  cost=$240.6352  wall=12.79 s
+
+DX coil capacity, 1-min vs 15-min EnergyPlus [%]: {'PSZ-AC:1_COOLC DXCOIL': 3.91, 'PSZ-AC:2_COOLC DXCOIL': 0.57, 'PSZ-AC:3_COOLC DXCOIL': -0.02, 'PSZ-AC:4_COOLC DXCOIL': 0.63, 'PSZ-AC:5_COOLC DXCOIL': 0.31}
+
+identical EnergyPlus input for Py-CoSim and HELICS: True
+pycosim_naive        distinct costs over 3 reps: 1
+pycosim_aligned      distinct costs over 3 reps: 1
+helics               distinct costs over 3 reps: 1
+helics_default       distinct costs over 3 reps: 1
+helics_handaligned   distinct costs over 3 reps: 1
+reference_1min       distinct costs over 1 reps: 1
+pycosim_naive_ep1min distinct costs over 1 reps: 1
+pycosim_aligned_ep1min distinct costs over 1 reps: 1
+
+               variant         tool                                             meter                       timing               physics exchange  energy_kWh  cost_usd  energy_err_pct  cost_err_pct  cost_diff_vs_aligned_pct  exchange_err_energy_pct  exchange_err_cost_pct  energy_common_window_kWh  cost_common_window_usd  energy_common_err_pct  cost_common_err_pct  wall_s_median  wall_s_min  wall_s_max  core_wall_s_median  reps  loc_python  loc_config  loc_total
+         pycosim_naive     Py-CoSim GridMeter(aligned=False): latest P x latest price            within-step order  EnergyPlus 4 steps/h   15 min   1907.2010  243.2879         -0.6710        0.4122                    1.1024                   0.0000                 1.1024                 1907.2010                243.2879                -0.5523               0.5072        15.3257     13.0466     15.8631              9.0677     3          17           0         17
+       pycosim_aligned     Py-CoSim  GridMeter(aligned=True): P and price read 'past'            within-step order  EnergyPlus 4 steps/h   15 min   1907.2010  240.6352         -0.6710       -0.6827                    0.0000                   0.0000                 0.0000                 1907.2010                240.6352                -0.5523              -0.5887        14.8377     13.2730     24.1840              9.0338     3          17           0         17
+                helics HELICS 3.6.1                           latest P x latest price wait_for_current_time_update  EnergyPlus 4 steps/h   15 min   1907.2010  243.2879         -0.6710        0.4122                    1.1024                   0.0000                 1.1024                 1907.2010                243.2879                -0.5523               0.5072        11.8850     11.5621     13.3444              7.2822     3         131          46        177
+        helics_default HELICS 3.6.1                           latest P x latest price            default (no flag)  EnergyPlus 4 steps/h   15 min   1905.4869  244.3205         -0.7602        0.8384                    1.5315                  -0.0899                 1.5315                 1905.4869                244.3205                -0.6417               0.9338        12.4278     11.4311     13.0373              7.1981     3         131          46        177
+    helics_handaligned HELICS 3.6.1                    hand-coded: P x previous price wait_for_current_time_update  EnergyPlus 4 steps/h   15 min   1907.2010  240.6352         -0.6710       -0.6827                    0.0000                   0.0000                 0.0000                 1907.2010                240.6352                -0.5523              -0.5887        12.1844     10.5380     12.7915              7.3040     3         133          46        179
+  pycosim_naive_ep1min     Py-CoSim GridMeter(aligned=False): latest P x latest price            within-step order EnergyPlus 60 steps/h   15 min   1917.7937  244.6954         -0.1193        0.9931                    1.6873                  -0.0000                 1.0886                 1917.7937                244.6954                -0.0000               1.0886        44.6262     44.6262     44.6262             38.7725     1          17           0         17
+pycosim_aligned_ep1min     Py-CoSim  GridMeter(aligned=True): P and price read 'past'            within-step order EnergyPlus 60 steps/h   15 min   1917.7937  242.0602         -0.1193       -0.0945                    0.5922                  -0.0000                 0.0000                 1917.7937                242.0602                -0.0000               0.0000        47.2448     47.2448     47.2448             41.9738     1          17           0         17
+        reference_1min     Py-CoSim                           GridMeter(aligned=True)            within-step order EnergyPlus 60 steps/h    1 min   1920.0839  242.2892          0.0000        0.0000                    0.6874                   0.0000                 0.0000                 1917.7937                242.0602                 0.0000               0.0000        58.1567     58.1567     58.1567             49.7400     1          17           0         17
+
+agreement: {
+  "helics_vs_pycosim_naive": {
+    "P_W": 0.0,
+    "clg_sp": 0.0,
+    "price": 0.0,
+    "cost_usd": 1.4210854715202004e-14,
+    "steps": 672
+  },
+  "helics_handaligned_vs_pycosim_aligned_cost_abs_diff_usd": 0.0,
+  "helics_vs_pycosim_naive_cost_abs_diff_usd": 0.0,
+  "helics_vs_pycosim_naive_energy_abs_diff_kWh": 0.0,
+  "helics_default_setpoint_equals_pycosim_setpoint_one_step_earlier": true,
+  "helics_default_meter_power_equals_building_power_one_step_earlier": true,
+  "naive_misattributed_steps": 10,
+  "naive_misattributed_times": [
+    "2023-07-17 16:00:00",
+    "2023-07-17 21:00:00",
+    "2023-07-18 16:00:00",
+    "2023-07-18 21:00:00",
+    "2023-07-19 16:00:00",
+    "2023-07-19 21:00:00",
+    "2023-07-20 16:00:00",
+    "2023-07-20 21:00:00",
+    "2023-07-21 16:00:00",
+    "2023-07-21 21:00:00"
+  ],
+  "naive_misattribution_cost_usd": 2.6527286811438575,
+  "first_interval_cost_naive_usd": 0.0,
+  "naive_minus_aligned_cost_usd": 2.652728681143884,
+  "aligned_ep1min_minus_reference_common_window": {
+    "energy_kWh": -2.2737367544323206e-13,
+    "cost_usd": 6.821210263296962e-13
+  }
+}
+
+lines of code: {
+  "per_file": {
+    "building_fed.py": 73,
+    "controller_fed.py": 32,
+    "meter_fed.py": 26,
+    "meter_fed_aligned.py": 28,
+    "building.json": 14,
+    "controller.json": 11,
+    "meter.json": 12,
+    "runner.json": 9,
+    "helics_comparison.py (Py-CoSim region)": 17
+  },
+  "pycosim": {
+    "python": 17,
+    "config": 0
+  },
+  "helics": {
+    "python": 131,
+    "config": 46
+  },
+  "helics_handaligned": {
+    "python": 133,
+    "config": 46
+  }
+}
+
+Py-CoSim alignment report (aligned meter): [
+  {
+    "input": "meter.P_load",
+    "read": "past",
+    "sources": "office.P_facility",
+    "reads": 672,
+    "extrapolated_reads": 0,
+    "min_coverage": 1.0
+  },
+  {
+    "input": "meter.price",
+    "read": "past",
+    "sources": "tariff.price",
+    "reads": 672,
+    "extrapolated_reads": 1,
+    "min_coverage": 0.0
+  }
+]
+other python.exe processes on the machine at the end: 5
+
+written: C:\Users\liangzhang1\Documents\Claude\Py-CoSim\paper\experiments\results\helics_comparison.csv C:\Users\liangzhang1\Documents\Claude\Py-CoSim\paper\experiments\results\helics_comparison.json

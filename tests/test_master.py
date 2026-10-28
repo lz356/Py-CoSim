@@ -583,7 +583,7 @@ def test_exception_in_setup_aborts_previous_components(tmp_path):
     with pytest.raises(ComponentError) as info:
         sim.run()
     assert info.value.phase == "setup" and info.value.time is None and info.value.component == "bad"
-    assert aborted == ["second", "first"]
+    assert aborted == ["bad", "second", "first"]  # the failing component too (it may have started something)
     assert sim.status == "failed"
     report = (tmp_path / "setupfail" / "error_report.txt").read_text(encoding="utf-8")
     assert "before first step" in report and "RuntimeError: cannot start" in report

@@ -9,5 +9,6 @@ $PY -u overhead_breakdown.py > results/log_overhead.txt 2>&1
 $PY -u case_a_community.py > results/log_case_a.txt 2>&1
 $PY -u case_b_llm.py     > results/log_case_b.txt 2>&1
 $PY -u case_c_travel.py  > results/log_case_c.txt 2>&1
+$PY -u helics_comparison.py > results/log_helics.txt 2>&1
 $PY -u diagrams.py       > results/log_diagrams.txt 2>&1
 echo ALL DONE

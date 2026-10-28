@@ -25,7 +25,7 @@ class PVSystem(Component):
     """
 
     inputs = {"GHI": 0.0, "DNI": 0.0, "DHI": 0.0, "T_out": 25.0, "solar_zenith": 90.0, "solar_azimuth": 180.0}
-    outputs = {"P_ac": 0.0, "POA": 0.0}
+    outputs = {"P_ac": {"default": 0.0, "kind": "instant"}, "POA": {"default": 0.0, "kind": "instant"}}
 
     def __init__(self, name: str, capacity_kw: float, tilt: float = 20.0, azimuth: float = 180.0,
                  losses: float = 0.14, temp_coeff: float = -0.0037, noct: float = 45.0, inverter_eff: float = 0.96,
@@ -67,11 +67,13 @@ class Battery(Component):
     ``P_set < 0`` discharges. The battery delivers what it can within its
     limits over the current step and reports the *actual* power ``P``.
 
-    Inputs: ``P_set`` [W]. Outputs: ``P`` [W], ``soc`` [-], ``energy`` [kWh].
+    Inputs: ``P_set`` [W]. Outputs: ``P`` [W] -- the mean power over the
+    step that starts at ``t`` (time meaning ``average``/``ahead``) --, ``soc``
+    [-] and ``energy`` [kWh] at the end of that step.
     """
 
     inputs = {"P_set": 0.0}
-    outputs = {"P": 0.0, "soc": None, "energy": None}
+    outputs = {"P": {"default": 0.0, "kind": "average", "interval": "ahead"}, "soc": None, "energy": None}
 
     def __init__(self, name: str, capacity_kwh: float, max_charge_kw: float, max_discharge_kw: Optional[float] = None,
                  eff_charge: float = 0.95, eff_discharge: float = 0.95, soc_init: float = 0.5, soc_min: float = 0.1,
@@ -128,7 +130,7 @@ class TimeOfUseTariff(Component):
     Outputs: ``price`` [$/kWh], ``is_peak`` [0/1].
     """
 
-    outputs = {"price": None, "is_peak": 0}
+    outputs = {"price": {"default": None, "kind": "hold"}, "is_peak": {"default": 0, "kind": "hold"}}
 
     def __init__(self, name: str, peak_hours: Tuple[int, int] = (16, 21), peak_price: float = 0.30,
                  offpeak_price: float = 0.10, shoulder_hours: Optional[Tuple[int, int]] = None,
@@ -166,18 +168,39 @@ class TimeOfUseTariff(Component):
 class GridMeter(Component):
     """Point of common coupling: imports/exports, energy, cost and peak demand.
 
-    Inputs: ``P_net`` [W] (positive = import), ``price`` [$/kWh],
-    ``export_price`` [$/kWh] (default 0).
-    Outputs: ``P_import``, ``P_export`` [W], ``E_import`` [kWh, cumulative],
-    ``E_export`` [kWh, cumulative], ``cost`` [$, cumulative], ``peak`` [kW,
-    running maximum of the import averaged over ``demand_window``].
+    At each of its steps the meter accounts for the interval that just ended,
+    ``[t - h, t)``.
+
+    Inputs:
+
+    * ``P_load``, ``P_gen``, ``P_bat`` [W] -- consumption, generation and
+      battery charging (positive) power; with ``aligned=True`` (default) they
+      are read as the mean over the meter's step that just ended, whatever the
+      producers' steps and time meanings are (connect several with a pattern,
+      e.g. ``sim.subscribe("grid.P_load", "*.P_elec", reduce="sum")``);
+    * ``P_net`` [W] -- net import (positive) read as the latest value (the
+      Py-CoSim 2.0 behaviour; it is added to the other inputs);
+    * ``price``, ``export_price`` [$/kWh] -- with ``aligned=True`` the mean
+      price over the step that just ended (the price that applied to that
+      energy), otherwise the latest price.
+
+    Outputs: ``P_import``, ``P_export`` [W, mean over the step that ended],
+    ``E_import`` [kWh, cumulative], ``E_export`` [kWh, cumulative], ``cost``
+    [$, cumulative], ``peak`` [kW, running maximum of the import averaged over
+    ``demand_window``].
     """
 
-    inputs = {"P_net": 0.0, "price": 0.0, "export_price": 0.0}
-    outputs = {"P_import": 0.0, "P_export": 0.0, "E_import": 0.0, "E_export": 0.0, "cost": 0.0, "peak": 0.0}
+    inputs = {"P_net": 0.0, "P_load": 0.0, "P_gen": 0.0, "P_bat": 0.0, "price": 0.0, "export_price": 0.0}
+    outputs = {"P_import": {"default": 0.0, "kind": "average", "interval": "past"},
+               "P_export": {"default": 0.0, "kind": "average", "interval": "past"},
+               "E_import": 0.0, "E_export": 0.0, "cost": 0.0, "peak": 0.0}
 
-    def __init__(self, name: str, demand_window: str = "15min"):
+    def __init__(self, name: str, demand_window: str = "15min", aligned: bool = True):
         super().__init__(name)
+        self.aligned = aligned
+        if aligned:
+            for port in ("P_load", "P_gen", "P_bat", "price", "export_price"):
+                self.input_ports[port].read = "past"
         from ..core.timeutils import parse_duration
 
         self.demand_window = parse_duration(demand_window)
@@ -191,9 +214,14 @@ class GridMeter(Component):
         self._e_imp = self._e_exp = self._cost = self._peak = 0.0
         self._window = []
 
+    def run_metadata(self):
+        return {"aligned": self.aligned}
+
     def step(self, t, inputs):
         dt = self.ctx.step_size
-        p = float(inputs.P_net or 0.0)
+        get = inputs.get
+        p = (float(get("P_net") or 0.0) + float(get("P_load") or 0.0) - float(get("P_gen") or 0.0)
+             + float(get("P_bat") or 0.0))
         imp, exp = max(p, 0.0), max(-p, 0.0)
         self._e_imp += imp * dt / 3.6e6
         self._e_exp += exp * dt / 3.6e6

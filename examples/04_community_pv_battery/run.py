@@ -14,6 +14,12 @@ coordinated pre-cooling and battery together
 All EnergyPlus instances advance in parallel worker processes; the Python
 components (PV, battery, controllers, metering) run in the master process.
 
+The grid meter subscribes to every building's power with a pattern
+(``"bldg*.P_facility"``) and reads power and price over the 15 minutes that
+just ended (``aligned=True``), so the energy of each interval is charged at
+the price that applied to it. ``--naive`` reproduces the Py-CoSim 2.0
+wiring, where the latest values are multiplied.
+
     python run.py                      # 10 buildings, 1 summer week, all strategies
     python run.py --buildings 4 --days 2 --strategies baseline coordinated
 """
@@ -45,7 +51,7 @@ def _scale(factor, model):
 
 def build(strategy: str, n_buildings: int = 10, days: int = 7, seed: int = 7, pv_kw_per_bldg: float = 25.0,
           battery_kwh_per_bldg: float = 50.0, start: str = "2023-07-17", output_dir: Path = HERE / "output",
-          executor: str = "process") -> pc.CoSimulation:
+          executor: str = "process", aligned: bool = True) -> pc.CoSimulation:
     """Create the co-simulation for one strategy."""
     if strategy not in STRATEGIES:
         raise ValueError(f"strategy must be one of {STRATEGIES}")
@@ -65,7 +71,7 @@ def build(strategy: str, n_buildings: int = 10, days: int = 7, seed: int = 7, pv
     sim.add(PrecoolingController("thermostat", peak_hours=PEAK, precool_hours=3, base_sp=24.0,
                                  precool_sp=22.0 if precool else 24.0, peak_sp=26.5 if precool else 24.0,
                                  occupied_hours=(6, 21), unoccupied_sp=29.4))
-    sim.add(GridMeter("grid"))
+    sim.add(GridMeter("grid", aligned=aligned))
 
     for name in names:  # one thermostat signal broadcast to all buildings
         sim.connect("thermostat.clg_sp", f"{name}.clg_sp")
@@ -85,6 +91,12 @@ def build(strategy: str, n_buildings: int = 10, days: int = 7, seed: int = 7, pv
         sim.connect("battery.soc", "dispatch.soc", delay=True)  # battery reports SOC of the previous step
         sim.connect("tariff.is_peak", "dispatch.is_peak")
         sim.connect("dispatch.P_set", "battery.P_set")
+    if aligned:  # TIDE: every flow and the price over the interval that just ended
+        sim.subscribe("grid.P_load", "bldg*.P_facility", reduce="sum")
+        sim.subscribe("grid.P_gen", "pv.P_ac")
+        if use_battery:
+            sim.subscribe("grid.P_bat", "battery.P")
+    elif use_battery:  # Py-CoSim 2.0 wiring: latest values
         sim.connect(["net_load.P_net", "battery.P"], "grid.P_net", reduce="sum")
     else:
         sim.connect("net_load.P_net", "grid.P_net")
@@ -97,7 +109,9 @@ def kpis(res: pc.Results, demand_charge: float = 15.0) -> dict:
     df = res.df
     h = res.meta["step_s"] / 3600
     imp = df["grid.P_import"] / 1000
-    peak = df["tariff.is_peak"] == 1
+    aligned = res.meta.get("component_metadata", {}).get("grid", {}).get("aligned", False)
+    # an aligned meter reports at t the interval [t - h, t): use the peak flag of that interval
+    peak = (df["tariff.is_peak"].shift(1, fill_value=0) if aligned else df["tariff.is_peak"]) == 1
     bldgs = sorted({c.split(".")[0] for c in df.columns if c.startswith("bldg")})
     occupied = (df.index.hour >= 8) & (df.index.hour < 18) & (df.index.day_of_week < 5)
     discomfort = 0.0
@@ -125,12 +139,13 @@ def main() -> None:
     parser.add_argument("--days", type=int, default=7)
     parser.add_argument("--strategies", nargs="+", default=list(STRATEGIES), choices=STRATEGIES)
     parser.add_argument("--no-plot", action="store_true")
+    parser.add_argument("--naive", action="store_true", help="multiply latest values (Py-CoSim 2.0 wiring)")
     args = parser.parse_args()
 
     results, rows = {}, {}
     for strategy in args.strategies:
         t0 = time.perf_counter()
-        sim = build(strategy, args.buildings, args.days)
+        sim = build(strategy, args.buildings, args.days, aligned=not args.naive)
         results[strategy] = res = sim.run(progress=True)
         rows[strategy] = {**kpis(res), "wall_time_s": time.perf_counter() - t0}
     table = pd.DataFrame(rows).T

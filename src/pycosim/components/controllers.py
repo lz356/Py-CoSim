@@ -15,7 +15,7 @@ class ThermostatSchedule(Component):
     Outputs ``clg_sp`` and ``htg_sp`` [C].
     """
 
-    outputs = {"clg_sp": None, "htg_sp": None}
+    outputs = {"clg_sp": {"default": None, "kind": "hold"}, "htg_sp": {"default": None, "kind": "hold"}}
 
     def __init__(self, name: str, occupied_hours: Tuple[int, int] = (6, 22), cooling: Tuple[float, float] = (24.0, 29.4),
                  heating: Tuple[float, float] = (21.0, 15.6), weekend_occupied: bool = False):
@@ -47,7 +47,7 @@ class PrecoolingController(Component):
     """
 
     inputs = {"enable": 1}
-    outputs = {"clg_sp": None}
+    outputs = {"clg_sp": {"default": None, "kind": "hold"}}
 
     def __init__(self, name: str, peak_hours: Tuple[int, int] = (16, 21), precool_hours: float = 3.0,
                  base_sp: float = 24.0, precool_sp: float = 22.0, peak_sp: float = 26.5,
@@ -94,7 +94,7 @@ class PIController(Component):
     """
 
     inputs = {"measurement": None, "setpoint": None}
-    outputs = {"u": 0.0}
+    outputs = {"u": {"default": 0.0, "kind": "hold"}}
 
     def __init__(self, name: str, kp: float, ki: float = 0.0, setpoint: float = 0.0, u_min: float = 0.0,
                  u_max: float = 1.0, reverse: bool = False):
@@ -142,7 +142,7 @@ class PeakShavingController(Component):
     """
 
     inputs = {"P_load": 0.0, "soc": 0.5, "is_peak": 0}
-    outputs = {"P_set": 0.0}
+    outputs = {"P_set": {"default": 0.0, "kind": "hold"}}
 
     def __init__(self, name: str, import_limit_kw: float, charge_kw: float, soc_target: float = 0.9,
                  charge_hours: Tuple[int, int] = (0, 6), store_pv_surplus: bool = True,

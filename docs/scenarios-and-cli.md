@@ -69,6 +69,8 @@ This is [example 08](examples.md#08--yaml-scenario) (with `my_rules.py` next to 
 | `save` | `true` | write results to disk |
 | `progress` | `false` | progress bar (the CLI shows one unless `--quiet`) |
 | `log_level` | `INFO` | `DEBUG`, `INFO`, `WARNING`, `ERROR` |
+| `record` | none | list of component names whose messages are kept for [replay](tide.md#record-and-replay) (`true` = all) |
+| `trace` | `false` | record which messages every component read ([provenance](tide.md#provenance-trace-and-lineage)) |
 
 **`components:`** — a mapping `name: settings`. Each entry is one of:
 
@@ -77,7 +79,19 @@ This is [example 08](examples.md#08--yaml-scenario) (with `my_rules.py` next to 
   `HouseholdOccupancy`, …), `EnergyPlusComponent` (alias `EnergyPlus`), or your own class as
   `"module:ClassName"` (also `"package.module.ClassName"`, e.g. `pycosim.gym:ExternalAgent`).
 * **a function**: `function: module:function` with optional `inputs`, `outputs` (default
-  `[out]`) and `step_size`. No other keys are allowed.
+  `[out]`) and `step_size`. No other keys are allowed. `inputs` and `outputs` may be
+  mappings with the [TIDE port settings](writing-components.md#declaring-ports), e.g.
+
+  ```yaml
+    utility:
+      function: my_rules:utility_price
+      outputs: {price: {default: 0.10, kind: hold, topic: grid/price, bounds: [0.0, 1.0]}}
+    cost:
+      function: my_rules:hourly_cost
+      inputs: {P: {default: 0.0, read: past}, price: {default: 0.0, read: past}}
+      outputs: [c]
+      step_size: 1h
+  ```
 
 Lists in YAML (e.g. `[16, 21]`) are passed where the Python API expects tuples. Nested
 mappings become dicts, e.g. for an EnergyPlus building:
@@ -100,6 +114,13 @@ mappings become dicts, e.g. for an EnergyPlus building:
   `reduce` (`sum`, `mean`, `max`, `min`, `list`, or the import path of your own function,
   `module:function` or `module.function`) and `transform` (an import path in the same form).
 
+A source may also be a topic (`grid/price -> meter.price`) or a glob pattern; a pattern that
+matches several outputs needs the mapping form with `reduce`, e.g.
+`{from: "*.P_elec", to: meter.P_load, reduce: sum}` (quote patterns that start with `*`).
+Connections have **no `read:` key** yet: set the read mode on the input port instead (for
+function components as shown above; `GridMeter` already reads its power and price inputs
+`past`).
+
 **Paths.** Relative values of the keys `path`, `model`, `weather` and `data` are resolved
 against the YAML file's folder, and that folder is added to Python's import path, so
 `my_rules.py` next to the YAML file can be imported as `my_rules`. You can therefore run a
@@ -107,7 +128,19 @@ scenario from any working directory.
 
 **What YAML cannot express** (use a short Python script instead, see below): observers
 (live plots, CSV streams), Python objects as arguments (LLM backends, `preprocess`
-functions, pandas objects), lambdas, and `priority` of function components.
+functions, pandas objects), lambdas, `priority` of function components, `read=` on a
+connection, asynchronous components (`make_async`) and replays (`sim.replay`). All of these
+can be added to a loaded scenario in Python:
+
+```python
+sim = load_scenario("scenario.yaml", name="async_run")
+sim["advisor"].make_async(delay="15min")          # a function component named "advisor"
+res = sim.run()
+
+sim = load_scenario("scenario.yaml", name="replayed")
+sim.replay("advisor", "output/first_run")         # a run made with  record: [advisor]
+res = sim.run()
+```
 
 ### Loading a scenario from Python
 
@@ -231,6 +264,10 @@ a failure, with partial results or `None`).
 | `res.ok`, `res.error` | `True` / `None` unless the run failed (then `error` holds the error report) |
 | `res.wall_time` | wall-clock seconds |
 | `res.summary()` | short text summary (also what `print(res)` shows) |
+| `res.quality` | messages per port that were clipped, replaced by a fallback, late or replayed ([details](tide.md#quality-flags-and-bounds)) |
+| `res.alignment` | per input read with `at`/`past`/`ahead`: number of reads, extrapolated reads, minimum coverage ([details](tide.md#the-four-read-modes-what-an-input-asks-for)) |
+| `res.messages` | with `record=`: every message of the recorded components (`ref`, `index`, `step`, `time`, `value`, `start`, `end`, `quality`, `origin_step`) |
+| `res.trace`, `res.lineage(ref, when)` | with `trace=True`: which messages each component read, and the chain behind one value ([details](tide.md#provenance-trace-and-lineage)) |
 
 Methods:
 
@@ -264,12 +301,16 @@ With `save=True` (default), `<output_dir>/<name>/` contains:
 | `events.csv` | `res.events` |
 | `timing.csv` | `res.timing` |
 | `meta.json` | `res.meta` plus the units of all ports |
+| `quality.csv`, `alignment.csv` | `res.quality`, `res.alignment` (only when not empty) |
+| `messages.jsonl` | the recorded messages (only with `record=` or `trace=True`); what `sim.replay()` reads |
+| `trace.csv` | `res.trace` (only with `trace=True`) |
 | `error_report.txt` | only if the run failed |
 | `<component>/` | files written by components (e.g. EnergyPlus' `eplus/` folder) |
 
 Running again with the same `name` overwrites the files — give each variant its own `name`.
-`Results.load` restores `df`, `events`, `timing`, `meta`, `units` and `error`, so plots of
-loaded results show units as before.
+`Results.load` restores `df`, `events`, `timing`, `meta`, `units` and `error` (and the TIDE
+tables above when they were saved), so plots of loaded results show units as before and
+`lineage()` works on a loaded traced run.
 
 With `save=False` nothing is written and the run folder is not created up front; only
 components that need a working folder create their own sub-folder on demand (e.g.
