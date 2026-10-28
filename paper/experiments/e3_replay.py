@@ -149,7 +149,7 @@ def plot(live, rep, sav_live, sav_replay) -> None:
     s = rep["ai.clg_sp"].loc[day]
     ax.step(s.index, s, where="post", lw=2.2, color="k", ls=":", label="Replay of run 1")
     ax.set_ylabel("Cooling set-point [°C]")
-    ax.set_title("(a) Sampled AI decisions on 18 July", loc="left")
+    ax.set_title("(a) Sampled supervisor decisions on 18 July", loc="left")
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
     ax.legend(ncol=3, loc="upper center", bbox_to_anchor=(0.5, -0.1), frameon=False, columnspacing=1.2)
     ax = axes[1]

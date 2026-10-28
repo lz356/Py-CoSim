@@ -13,7 +13,7 @@ import copy
 import docx
 from docx.enum.text import WD_BREAK, WD_COLOR_INDEX
 
-TITLE = ("Py-CoSim: time-aware message-based co-simulation of building energy and artificial intelligence models")
+TITLE = "Py-CoSim: time-aware message-based co-simulation for building energy systems"
 REPO = "https://github.com/lz356/Py-CoSim"
 CONFIRM = object()      # marker: highlight this run
 
@@ -25,18 +25,17 @@ COVER = [
     "We submit the manuscript “%s” for consideration as a Research Article in Building Simulation. It falls "
     "within the journal’s topic “Advances in Modeling and Simulation Tools”, in particular new software "
     "development and buildings-to-grid integration simulation and controls." % TITLE,
-    "Building energy models are now co-simulated with photovoltaics, batteries, tariffs, grid models and, "
-    "increasingly, artificial intelligence (AI) components such as large language model supervisors. Existing "
-    "co-simulation tools exchange numbers stamped with an instant, so users must decide which interval each value "
-    "belongs to, and they offer no rules for components that answer slowly, differently on every call or with "
-    "invalid values. Py-CoSim addresses both problems with a time-aware message hub, TIDE (Time-aware Interval Data "
-    "Exchange): every message states whether its value is an instantaneous sample, an interval average, an "
-    "interval amount, a held value or an event, and every input declares the window it needs. The paper shows that "
-    "this removes a class of aggregation errors (up to 6 % in energy cost with conventional exchange, and a battery "
-    "peak reduction overstated by 15 kW in a ten-office community), makes runs with stochastic AI components "
-    "exactly reproducible, and lets slow AI services run concurrently without changing results. The software and "
-    "every experiment script are open source, so the results can be reproduced and the tool used directly by the "
-    "building simulation community.",
+    "Building energy models are now co-simulated with photovoltaics, batteries, tariffs, grid models and data-driven "
+    "controllers. Existing co-simulation tools exchange numbers stamped with an instant, so users must decide which "
+    "interval each value belongs to, and they assume that every component answers deterministically, validly and at "
+    "once. Py-CoSim addresses this with a time-aware message hub, TIDE (Time-aware Interval Data Exchange): every "
+    "message states whether its value is an instantaneous sample, an interval average, an interval amount, a held "
+    "value or an event, and every input declares the window it needs. The paper shows that this removes a class of "
+    "aggregation errors (up to 6 % in energy cost with conventional exchange, and a battery peak reduction overstated "
+    "by 15 kW in a ten-office community). The same message model makes stochastic and slow components reproducible "
+    "and lets them run concurrently without changing results, so the framework also suits artificial intelligence "
+    "(AI) and generative AI applications. The software and every experiment script are open source, so the results "
+    "can be reproduced and the tool used directly by the building simulation community.",
     [("This manuscript is the journal version of our preprint “Py-CoSim: Python-Based Building Energy "
       "Co-Simulation Infrastructure” (Zhang L, Haroon SM, Ryan A, SSRN 4572925, 2023), which introduced a first "
       "version of Py-CoSim and its message-based coupling idea. The present manuscript describes a newly designed "

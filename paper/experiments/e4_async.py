@@ -111,7 +111,7 @@ def plot(df: pd.DataFrame) -> None:
     for mode, c, lab in (("blocking", COLORS[3], "Blocking calls"), ("async", COLORS[0], "Asynchronous (TIDE)")):
         g = df[(df["mode"] == mode) & (df["repeat"] == 1)]
         ax.plot(g["n_buildings"], g["wall_s"], "o-", color=c, label=lab)
-    ax.set_xlabel("Offices $N$, each with one AI supervisor")
+    ax.set_xlabel("Offices $N$, each with one slow supervisor")
     ax.set_ylabel("Wall-clock time [s]")
     ax.set_xticks(NS)
     ax.legend(loc="upper left", frameon=False)

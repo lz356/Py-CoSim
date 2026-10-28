@@ -1,6 +1,6 @@
 # Manuscript for *Building Simulation*
 
-*Py-CoSim: time-aware message-based co-simulation of building energy and artificial intelligence models*
+*Py-CoSim: time-aware message-based co-simulation for building energy systems*
 
 | Path | Content |
 |---|---|
