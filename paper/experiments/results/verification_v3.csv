@@ -1,0 +1,8 @@
+series,n,max_abs_diff,mean_abs
+Electricity:Facility,672,0.0,9716164.346302774
+Site Outdoor Air Drybulb Temperature:Environment,672,0.0,29.95066964285714
+Zone Mean Air Temperature:CORE_ZN,672,0.0,25.282292004484567
+Zone Mean Air Temperature:PERIMETER_ZN_1,672,0.0,25.4454521334002
+Zone Mean Air Temperature:PERIMETER_ZN_2,672,0.0,25.404481114909437
+Zone Mean Air Temperature:PERIMETER_ZN_3,672,0.0,25.425332723380468
+Zone Mean Air Temperature:PERIMETER_ZN_4,672,0.0,25.405092834312374

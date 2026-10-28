@@ -1,0 +1,19 @@
+baseline {'load_MWh': np.float64(18.51), 'import_MWh': np.float64(10.63), 'on_peak_import_MWh': np.float64(2.5), 'peak_import_kW': np.float64(135.75), 'energy_cost_$': np.float64(1401.07), 'demand_charge_$': np.float64(2036.21), 'pv_self_consumption_%': np.float64(90.32), 'discomfort_Kh_per_bldg': np.float64(0.0), 'wall_time_s': 25.09}
+precool {'load_MWh': np.float64(18.25), 'import_MWh': np.float64(10.36), 'on_peak_import_MWh': np.float64(1.86), 'peak_import_kW': np.float64(123.72), 'energy_cost_$': np.float64(1238.46), 'demand_charge_$': np.float64(1855.86), 'pv_self_consumption_%': np.float64(90.44), 'discomfort_Kh_per_bldg': np.float64(3.49), 'wall_time_s': 25.12}
+battery {'load_MWh': np.float64(18.51), 'import_MWh': np.float64(10.9), 'on_peak_import_MWh': np.float64(1.05), 'peak_import_kW': np.float64(132.79), 'energy_cost_$': np.float64(1104.18), 'demand_charge_$': np.float64(1991.79), 'pv_self_consumption_%': np.float64(91.74), 'discomfort_Kh_per_bldg': np.float64(0.0), 'wall_time_s': 25.93}
+coordinated {'load_MWh': np.float64(18.25), 'import_MWh': np.float64(10.63), 'on_peak_import_MWh': np.float64(0.42), 'peak_import_kW': np.float64(120.0), 'energy_cost_$': np.float64(942.41), 'demand_charge_$': np.float64(1800.0), 'pv_self_consumption_%': np.float64(91.86), 'discomfort_Kh_per_bldg': np.float64(3.49), 'wall_time_s': 27.27}
+                             baseline  precool  battery  coordinated
+load_MWh                        18.51    18.25    18.51        18.25
+import_MWh                      10.63    10.36    10.90        10.63
+on_peak_import_MWh               2.50     1.86     1.05         0.42
+peak_import_kW                 135.75   123.72   132.79       120.00
+energy_cost_$                 1401.07  1238.46  1104.18       942.41
+demand_charge_$               2036.21  1855.86  1991.79      1800.00
+pv_self_consumption_%           90.32    90.44    91.74        91.86
+discomfort_Kh_per_bldg           0.00     3.49     0.00         3.49
+wall_time_s                     25.09    25.12    25.93        27.27
+import_MWh_change_%              0.00    -2.55     2.53        -0.02
+on_peak_import_MWh_change_%      0.00   -25.59   -57.84       -83.28
+peak_import_kW_change_%          0.00    -8.86    -2.18       -11.60
+energy_cost_$_change_%           0.00   -11.61   -21.19       -32.74
+figure written

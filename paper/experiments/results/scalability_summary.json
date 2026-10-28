@@ -1,0 +1,28 @@
+{
+  "machine": {
+    "cpu": "11th Gen Intel(R) Core(TM) i7-1185G7 @ 3.00GHz",
+    "physical_cores": 4,
+    "logical_cores": 8,
+    "memory_gb": 16,
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.10"
+  },
+  "overhead": {
+    "mean": {
+      "EnergyPlus CLI": 4.537778999966879,
+      "Py-CoSim (process)": 8.296328100026585,
+      "Py-CoSim (thread)": 7.480629133332211
+    },
+    "std": {
+      "EnergyPlus CLI": 1.1885061901979235,
+      "Py-CoSim (process)": 0.759754675396893,
+      "Py-CoSim (thread)": 0.41432801992606305
+    }
+  },
+  "master_overhead_s_per_step_per_component": 2.2846730308342495e-05,
+  "exchange": {
+    "Py-CoSim 2 data bus (publish + read)": 3.3269000123254956e-06,
+    "Py-CoSim 0.x CSV file (write + read)": 0.03061975633337473
+  },
+  "steps": 672
+}

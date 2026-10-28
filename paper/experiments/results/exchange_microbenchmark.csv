@@ -1,0 +1,3 @@
+method,seconds_per_exchange
+Py-CoSim 2 data bus (publish + read),3.3269000123254956e-06
+Py-CoSim 0.x CSV file (write + read),0.03061975633337473

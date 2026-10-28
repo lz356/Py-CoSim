@@ -1,0 +1,29 @@
+   group     n  mean_hhsize  share_1person  empty_frac_day  mean_frac_home  commute_med
+0   long  4259        2.375          0.201           0.219           0.677         43.0
+1  short  4407        2.225          0.272           0.194           0.718          7.0
+2     ev  5548        2.404          0.170           0.205           0.689         16.0
+3  nonev  8000        2.208          0.284           0.202           0.707         15.0
+('long', 'short') 101 53s
+('long', 'short') 202 46s
+('long', 'short') 303 43s
+('ev', 'nonev') 101 45s
+('ev', 'nonev') 202 45s
+('ev', 'nonev') 303 45s
+              cooling_load_MWh  cooling_load_sd  cooling_elec_MWh  peak_to_valley  peak_hour  people_home
+group policy                                                                                             
+ev    fixed              6.276            0.022             2.220           2.399         17       42.029
+      smart              6.040            0.050             2.103           2.002         18       42.029
+long  fixed              6.279            0.042             2.221           2.391         17       40.637
+      smart              6.025            0.081             2.095           1.989         18       40.637
+nonev fixed              6.231            0.027             2.204           2.434         17       35.596
+      smart              5.979            0.052             2.081           1.931         18       35.596
+short fixed              6.227            0.060             2.204           2.425         17       37.107
+      smart              5.946            0.089             2.070           1.927         18       37.107
+        seed        cooling_load_saving_%       cooling_elec_saving_%      
+        mean    std                  mean   std                  mean   std
+group                                                                      
+ev     202.0  101.0                  3.76  0.49                  5.27  0.53
+long   202.0  101.0                  4.05  0.67                  5.65  0.82
+nonev  202.0  101.0                  4.03  0.74                  5.58  0.67
+short  202.0  101.0                  4.52  0.64                  6.04  0.58
+figure written

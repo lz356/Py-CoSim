@@ -1,0 +1,12 @@
+{
+  "cli": {
+    "intercept_s": 1.7447246492477018,
+    "per_step_ms": 2.1027911898745173
+  },
+  "pycosim": {
+    "intercept_s": 2.6831990182171945,
+    "per_step_ms": 3.5530094363468834
+  },
+  "fixed_overhead_s": 0.9384743689694928,
+  "per_step_overhead_ms": 1.450218246472366
+}

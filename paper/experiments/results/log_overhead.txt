@@ -1,0 +1,29 @@
+{'days': 1, 'steps': 96, 'rep': 0, 'mode': 'cli', 'wall_s': 2.6139427999733016} {'days': 1, 'steps': 96, 'rep': 0, 'mode': 'pycosim', 'wall_s': 3.472456799936481}
+{'days': 7, 'steps': 672, 'rep': 0, 'mode': 'cli', 'wall_s': 2.8533947999821976} {'days': 7, 'steps': 672, 'rep': 0, 'mode': 'pycosim', 'wall_s': 4.434312600060366}
+{'days': 28, 'steps': 2688, 'rep': 0, 'mode': 'cli', 'wall_s': 7.298466400010511} {'days': 28, 'steps': 2688, 'rep': 0, 'mode': 'pycosim', 'wall_s': 11.355256700073369}
+{'days': 1, 'steps': 96, 'rep': 1, 'mode': 'cli', 'wall_s': 1.9403767000185326} {'days': 1, 'steps': 96, 'rep': 1, 'mode': 'pycosim', 'wall_s': 3.083835600060411}
+{'days': 7, 'steps': 672, 'rep': 1, 'mode': 'cli', 'wall_s': 2.9665606999769807} {'days': 7, 'steps': 672, 'rep': 1, 'mode': 'pycosim', 'wall_s': 4.6791574999224395}
+{'days': 28, 'steps': 2688, 'rep': 1, 'mode': 'cli', 'wall_s': 6.578045699978247} {'days': 28, 'steps': 2688, 'rep': 1, 'mode': 'pycosim', 'wall_s': 10.85363160003908}
+{'days': 1, 'steps': 96, 'rep': 2, 'mode': 'cli', 'wall_s': 1.9167701000114903} {'days': 1, 'steps': 96, 'rep': 2, 'mode': 'pycosim', 'wall_s': 3.1281709999311715}
+{'days': 7, 'steps': 672, 'rep': 2, 'mode': 'cli', 'wall_s': 2.841758899972774} {'days': 7, 'steps': 672, 'rep': 2, 'mode': 'pycosim', 'wall_s': 5.312651599990204}
+{'days': 28, 'steps': 2688, 'rep': 2, 'mode': 'cli', 'wall_s': 8.49494479992427} {'days': 28, 'steps': 2688, 'rep': 2, 'mode': 'pycosim', 'wall_s': 14.666919599985704}
+{
+  "cli": {
+    "intercept_s": 1.7447246492477018,
+    "per_step_ms": 2.1027911898745173
+  },
+  "pycosim": {
+    "intercept_s": 2.6831990182171945,
+    "per_step_ms": 3.5530094363468834
+  },
+  "fixed_overhead_s": 0.9384743689694928,
+  "per_step_overhead_ms": 1.450218246472366
+}
+mode     days
+cli      1        1.940377
+         7        2.853395
+         28       7.298466
+pycosim  1        3.128171
+         7        4.679157
+         28      11.355257
+Name: wall_s, dtype: float64

@@ -1,0 +1,4 @@
+intent,energy_kWh,mean_occupied_T,mean_occupied_clg_sp,backend,calls,valid,fallback,clipped,rate_limited
+comfort,1414.971365854608,23.788319610190918,23.708333333333332,offline-stand-in,120,120,0,0,32
+office,1393.69402957723,24.233105872392716,24.166666666666668,offline-stand-in,120,120,0,0,22
+economy,1299.241430843932,26.25673487586426,26.25,offline-stand-in,120,120,0,0,12
