@@ -42,3 +42,4 @@ Thumbs.db
 # Secrets
 .env
 *.key
+paper/experiments/helics_feds/*.log

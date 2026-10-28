@@ -5,3 +5,34 @@ Py-CoSim (process)  9.393062  0.605146
 Py-CoSim (thread)   9.385688  0.750075
 {'n_buildings': 1, 'serial_s': 10.425278099952266, 'parallel_s': 8.74558570003137, 'speedup': 1.1920617392057424, 'max_abs_diff_parallel_vs_serial': 0.0}
 {'n_buildings': 2, 'serial_s': 33.606249700067565, 'parallel_s': 15.930581799941137, 'speedup': 2.1095431492773065, 'max_abs_diff_parallel_vs_serial': 0.0}
+{'n_buildings': 4, 'serial_s': 47.990280699916184, 'parallel_s': 18.19792170007713, 'speedup': 2.637129749806143, 'max_abs_diff_parallel_vs_serial': 0.0}
+{'n_buildings': 8, 'serial_s': 74.36141559993848, 'parallel_s': 21.751678799977526, 'speedup': 3.41865178700668, 'max_abs_diff_parallel_vs_serial': 0.0}
+{'n_buildings': 16, 'serial_s': 123.6574363000691, 'parallel_s': 44.78174460004084, 'speedup': 2.7613358390676974, 'max_abs_diff_parallel_vs_serial': 0.0}
+{
+  "machine": {
+    "cpu": "11th Gen Intel(R) Core(TM) i7-1185G7 @ 3.00GHz",
+    "physical_cores": 4,
+    "logical_cores": 8,
+    "memory_gb": 16,
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.10"
+  },
+  "overhead": {
+    "mean": {
+      "EnergyPlus CLI": 6.370392799998323,
+      "Py-CoSim (process)": 9.39306203338007,
+      "Py-CoSim (thread)": 9.385687966675809
+    },
+    "std": {
+      "EnergyPlus CLI": 0.9273129800798408,
+      "Py-CoSim (process)": 0.605145831657173,
+      "Py-CoSim (thread)": 0.750075275073856
+    }
+  },
+  "master_overhead_s_per_step_per_component": 3.20841074486228e-05,
+  "exchange": {
+    "Py-CoSim 2 data bus (publish + read)": 9.24080004915595e-06,
+    "Py-CoSim 0.x CSV file (write + read)": 0.05376326833308364
+  },
+  "steps": 672
+}

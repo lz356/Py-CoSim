@@ -215,6 +215,29 @@ class EnergyPlusModel:
             raise ModelError(f"EnergyPlus supports {VALID_TIMESTEPS} time steps per hour, not {n}")
         self.data["Timestep"] = {"Timestep 1": {"number_of_timesteps_per_hour": n}}
 
+    @property
+    def sizing_window_steps(self) -> Optional[int]:
+        """``Timesteps in Averaging Window`` of ``Sizing:Parameters`` (None if the model has none)."""
+        for obj in self.data.get("Sizing:Parameters", {}).values():
+            value = obj.get("timesteps_in_averaging_window")
+            return int(value) if value not in (None, "") else None
+        return None
+
+    def set_sizing_window_minutes(self, minutes: float) -> None:
+        """Average design loads for autosizing over about ``minutes`` whatever the time step.
+
+        EnergyPlus counts the sizing averaging window in *time steps*. A model
+        prepared with 4 steps per hour and a 6-step window (90 min) gets a 6-min
+        window at 60 steps per hour, which can enlarge autosized coils and fans
+        considerably. Call this after :meth:`set_timesteps_per_hour` to keep
+        the window's duration.
+        """
+        ts = self.timesteps_per_hour
+        n = max(1, int(round(float(minutes) / (60.0 / ts))))
+        objs = self.data.setdefault("Sizing:Parameters", {"Sizing:Parameters 1": {}})
+        for obj in objs.values():
+            obj["timesteps_in_averaging_window"] = n
+
     def get_run_period(self) -> Tuple[date, date, Optional[int]]:
         """``(first_day, last_day, begin_year)`` of the first RunPeriod (days inclusive)."""
         rps = self.objects("RunPeriod")

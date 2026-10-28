@@ -29,3 +29,4 @@ jobs:
         run: |
           python examples/01_quickstart_no_energyplus/run.py --no-plot
           python examples/09_custom_component_ev/run.py --days 2
+          python examples/11_messages_and_time/run.py --days 1

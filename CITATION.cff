@@ -1,8 +1,8 @@
 cff-version: 1.2.0
 message: "If you use Py-CoSim, please cite it as below."
 title: "Py-CoSim: Python co-simulation framework for buildings"
-version: 2.0.0
-date-released: 2026-10-27
+version: 2.1.0
+date-released: 2026-10-28
 license: MIT
 repository-code: "https://github.com/lz356/Py-CoSim"
 keywords:

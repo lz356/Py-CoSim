@@ -537,7 +537,17 @@ class EnergyPlusComponent(Component):
         self.final_outputs = None
         self.info = {}
         model = self.model
+        original_ts = model.timesteps_per_hour
         model.set_timesteps_per_hour(ts)
+        window = model.sizing_window_steps
+        if ts != original_ts and window and self.preprocess is None:
+            logger.warning(
+                "%s: the model was prepared for %d time steps per hour and now runs with %d. Its autosizing averages "
+                "design loads over %d time steps, i.e. %.0f min instead of %.0f min, which can change autosized "
+                "equipment (and energy use) noticeably. To keep the original window, pass "
+                "preprocess=lambda m: m.set_sizing_window_minutes(%.0f), or use step_size= with the model's own "
+                "timestep.", self.name, original_ts, ts, window, window * 60.0 / ts, window * 60.0 / original_ts,
+                window * 60.0 / original_ts)
         skip_until = None
         if self.sync_run_period:
             last = (ctx.end - timedelta(seconds=1)).date()

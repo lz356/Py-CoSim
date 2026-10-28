@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased — SMMM 2.0
+## 2.1.0 — SMMM 2.0 (unreleased)
 
 The data hub was redesigned as **SMMM 2.0** (Simulation Management and Messaging Module, the name used in the
 original Py-CoSim paper). Components publish *messages* that say what their time stamp means, and subscribe to what

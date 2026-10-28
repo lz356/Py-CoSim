@@ -471,3 +471,14 @@ def test_async_answers_queued_behind_a_late_call_are_flagged(tmp_path):
     late = res.quality.set_index("quality")["messages"].get("late", 0)
     assert meta["late"] == late >= 2
     assert meta["delivered"] + meta["late"] == 4  # every answer due before the end is accounted for
+
+
+def test_sizing_window_keeps_its_duration():
+    from pycosim.energyplus.model import EnergyPlusModel
+
+    m = EnergyPlusModel({"Timestep": {"Timestep 1": {"number_of_timesteps_per_hour": 4}},
+                         "Sizing:Parameters": {"S": {"timesteps_in_averaging_window": 6}}})
+    assert m.sizing_window_steps == 6
+    m.set_timesteps_per_hour(60)
+    m.set_sizing_window_minutes(90)
+    assert m.sizing_window_steps == 90

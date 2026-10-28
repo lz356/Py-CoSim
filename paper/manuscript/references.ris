@@ -44,7 +44,7 @@ PY  - 2013
 SP  - 1021
 EP  - 1032
 PB  - CIMNE
-CY  - Santa Eulària, Ibiza, Spain
+CY  - Santa Eulàlia, Ibiza, Spain
 SN  - 978-84-941407-6-1
 UR  - https://hdl.handle.net/2117/192675
 ER  - 
@@ -938,7 +938,7 @@ ID  - moreau2013prov
 AU  - Moreau, Luc
 AU  - Missier, Paolo
 TI  - PROV-DM: The PROV Data Model
-T2  - W3C Recommendation 30 April 2013
+T2  - W3C Recommendation
 PY  - 2013
 PB  - World Wide Web Consortium (W3C)
 UR  - https://www.w3.org/TR/2013/REC-prov-dm-20130430/
@@ -1039,7 +1039,7 @@ A2  - Briggs, Ed
 A2  - Borgendale, Ken
 A2  - Gupta, Rahul
 TI  - MQTT Version 5.0
-T2  - OASIS Standard, 07 March 2019
+T2  - OASIS Standard
 PY  - 2019
 UR  - https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html
 ER  - 
