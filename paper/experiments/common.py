@@ -46,6 +46,67 @@ def set_style():
     })
 
 
+# Manuscript figures are drawn at their printed size (text width 6.5 in) so that
+# every label prints at 8-9 pt; the PNG is exactly figsize x 600 dpi.
+TEXT_WIDTH_IN = 6.5
+MIN_FONT_PT = 8.0
+
+
+def paper_style():
+    """``set_style()`` for the manuscript figures: final print size, text >= 8 pt, STIX maths."""
+    import matplotlib as mpl
+
+    set_style()
+    mpl.rcParams.update({
+        "mathtext.fontset": "stix",      # Times-like symbols to match the serif text
+        "savefig.bbox": "standard",      # no tight cropping: the PNG keeps the drawn size
+        "savefig.pad_inches": 0.0,
+        "savefig.dpi": 600,
+        "legend.handlelength": 1.6,
+        "boxplot.medianprops.color": "k",
+    })
+
+
+def save_paper_figure(fig, name: str) -> None:
+    """Save a manuscript figure at 600 dpi and report its size, smallest font and any text problems."""
+    from matplotlib.text import Text
+    from matplotlib.transforms import Bbox
+
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    fig_box = fig.bbox
+    hidden = set()  # labels of ticks outside the axis limits (kept by matplotlib but not drawn)
+    for a in fig.axes:
+        for axis in (a.xaxis, a.yaxis):
+            lo, hi = sorted(axis.get_view_interval())
+            tol = 1e-9 * max(abs(hi - lo), 1.0)
+            for tick in axis.get_major_ticks() + axis.get_minor_ticks():
+                loc = tick.get_loc()
+                if loc is None or not lo - tol <= loc <= hi + tol:
+                    hidden.update({id(tick.label1), id(tick.label2)})
+    texts = [t for t in fig.findobj(Text) if t.get_visible() and t.get_text().strip() and id(t) not in hidden]
+    sizes = [t.get_fontsize() for t in texts]
+    w, h = fig.get_size_inches()
+    problems = []
+    if w > TEXT_WIDTH_IN + 1e-6:
+        problems.append(f"width {w:.2f} in > {TEXT_WIDTH_IN} in")
+    for t in texts:
+        if t.get_fontsize() < MIN_FONT_PT - 1e-6:
+            problems.append(f"{t.get_fontsize():.1f} pt: {t.get_text()!r}")
+        bb = t.get_window_extent(renderer)
+        if bb.x0 < fig_box.x0 - 1 or bb.y0 < fig_box.y0 - 1 or bb.x1 > fig_box.x1 + 1 or bb.y1 > fig_box.y1 + 1:
+            problems.append(f"clipped at figure edge: {t.get_text()!r}")
+    boxes = [(t, t.get_window_extent(renderer)) for t in texts]
+    for i, (t1, b1) in enumerate(boxes):
+        for t2, b2 in boxes[i + 1:]:
+            inter = Bbox.intersection(b1, b2)
+            if inter is not None and inter.width > 1 and inter.height > 1:
+                problems.append(f"text overlap: {t1.get_text()!r} / {t2.get_text()!r}")
+    fig.savefig(FIG / name, dpi=600)
+    print(f"{name}: {w:.2f} x {h:.2f} in, smallest font {min(sizes):.1f} pt"
+          + ("".join(f"\n  ! {p}" for p in problems) if problems else ", no text problems"))
+
+
 def read_sql_series(sql_path: Path, year: int, frequency: str = "Zone Timestep") -> pd.DataFrame:
     """All time-step series of an EnergyPlus SQL file as a DataFrame (index = end of interval)."""
     con = sqlite3.connect(str(sql_path))

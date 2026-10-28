@@ -23,7 +23,7 @@ import time
 import numpy as np
 import pandas as pd
 
-from common import COLORS, FIG, OUT, make_office, set_style
+from common import COLORS, OUT, make_office, paper_style, save_paper_figure
 
 import pycosim as pc
 from pycosim.components import GridMeter, LLMSupervisor, StochasticStandInBackend, TimeOfUseTariff
@@ -106,24 +106,23 @@ def main() -> None:
 def plot(df: pd.DataFrame) -> None:
     import matplotlib.pyplot as plt
 
-    set_style()
-    fig, ax = plt.subplots(figsize=(3.5, 2.6))
+    paper_style()
+    fig, ax = plt.subplots(figsize=(3.5, 2.6), layout="constrained")
     for mode, c, lab in (("blocking", COLORS[3], "Blocking calls"), ("async", COLORS[0], "Asynchronous (TIDE)")):
         g = df[(df["mode"] == mode) & (df["repeat"] == 1)]
         ax.plot(g["n_buildings"], g["wall_s"], "o-", color=c, label=lab)
-    ax.set_xlabel("Buildings, each with one AI supervisor")
+    ax.set_xlabel("Offices $N$, each with one AI supervisor")
     ax.set_ylabel("Wall-clock time [s]")
     ax.set_xticks(NS)
-    ax.legend()
-    fig.tight_layout()
-    fig.savefig(FIG / "fig08_async.png")
+    ax.legend(loc="upper left", frameon=False)
+    save_paper_figure(fig, "fig08_async.png")
     plt.close(fig)
 
 
 if __name__ == "__main__":
     import sys
 
-    if "--plot" in sys.argv:  # re-draw from the saved table
+    if "--plot" in sys.argv or "--plot-only" in sys.argv:  # re-draw from the saved table
         plot(pd.read_csv(OUT / "e4_async.csv"))
     else:
         main()

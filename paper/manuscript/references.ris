@@ -430,6 +430,7 @@ TI  - Parallel and Distributed Simulation Systems
 T2  - Wiley Series on Parallel and Distributed Computing
 PY  - 2000
 PB  - John Wiley & Sons
+CY  - New York
 SN  - 978-0-471-18383-9
 ER  - 
 
@@ -557,7 +558,7 @@ ER  -
 
 TY  - ELEC
 ID  - helics_docs
-AU  - HELICS developers (GMLC-TDC)
+AU  - HELICS developers
 TI  - HELICS documentation
 PY  - 2026
 UR  - https://docs.helics.org/en/latest/
@@ -1610,4 +1611,17 @@ IS  - 7
 SP  - 1813
 PB  - MDPI
 DO  - 10.3390/en18071813
+ER  - 
+
+TY  - RPRT
+ID  - wilcox2008
+AU  - Wilcox, S.
+AU  - Marion, W.
+TI  - Users Manual for TMY3 Data Sets
+PY  - 2008
+M3  - Technical Report
+PB  - National Renewable Energy Laboratory
+CY  - Golden, CO
+SN  - NREL/TP-581-43156
+UR  - https://www.nrel.gov/docs/fy08osti/43156.pdf
 ER  - 

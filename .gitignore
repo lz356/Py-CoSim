@@ -49,3 +49,6 @@ Liang's Working Folder/
 
 # Word lock files
 ~$*
+
+# Compliance-check working files (regenerable; the reports are kept)
+paper/manuscript/checks/*/work/

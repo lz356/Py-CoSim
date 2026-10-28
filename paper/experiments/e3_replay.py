@@ -20,7 +20,7 @@ import time
 import numpy as np
 import pandas as pd
 
-from common import COLORS, FIG, OUT, make_office, set_style
+from common import COLORS, OUT, TEXT_WIDTH_IN, make_office, paper_style, save_paper_figure
 
 import pycosim as pc
 from pycosim.components import GridMeter, LLMSupervisor, StochasticStandInBackend, TimeOfUseTariff
@@ -138,38 +138,38 @@ def plot(live, rep, sav_live, sav_replay) -> None:
     import matplotlib.dates as mdates
     import matplotlib.pyplot as plt
 
-    set_style()
-    fig, axes = plt.subplots(1, 2, figsize=(7.2, 2.7), gridspec_kw={"width_ratios": [2.2, 1]})
+    paper_style()
+    fig, axes = plt.subplots(1, 2, figsize=(TEXT_WIDTH_IN, 3.0), layout="constrained",
+                             gridspec_kw={"width_ratios": [2.2, 1]})
     ax = axes[0]
     day = slice("2023-07-18 06:00", "2023-07-18 20:00")
     for i, res in live.items():
         s = res["ai.clg_sp"].loc[day]
-        ax.step(s.index, s, where="post", lw=0.9, color=COLORS[i % len(COLORS)], alpha=0.8, label=f"live run {i}")
+        ax.step(s.index, s, where="post", lw=0.9, color=COLORS[i % len(COLORS)], alpha=0.8, label=f"Live run {i}")
     s = rep["ai.clg_sp"].loc[day]
-    ax.step(s.index, s, where="post", lw=2.2, color="k", ls=":", label="replay of run 1")
+    ax.step(s.index, s, where="post", lw=2.2, color="k", ls=":", label="Replay of run 1")
     ax.set_ylabel("Cooling set-point [°C]")
     ax.set_title("(a) Sampled AI decisions on 18 July", loc="left")
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
-    ax.legend(fontsize=6.3, ncol=6, loc="upper center", bbox_to_anchor=(0.5, -0.16), frameon=False,
-              handlelength=1.5, columnspacing=0.8)
+    ax.legend(ncol=3, loc="upper center", bbox_to_anchor=(0.5, -0.1), frameon=False, columnspacing=1.2)
     ax = axes[1]
     ax.boxplot([sav_live, sav_replay], widths=0.5)
     for j, vals in enumerate([sav_live, sav_replay], start=1):
         ax.scatter(np.full(len(vals), j) + np.linspace(-0.08, 0.08, len(vals)), vals, s=10, color=COLORS[j - 1],
                    zorder=3)
     ax.set_xticks([1, 2])
-    ax.set_xticklabels(["live vs.\nlive", "live vs.\nreplayed"])
+    ax.set_xticklabels(["Live vs.\nlive", "Live vs.\nreplayed"])
+    ax.grid(axis="x", visible=False)
     ax.set_ylabel("Estimated retrofit savings [%]")
     ax.set_title("(b) Retrofit savings estimate", loc="left")
-    fig.tight_layout()
-    fig.savefig(FIG / "fig07_replay.png")
+    save_paper_figure(fig, "fig07_replay.png")
     plt.close(fig)
 
 
 if __name__ == "__main__":
     import sys
 
-    if "--plot" in sys.argv:  # re-draw from the saved runs
+    if "--plot" in sys.argv or "--plot-only" in sys.argv:  # re-draw from the saved runs
         live = {i: pc.Results.load(WORK / f"live_{i}") for i in range(1, N_LIVE + 1)}
         summary = json.loads((OUT / "e3_summary.json").read_text())
         plot(live, pc.Results.load(WORK / "replay_1"), summary["retrofit_savings_live_pct"],

@@ -17,7 +17,7 @@ import time
 import numpy as np
 import pandas as pd
 
-from common import COLORS, FIG, OUT, set_style
+from common import OUT, paper_style, save_paper_figure
 
 import pycosim as pc
 from pycosim.components import GridMeter
@@ -142,16 +142,16 @@ def main() -> None:
     plot(df)
 
 
+# Panel titles: the price names used in the CSV are short codes
+PRICE_LABELS = {"TOU": "time-of-use price", "RTP-5min": "real-time price (5 min)"}
+
+
 def plot(df: pd.DataFrame) -> None:
     import matplotlib.pyplot as plt
     from matplotlib.colors import LogNorm
 
-    set_style()
-    import matplotlib as mpl
-
-    mpl.rcParams["savefig.bbox"] = "standard"
-    fig, axes = plt.subplots(2, 2, figsize=(7.0, 6.6))
-    fig.subplots_adjust(hspace=0.42, wspace=0.32, right=0.86)
+    paper_style()
+    fig, axes = plt.subplots(2, 2, figsize=(5.6, 5.2), sharex=True, sharey=True, layout="constrained")
     vmin, vmax = 1e-4, 50
     for col, price_name in enumerate(PRICES):
         for row, mode in enumerate(("naive", "aligned")):
@@ -164,27 +164,29 @@ def plot(df: pd.DataFrame) -> None:
             ax.set_xticklabels(STEPS_MIN)
             ax.set_yticks(range(len(STEPS_MIN)))
             ax.set_yticklabels(STEPS_MIN)
+            ax.tick_params(labelbottom=True, labelleft=True)
             ax.grid(False)
             for i in range(data.shape[0]):
                 for j in range(data.shape[1]):
                     v = mat.to_numpy()[i, j]
                     txt = "<0.001" if v < 1e-3 else (f"{v:.3f}" if v < 0.1 else f"{v:.1f}")
-                    ax.text(j, i, txt, ha="center", va="center", fontsize=6.5,
+                    ax.text(j, i, txt, ha="center", va="center", fontsize=8,
                             color="white" if data[i, j] < 0.5 else "black")
-            ax.set_xlabel("Meter step [min]")
-            ax.set_ylabel("Producer step [min]")
-            ax.set_title(f"({'abcd'[row * 2 + col]}) {mode.capitalize()} exchange, {price_name} price", loc="left")
-    cax = fig.add_axes([0.89, 0.2, 0.02, 0.6])
-    cb = fig.colorbar(im, cax=cax, label="|Cost error| [%]")
-    cb.ax.tick_params(labelsize=7)
-    fig.savefig(FIG / "fig05_alignment_synthetic.png")
+            if row == 1:
+                ax.set_xlabel("Meter step [min]")
+            if col == 0:
+                ax.set_ylabel("Producer step [min]")
+            ax.set_title(f"({'abcd'[row * 2 + col]}) {mode.capitalize()}, {PRICE_LABELS[price_name]}", loc="left")
+    cb = fig.colorbar(im, ax=axes, shrink=0.75, aspect=30, pad=0.03, label="|Cost error| [%]")
+    cb.ax.grid(False)
+    save_paper_figure(fig, "fig05_alignment_synthetic.png")
     plt.close(fig)
 
 
 if __name__ == "__main__":
     import sys
 
-    if "--plot" in sys.argv:
+    if "--plot" in sys.argv or "--plot-only" in sys.argv:  # re-draw from the saved table
         plot(pd.read_csv(OUT / "e2a_alignment.csv"))
     else:
         main()

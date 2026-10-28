@@ -15,7 +15,7 @@ import time
 import numpy as np
 import pandas as pd
 
-from common import COLORS, FIG, OUT, load_example, set_style
+from common import COLORS, OUT, TEXT_WIDTH_IN, load_example, paper_style, save_paper_figure
 
 ex = load_example("04_community_pv_battery")
 WORK = OUT / "case_community"
@@ -60,53 +60,61 @@ def main() -> None:
     plot(df)
 
 
+# Strategy names as written in the text
+STRATEGY_LABELS = {"baseline": "Baseline", "precool": "Pre-cooling", "battery": "Battery",
+                   "coordinated": "Coordinated"}
+IMPORT_LIMIT_KW = 120.0  # import limit of the battery's peak-shaving controller (example 04)
+
+
 def plot(df: pd.DataFrame) -> None:
     import matplotlib.pyplot as plt
 
-    set_style()
-    fig, axes = plt.subplots(1, 3, figsize=(7.4, 2.7))
+    paper_style()
+    fig, axd = plt.subplot_mosaic([["a", "b"], ["c", "c"]], figsize=(TEXT_WIDTH_IN, 4.6), layout="constrained",
+                                  height_ratios=[1.1, 0.9])
     strategies = list(ex.STRATEGIES)[1:]
     x = np.arange(len(strategies))
-    w = 0.38
+    w = 0.42
     couplings = (("naive", COLORS[3], "Naive (latest values)"), ("aligned", COLORS[0], "Aligned (TIDE)"))
-    for ax, (col, title) in zip(axes[:2], [("energy_cost_$_vs_baseline_%", "(a) Energy cost"),
-                                            ("on_peak_import_MWh_vs_baseline_%", "(b) On-peak import")]):
+    for ax, (col, title) in zip((axd["a"], axd["b"]), [("energy_cost_$_vs_baseline_%", "(a) Energy cost"),
+                                                        ("on_peak_import_MWh_vs_baseline_%", "(b) On-peak import")]):
         lo = df[col].min()
         for i, (coupling, c, lab) in enumerate(couplings):
             g = df[df["coupling"] == coupling].set_index("strategy").reindex(strategies)
             bars = ax.bar(x + (i - 0.5) * w, g[col], w, color=c, label=lab)
             for b, v in zip(bars, g[col]):
-                ax.text(b.get_x() + b.get_width() / 2, v + 0.02 * lo, f"{v:.1f}", ha="center", va="top",
-                        fontsize=5.8)
-        ax.set_ylim(1.18 * lo, 0)
+                ax.text(b.get_x() + b.get_width() / 2, v + 0.02 * lo, f"{v:.1f}".replace("-", "−"),
+                        ha="center", va="top", fontsize=8)
+        ax.set_ylim(1.2 * lo, 0)
         ax.axhline(0, color="k", lw=0.6)
+        ax.grid(axis="x", visible=False)
         ax.set_xticks(x)
-        ax.set_xticklabels(strategies, fontsize=7)
+        ax.set_xticklabels([STRATEGY_LABELS[s] for s in strategies])
         ax.set_ylabel("Change vs. baseline [%]")
         ax.set_title(title, loc="left")
-    ax = axes[2]
+    ax = axd["c"]
     allx = np.arange(len(ex.STRATEGIES))
     for i, (coupling, c, lab) in enumerate(couplings):
         g = df[df["coupling"] == coupling].set_index("strategy").reindex(list(ex.STRATEGIES))
         ax.bar(allx + (i - 0.5) * w, g["peak_import_kW"], w, color=c, label=lab)
-    ax.axhline(120, color="k", lw=0.8, ls="--")
-    ax.text(-0.45, 121.5, "battery import limit", fontsize=6)
+    ax.axhline(IMPORT_LIMIT_KW, color="k", lw=0.8, ls="--", label=f"Battery import limit ({IMPORT_LIMIT_KW:.0f} kW)")
     ax.set_ylim(100, 145)
+    ax.grid(axis="x", visible=False)
     ax.set_xticks(allx)
-    ax.set_xticklabels(list(ex.STRATEGIES), fontsize=6.5, rotation=15)
+    ax.set_xticklabels([STRATEGY_LABELS[s] for s in ex.STRATEGIES])
     ax.set_ylabel("Peak import (15 min) [kW]")
     ax.set_title("(c) Peak grid import", loc="left")
-    handles, labels = axes[0].get_legend_handles_labels()
-    fig.legend(handles, labels, loc="lower center", ncol=2, fontsize=6.5, frameon=False, bbox_to_anchor=(0.5, -0.06))
-    fig.tight_layout()
-    fig.savefig(FIG / "fig09_case_a.png")
+    handles, labels = ax.get_legend_handles_labels()
+    order = [1, 2, 0]  # bars first, then the limit line
+    fig.legend([handles[k] for k in order], [labels[k] for k in order], loc="outside upper center", ncol=3, frameon=False)
+    save_paper_figure(fig, "fig09_case_a.png")
     plt.close(fig)
 
 
 if __name__ == "__main__":
     import sys
 
-    if "--plot" in sys.argv:
+    if "--plot" in sys.argv or "--plot-only" in sys.argv:  # re-draw from the saved table
         plot(pd.read_csv(OUT / "case_community.csv"))
     else:
         main()
