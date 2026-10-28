@@ -1,8 +1,8 @@
-"""The co-simulation master -- the management half of SMMM (:class:`CoSimulation`).
+"""The co-simulation master -- the management half of TIDE (:class:`CoSimulation`).
 
 Time advances on a fixed master grid ``t_k = start + k * dt``. Components may
 run at any integer multiple of ``dt`` (multi-rate). Components never call each
-other: they publish *messages* to the data bus (the messaging half of SMMM,
+other: they publish *messages* to the data bus (the messaging half of TIDE,
 :mod:`pycosim.core.bus`) and read what they subscribed to. Within a step the
 master executes
 
@@ -18,7 +18,7 @@ Phase 3 of all EnergyPlus components runs concurrently (each EnergyPlus
 instance lives in its own worker process), which is where the parallel
 speed-up of multi-building co-simulations comes from.
 
-Inputs are aligned by SMMM according to the time meaning of the source
+Inputs are aligned by TIDE according to the time meaning of the source
 (``kind`` of the output port) and what the input asks for (``read``), see
 :mod:`pycosim.core.messages`.
 """

@@ -7,7 +7,7 @@ couplings are compared:
 
 * ``naive``   -- Py-CoSim 2.0 style: every input reads the latest value; a
   helper function sums the flows into a net load; EnergyPlus runs at step h.
-* ``aligned`` -- SMMM 2.0: the meter subscribes to each flow and the price
+* ``aligned`` -- TIDE: the meter subscribes to each flow and the price
   with read="past"; EnergyPlus runs at step h.
 * ``aligned+sub`` -- as ``aligned`` but EnergyPlus keeps a 1-minute internal
   step and exchanges every h (its outputs aggregated by time meaning).
@@ -142,7 +142,7 @@ def plot(df: pd.DataFrame) -> None:
 
     set_style()
     fig, axes = plt.subplots(1, 3, figsize=(7.2, 2.6))
-    modes = [("naive", COLORS[3], "Naive (latest values)"), ("aligned", COLORS[0], "Aligned (SMMM)"),
+    modes = [("naive", COLORS[3], "Naive (latest values)"), ("aligned", COLORS[0], "Aligned (TIDE)"),
              ("aligned+sub", COLORS[2], "Aligned + 1-min EnergyPlus")]
     steps = [5, 15, 30, 60]
     x = np.arange(len(steps))

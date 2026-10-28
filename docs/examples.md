@@ -35,7 +35,7 @@ first EnergyPlus run also converts the IDF files (a few seconds, cached afterwar
 | 07 | reinforcement learning (Gymnasium) | optional | 20–60 s |
 | 08 | YAML scenario and the CLI | no (optional) | ~1 s |
 | 09 | writing your own component (EV charger) | no | ~1 s |
-| 11 | messages and time (SMMM): alignment, patterns, topics, quality, async AI stand-in, replay, lineage | no | ~15 s |
+| 11 | messages and time (TIDE): alignment, patterns, topics, quality, async AI stand-in, replay, lineage | no | ~15 s |
 
 ---
 
@@ -281,8 +281,8 @@ its own random stream from `ctx.rng`).
 
 ## 11 — Messages and time
 
-**Demonstrates:** the SMMM 2.0 messaging features in one script without EnergyPlus
-([Messages and time](smmm.md)). An RC house, PV, a battery, a time-of-use tariff and a
+**Demonstrates:** the TIDE messaging features in one script without EnergyPlus
+([Messages and time](tide.md)). An RC house, PV, a battery, a time-of-use tariff and a
 "stochastic AI supervisor" are coupled. The supervisor is **not an LLM**: it picks set-points
 at random, sometimes answers nonsense (40 °C) and sleeps to imitate a slow remote model. It is
 made asynchronous with `make_async(delay="15min")`. An hourly `GridMeter` (aligned) subscribes

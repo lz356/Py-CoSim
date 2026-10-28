@@ -1,11 +1,11 @@
-"""Case study: grid-interactive community of ten EnergyPlus offices, naive vs. SMMM-aligned metering.
+"""Case study: grid-interactive community of ten EnergyPlus offices, naive vs. aligned metering.
 
 Example 04 is run for its four strategies (baseline, pre-cooling, battery,
 coordinated) twice: with the Py-CoSim 2.0 wiring (latest values multiplied)
-and with SMMM 2.0 subscriptions (pattern subscription of all buildings, power
+and with TIDE subscriptions (pattern subscription of all buildings, power
 and price read over the interval that just ended).
 
-Output: results/case_a_smmm.csv, results/case_a_smmm.json, figures/fig09_case_a.png
+Output: results/case_community.csv, results/case_community.json, figures/fig09_case_a.png
 """
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ import pandas as pd
 from common import COLORS, FIG, OUT, load_example, set_style
 
 ex = load_example("04_community_pv_battery")
-WORK = OUT / "case_a_smmm"
+WORK = OUT / "case_community"
 N, DAYS = 10, 7
 
 
@@ -40,7 +40,7 @@ def main() -> None:
     for col in ("import_MWh", "on_peak_import_MWh", "peak_import_kW", "energy_cost_$"):
         base = df[df["strategy"] == "baseline"].set_index("coupling")[col]
         df[f"{col}_vs_baseline_%"] = [100 * (r[col] / base[r["coupling"]] - 1) for _, r in df.iterrows()]
-    df.to_csv(OUT / "case_a_smmm.csv", index=False)
+    df.to_csv(OUT / "case_community.csv", index=False)
     a = df[df["coupling"] == "aligned"].set_index("strategy")
     n = df[df["coupling"] == "naive"].set_index("strategy")
     summary = {
@@ -55,7 +55,7 @@ def main() -> None:
         "components_coordinated": int(a.loc["coordinated", "components"]),
         "mean_wall_s": float(df["wall_s"].mean()),
     }
-    (OUT / "case_a_smmm.json").write_text(json.dumps(summary, indent=2))
+    (OUT / "case_community.json").write_text(json.dumps(summary, indent=2))
     print(json.dumps(summary, indent=2))
     plot(df)
 
@@ -68,7 +68,7 @@ def plot(df: pd.DataFrame) -> None:
     strategies = list(ex.STRATEGIES)[1:]
     x = np.arange(len(strategies))
     w = 0.38
-    couplings = (("naive", COLORS[3], "Naive (latest values)"), ("aligned", COLORS[0], "Aligned (SMMM)"))
+    couplings = (("naive", COLORS[3], "Naive (latest values)"), ("aligned", COLORS[0], "Aligned (TIDE)"))
     for ax, (col, title) in zip(axes[:2], [("energy_cost_$_vs_baseline_%", "(a) Energy cost"),
                                             ("on_peak_import_MWh_vs_baseline_%", "(b) On-peak import")]):
         lo = df[col].min()
@@ -107,6 +107,6 @@ if __name__ == "__main__":
     import sys
 
     if "--plot" in sys.argv:
-        plot(pd.read_csv(OUT / "case_a_smmm.csv"))
+        plot(pd.read_csv(OUT / "case_community.csv"))
     else:
         main()

@@ -1,15 +1,14 @@
-# Messages and time: SMMM
+# Messages and time: TIDE
 
-The heart of Py-CoSim is **SMMM**, the *Simulation Management and Messaging Module*. The
-name comes from the original Py-CoSim paper, where SMMM was a data hub that passed CSV files
-between tools. Today it has two halves:
+The heart of Py-CoSim is **TIDE**, the *Time-aware Interval Data Exchange*: the hub
+through which all components exchange data. It has two parts:
 
 * the **management** half is the master, `CoSimulation`: one clock, a barrier at every
   step, the execution order, deadlines;
 * the **messaging** half is the data bus: it keeps every value a component publishes as a
   *message* and answers what the other components ask for.
 
-This page explains the messaging features of SMMM 2.0. All of them are optional. A script
+This page explains the messaging features of TIDE. All of them are optional. A script
 that connects ports with `connect()` and no `read=` works exactly as before; the one
 exception is `GridMeter`, which now lines up its inputs in time by default (see
 [GridMeter](component-library.md#gridmeter) and the [changelog](../CHANGELOG.md)).
@@ -52,14 +51,14 @@ A message is more than a number:
 | quality | `ok` | `ok`, `clipped`, `fallback`, `late` or `replayed` |
 | origin | step 48 | the master step whose inputs produced the value |
 
-Because every message says what its time stamp means, SMMM can hand it to a component that
+Because every message says what its time stamp means, TIDE can hand it to a component that
 runs at a different rate already converted ("aligned"). No conversion code is needed, and
 new parts — a second building, a live price feed instead of a tariff model, an AI agent —
 join without rewiring the others.
 
 ```text
   house  (15 min) ──┐                              ┌──► meter (1 h): mean power of its hour
-  pv     (15 min) ──┼──►  SMMM: messages with   ───┼──► ai    (1 h): price in effect now
+  pv     (15 min) ──┼──►  TIDE: messages with   ───┼──► ai    (1 h): price in effect now
   tariff          ──┘     time meaning, quality,   └──► ...
                           origin
 ```
@@ -207,7 +206,7 @@ not (e.g. `self.ctx.window("house.P_elec", t - timedelta(hours=1))`).
 
 **Coverage.** Sometimes no message covers part of the window yet — for example the first
 `past` read lies before the simulation start, or an `ahead` read asks for a building's power
-over `[t, t+h)`, which the building has not simulated yet. SMMM then fills the gap by holding
+over `[t, t+h)`, which the building has not simulated yet. TIDE then fills the gap by holding
 the nearest known value and counts it in `res.alignment`:
 
 | Column | Meaning |
@@ -324,7 +323,7 @@ meter describes the step that ended, a battery the step that starts).
 now read `past`. That suits EnergyPlus meters and `RCBuilding.P_elec`, but power from a
 feedthrough component that describes the coming step (`Battery.P`, an EV charger) is then
 priced with the previous step's price. Connect consumption, generation and battery power to
-`P_load`, `P_gen` and `P_bat` instead: SMMM aligns each of them by its own kind (see
+`P_load`, `P_gen` and `P_bat` instead: TIDE aligns each of them by its own kind (see
 [GridMeter](component-library.md#gridmeter)).
 
 ## Patterns and topics
@@ -429,7 +428,7 @@ print(res.quality)        # one row per port and flag (only ports with flagged m
 ```
 
 **When to use it.** On every output of a component you do not fully trust: ML models, LLMs,
-web APIs, measured data. It is a safety net at the level of SMMM; the
+web APIs, measured data. It is a safety net at the level of TIDE; the
 [`LLMSupervisor`](ai-and-rl.md#guardrails-why-the-building-stays-safe) has its own, more
 detailed guardrails on top.
 
@@ -490,7 +489,7 @@ cf = sim.run()
 
 Compared with `RecordingBackend`/`ReplayBackend` of the
 [LLM supervisor](ai-and-rl.md#reproducibility-record-and-replay), which record the text of
-each LLM call and need exactly the same prompts, SMMM replay records the *published
+each LLM call and need exactly the same prompts, TIDE replay records the *published
 messages*. It works for any component and also when the prompts would differ (a
 counterfactual building).
 
@@ -504,7 +503,7 @@ counterfactual building).
 
 ## Provenance: trace and lineage
 
-With `trace=True`, SMMM also writes down which messages every component read at every step.
+With `trace=True`, TIDE also writes down which messages every component read at every step.
 `res.lineage(ref, when, depth=4)` then follows a value back through the messages that
 produced it:
 

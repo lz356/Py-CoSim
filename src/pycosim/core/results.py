@@ -33,7 +33,7 @@ class Results:
         Number of messages per port that were clipped, replaced by a fallback,
         late or replayed.
     alignment : pandas.DataFrame
-        For every input read with ``at``/``past``/``ahead``: how often SMMM
+        For every input read with ``at``/``past``/``ahead``: how often TIDE
         had to extrapolate because no message covered the whole window yet.
     trace : pandas.DataFrame or None
         Which messages each component read at each step (``trace=True``).
@@ -167,7 +167,7 @@ class Results:
 
     # ------------------------------------------------------------------- I/O
     def save(self, folder: Union[str, Path]) -> Path:
-        """Write ``timeseries.csv``, ``events.csv``, ``timing.csv``, ``meta.json`` and the SMMM tables."""
+        """Write ``timeseries.csv``, ``events.csv``, ``timing.csv``, ``meta.json`` and the TIDE tables."""
         folder = Path(folder)
         folder.mkdir(parents=True, exist_ok=True)
         self.df.to_csv(folder / "timeseries.csv")

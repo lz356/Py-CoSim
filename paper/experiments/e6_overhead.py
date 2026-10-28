@@ -1,4 +1,4 @@
-"""E6: cost of SMMM 2.0 features (no EnergyPlus; run on an otherwise idle machine).
+"""E6: cost of TIDE features (no EnergyPlus; run on an otherwise idle machine).
 
 (1) Micro-benchmark of the message store: publish + latest read vs. publish +
     window read (past) for interval-average signals.

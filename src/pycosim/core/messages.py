@@ -1,4 +1,4 @@
-"""Messages and their time meaning -- the data model of SMMM.
+"""Messages and their time meaning -- the data model of TIDE.
 
 Every value a component publishes is a *message*: a value plus the time span
 it is valid for and a quality flag. What the time span means depends on the
@@ -79,7 +79,7 @@ class Message:
     start: Union[datetime, float, None] = None
     end: Union[datetime, float, None] = None
     quality: Union[str, int, None] = None
-    origin: Optional[int] = None  # master step whose inputs produced the value (set by SMMM)
+    origin: Optional[int] = None  # master step whose inputs produced the value (set by TIDE)
 
 
 def _num(v: Any) -> Optional[float]:

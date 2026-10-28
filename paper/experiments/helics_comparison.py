@@ -10,7 +10,7 @@ Variants
 
 * ``pycosim_naive``     GridMeter(aligned=False): latest power x latest price;
 * ``pycosim_aligned``   GridMeter(aligned=True): power and price averaged over the step
-                        that just ended (SMMM aligns them from their time meaning);
+                        that just ended (TIDE aligns them from their time meaning);
 * ``helics``            three value federates + broker, period 900 s, consumers with
                         ``wait_for_current_time_update`` so a value published at t is read
                         at t (Py-CoSim's within-step order); meter = latest x latest;

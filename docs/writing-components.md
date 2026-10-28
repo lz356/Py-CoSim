@@ -55,7 +55,7 @@ accepted by the function, or the function must take `**inputs`).
 | a dict `{"a": 1.0, "b": 2.0}` | values by name (you may return only some of them) |
 | `None` | single output: the output becomes `None` (e.g. *release* an EnergyPlus actuator). Several outputs: publish nothing new, the outputs keep their previous values |
 | `pycosim.HOLD` | publish nothing new this step: the outputs keep their previous values |
-| `pycosim.Message(value, start=..., end=...)` | a value for another time span than the default, e.g. a price announced for 16:00 ([details](smmm.md#publishing-a-value-for-another-time-pcmessage)) |
+| `pycosim.Message(value, start=..., end=...)` | a value for another time span than the default, e.g. a price announced for 16:00 ([details](tide.md#publishing-a-value-for-another-time-pcmessage)) |
 
 Class components (`step()` methods) follow the dict/tuple/value rules above, and returning
 `None` from `step()` keeps the previous outputs.
@@ -144,8 +144,8 @@ inputs = {"T_out": {"default": 25.0, "unit": "C", "description": "outdoor air"}}
 outputs = {"P": 0.0, "soc": None}                           # name -> initial value
 ```
 
-The dictionary form also carries the SMMM settings described in
-[Messages and time](smmm.md):
+The dictionary form also carries the TIDE settings described in
+[Messages and time](tide.md):
 
 ```python
 outputs = {
@@ -185,7 +185,7 @@ class ZoneAverager(pc.Component):
 
 Units are free text; they appear in `describe()`, in plot legends and in `res.units`.
 `add_input(..., read=...)` and `add_output(..., kind=..., interval=..., bounds=...,
-on_invalid=..., topic=...)` take the SMMM settings as keywords. To change a port of a
+on_invalid=..., topic=...)` take the TIDE settings as keywords. To change a port of a
 component you did not write, use `set_port`, e.g.
 `ev.set_port("P_ev", kind="average", interval="ahead")`.
 
@@ -355,7 +355,7 @@ advisor = SlowAdvisor("ai", step_size="1h").make_async(delay="15min", deadline=3
 Only feedthrough components (`step()`) can be asynchronous. Inside `step()`, `self.ctx`
 shows the simulation as it was when the inputs were taken. A complete example (with the
 `SlowAdvisor` class) and the pitfalls are in
-[Asynchronous components](smmm.md#asynchronous-components).
+[Asynchronous components](tide.md#asynchronous-components).
 
 ## Wrapping an ML model
 
@@ -388,7 +388,7 @@ The same pattern works for PyTorch (`torch.load` + `model.eval()` in `setup`, `w
 torch.no_grad():` in `step`) or any other library. ML models can return implausible values
 for inputs they were not trained on; give their outputs `bounds` (e.g.
 `outputs = {"P_forecast": {"default": None, "bounds": (0.0, 2e5)}}`) and check `res.quality`
-after the run ([Quality flags and bounds](smmm.md#quality-flags-and-bounds)).
+after the run ([Quality flags and bounds](tide.md#quality-flags-and-bounds)).
 
 ## Common mistakes and the messages they produce
 

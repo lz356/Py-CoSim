@@ -115,7 +115,7 @@ done one building after the other.
 * An LLM backend waits for every answer; use a longer `step_size`, make the supervisor
   asynchronous (`make_async(delay="15min")`, so the simulation goes on while it thinks and
   several supervisors think at once), or record once and replay
-  ([Messages and time](smmm.md#asynchronous-components)).
+  ([Messages and time](tide.md#asynchronous-components)).
 * `trace=True` and `record=True` keep every message; switch them off for long production runs.
 * EnergyPlus models with many zones/HVAC objects or a small time step are slow on their own;
   a 15-minute step is usually a good compromise.
@@ -155,7 +155,7 @@ often (a multiple of the master step), and with `timestep=` plus `step_size=` it
 finer internal step than it exchanges, e.g. `timestep=60, step_size="15min"`
 ([sub-steps](energyplus.md#internal-sub-steps-timestep-and-step_size)). Components that read
 a building with another step get correctly averaged values with `read="past"`
-([alignment](smmm.md#alignment-across-step-sizes)).
+([alignment](tide.md#alignment-across-step-sizes)).
 
 ## Jupyter notebooks
 
@@ -189,7 +189,7 @@ Not as time series, only outputs. To see what a component received, look at the 
 its source (with the default `read="latest"` the values are identical), or record it yourself
 with `ctx.log` or an extra output. With `CoSimulation(..., trace=True)`, `res.trace` lists
 which messages every input read at every step, and `res.lineage(...)` follows a value back
-through them ([provenance](smmm.md#provenance-trace-and-lineage)).
+through them ([provenance](tide.md#provenance-trace-and-lineage)).
 
 ### Is my data sent anywhere?
 
@@ -205,7 +205,7 @@ components, and keep the `meta.json` of each run (versions, seed, connections). 
 components you cannot seed — LLMs, web services, other people's models — record their
 messages (`CoSimulation(..., record=["llm"])`) and replay them (`sim.replay("llm",
 run_folder)`): the replay is identical bit for bit
-([Record and replay](smmm.md#record-and-replay)). `RecordingBackend` additionally keeps the
+([Record and replay](tide.md#record-and-replay)). `RecordingBackend` additionally keeps the
 raw LLM answers. See [Concepts](concepts.md#reproducibility).
 
 ## Extending Py-CoSim

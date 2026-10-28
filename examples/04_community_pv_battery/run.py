@@ -91,7 +91,7 @@ def build(strategy: str, n_buildings: int = 10, days: int = 7, seed: int = 7, pv
         sim.connect("battery.soc", "dispatch.soc", delay=True)  # battery reports SOC of the previous step
         sim.connect("tariff.is_peak", "dispatch.is_peak")
         sim.connect("dispatch.P_set", "battery.P_set")
-    if aligned:  # SMMM: every flow and the price over the interval that just ended
+    if aligned:  # TIDE: every flow and the price over the interval that just ended
         sim.subscribe("grid.P_load", "bldg*.P_facility", reduce="sum")
         sim.subscribe("grid.P_gen", "pv.P_ac")
         if use_battery:

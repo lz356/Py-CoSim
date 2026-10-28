@@ -1,8 +1,8 @@
-"""Example 11 - Messages and time: SMMM 2.0 in one script (no EnergyPlus, runs in ~15 s).
+"""Example 11 - Messages and time: TIDE in one script (no EnergyPlus, runs in ~15 s).
 
 Components never call each other: they publish *messages* and subscribe to
-what they need. Each message says what its time stamp means, so SMMM (the
-Simulation Management and Messaging Module) can line up components that run
+what they need. Each message says what its time stamp means, so TIDE (the
+Time-aware Interval Data Exchange) can line up components that run
 at different rates. This example shows the main features on a small house:
 
     weather --T_out, GHI--> house (RC model, 15 min) --T_zone, P_elec--> ai
@@ -92,7 +92,7 @@ class StochasticSupervisor(pc.Component):
             options = [24.0, 24.5, 25.0]
         clg_sp = self.rand.choice(options)
         if self.rand.random() < self.p_bad:
-            clg_sp = 40.0                         # nonsense: SMMM clips it to the bounds and flags it
+            clg_sp = 40.0                         # nonsense: TIDE clips it to the bounds and flags it
         if peak:
             P_set = -inputs.P_elec                # discharge to cover the house
         elif t.hour < 6 and inputs.soc < 0.9:

@@ -87,7 +87,7 @@ sensors={
 * Units are guessed from the name for plots (`Temperature` → C, `Rate`/`Power` → W, …).
 * Every sensor is published as `kind="average"` with `interval="past"` (`"amount"` if its
   unit is J): EnergyPlus reports time-step values as means (or sums) over the time step that
-  just ended. Give a different [kind](smmm.md#the-five-kinds-what-a-time-stamp-means) as a
+  just ended. Give a different [kind](tide.md#the-five-kinds-what-a-time-stamp-means) as a
   third element, `("Zone Mean Air Temperature", "Core_ZN", "instant")`, or as
   `{"variable": ..., "key": ..., "kind": "instant"}`. This matters for aligned reads and
   [sub-steps](#internal-sub-steps-timestep-and-step_size); `latest` readers get the same
@@ -239,7 +239,7 @@ Use it when the HVAC system or its controls need a short time step but the rest 
 co-simulation does not. Two things to keep in mind: a sensor such as `Zone Mean Air
 Temperature` is then the *mean* over 15 minutes (declare it `"instant"` to get the last
 1-minute value), and the run is not much faster than a 1-minute exchange, because EnergyPlus
-still computes every minute. More in [Messages and time](smmm.md#energyplus-internal-sub-steps).
+still computes every minute. More in [Messages and time](tide.md#energyplus-internal-sub-steps).
 
 ## Sizing from the weather file: `sizing="weather_file"`
 

@@ -22,7 +22,7 @@ git show v0.1-legacy:PyCoSim.ipynb > PyCoSim_legacy.ipynb
 | `func4()` (control: rules, a tkinter dialog, ChatGPT) | a function component (`@pc.component`) or a `Component` subclass; `LLMSupervisor` for LLMs |
 | `func5()` (occupancy from CSVs / a PyTorch MLP) | `HouseholdOccupancy` (NHTS diaries), `OccupancyMLP`, or your own component wrapping the PyTorch model |
 | `Thread(target=func1).start()` … for every function | `sim.run()` |
-| SMMM: one CSV file per component per time step in `dynamic_simulation_result/` | the in-memory data bus; `sim.connect("a.out", "b.in")` |
+| SMMM: one CSV file per component per time step in `dynamic_simulation_result/` | TIDE, the in-memory message hub ([guide](tide.md)); `sim.connect("a.out", "b.in")` |
 | waiting until `len(glob(...)) == 2` files exist; time step = number of files | the master clock: every component gets the same `t` in a fixed, documented order |
 | `api.exchange.hour/minutes/current_time`, patching hour 24 and minute 60, `year = 2009` hard-coded | `t` is a real `datetime` on the master clock; the year comes from `start`; EnergyPlus' clock is checked against it every step |
 | `sys.path.insert(0, 'C:/EnergyPlusV22-2-0/')` | automatic discovery, `ENERGYPLUS_DIR`, or `energyplus_dir=` |

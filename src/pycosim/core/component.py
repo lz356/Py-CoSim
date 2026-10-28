@@ -93,12 +93,12 @@ class Port:
         *Inputs:* what the component needs relative to its own step ``[t, t+h)``:
         the most recent message (``latest``, default), the value in effect at
         ``t`` (``at``), or the aggregate over the step that just ended
-        (``past``) or starts (``ahead``). SMMM aligns the source accordingly.
+        (``past``) or starts (``ahead``). TIDE aligns the source accordingly.
     bounds : (low, high), optional
         *Outputs:* valid range. Values outside it are handled by ``on_invalid``
         and the message is flagged.
     on_invalid : {"clip", "last", "default", "error"}
-        What SMMM does with an out-of-range or non-finite output (only used when
+        What TIDE does with an out-of-range or non-finite output (only used when
         ``bounds`` is given): clip it (non-finite values fall back to the last
         valid value), keep the last valid value, use the port's initial value,
         or stop the run.

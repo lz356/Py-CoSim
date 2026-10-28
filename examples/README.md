@@ -15,7 +15,7 @@ Results (time series, events, figures) are written to the example's `output/` fo
 | [08 YAML scenario](08_yaml_scenario/scenario.yaml) | `cd examples/08_yaml_scenario && pycosim run scenario.yaml --plot` | ~1 s | a whole co-simulation without a script |
 | [09 Custom component](09_custom_component_ev/run.py) | `python examples/09_custom_component_ev/run.py` | ~1 s | writing your own stateful, stochastic component (EV charger) |
 | [10 FMU component](10_fmu_component/run.py) | `python examples/10_fmu_component/run.py` | ~10 s | a co-simulation FMU (FMI 2.0/3.0) coupled with weather and Python controllers; needs `pip install fmpy pythonfmu` |
-| [11 Messages and time (SMMM)](11_messages_and_time/run.py) | `python examples/11_messages_and_time/run.py` | ~15 s | time-meaning-carrying messages: an hourly meter aligned with 15-min power, pattern and topic subscriptions, bounds and quality flags, an asynchronous stochastic AI stand-in (not an LLM), record/replay and counterfactual replay, lineage — no EnergyPlus needed |
+| [11 Messages and time (TIDE)](11_messages_and_time/run.py) | `python examples/11_messages_and_time/run.py` | ~15 s | time-meaning-carrying messages: an hourly meter aligned with 15-min power, pattern and topic subscriptions, bounds and quality flags, an asynchronous stochastic AI stand-in (not an LLM), record/replay and counterfactual replay, lineage — no EnergyPlus needed |
 
 \* on a laptop; EnergyPlus examples include EnergyPlus' sizing and warm-up.
 

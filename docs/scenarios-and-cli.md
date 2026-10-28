@@ -69,8 +69,8 @@ This is [example 08](examples.md#08--yaml-scenario) (with `my_rules.py` next to 
 | `save` | `true` | write results to disk |
 | `progress` | `false` | progress bar (the CLI shows one unless `--quiet`) |
 | `log_level` | `INFO` | `DEBUG`, `INFO`, `WARNING`, `ERROR` |
-| `record` | none | list of component names whose messages are kept for [replay](smmm.md#record-and-replay) (`true` = all) |
-| `trace` | `false` | record which messages every component read ([provenance](smmm.md#provenance-trace-and-lineage)) |
+| `record` | none | list of component names whose messages are kept for [replay](tide.md#record-and-replay) (`true` = all) |
+| `trace` | `false` | record which messages every component read ([provenance](tide.md#provenance-trace-and-lineage)) |
 
 **`components:`** — a mapping `name: settings`. Each entry is one of:
 
@@ -80,7 +80,7 @@ This is [example 08](examples.md#08--yaml-scenario) (with `my_rules.py` next to 
   `"module:ClassName"` (also `"package.module.ClassName"`, e.g. `pycosim.gym:ExternalAgent`).
 * **a function**: `function: module:function` with optional `inputs`, `outputs` (default
   `[out]`) and `step_size`. No other keys are allowed. `inputs` and `outputs` may be
-  mappings with the [SMMM port settings](writing-components.md#declaring-ports), e.g.
+  mappings with the [TIDE port settings](writing-components.md#declaring-ports), e.g.
 
   ```yaml
     utility:
@@ -264,10 +264,10 @@ a failure, with partial results or `None`).
 | `res.ok`, `res.error` | `True` / `None` unless the run failed (then `error` holds the error report) |
 | `res.wall_time` | wall-clock seconds |
 | `res.summary()` | short text summary (also what `print(res)` shows) |
-| `res.quality` | messages per port that were clipped, replaced by a fallback, late or replayed ([details](smmm.md#quality-flags-and-bounds)) |
-| `res.alignment` | per input read with `at`/`past`/`ahead`: number of reads, extrapolated reads, minimum coverage ([details](smmm.md#the-four-read-modes-what-an-input-asks-for)) |
+| `res.quality` | messages per port that were clipped, replaced by a fallback, late or replayed ([details](tide.md#quality-flags-and-bounds)) |
+| `res.alignment` | per input read with `at`/`past`/`ahead`: number of reads, extrapolated reads, minimum coverage ([details](tide.md#the-four-read-modes-what-an-input-asks-for)) |
 | `res.messages` | with `record=`: every message of the recorded components (`ref`, `index`, `step`, `time`, `value`, `start`, `end`, `quality`, `origin_step`) |
-| `res.trace`, `res.lineage(ref, when)` | with `trace=True`: which messages each component read, and the chain behind one value ([details](smmm.md#provenance-trace-and-lineage)) |
+| `res.trace`, `res.lineage(ref, when)` | with `trace=True`: which messages each component read, and the chain behind one value ([details](tide.md#provenance-trace-and-lineage)) |
 
 Methods:
 
@@ -308,7 +308,7 @@ With `save=True` (default), `<output_dir>/<name>/` contains:
 | `<component>/` | files written by components (e.g. EnergyPlus' `eplus/` folder) |
 
 Running again with the same `name` overwrites the files — give each variant its own `name`.
-`Results.load` restores `df`, `events`, `timing`, `meta`, `units` and `error` (and the SMMM
+`Results.load` restores `df`, `events`, `timing`, `meta`, `units` and `error` (and the TIDE
 tables above when they were saved), so plots of loaded results show units as before and
 `lineage()` works on a loaded traced run.
 

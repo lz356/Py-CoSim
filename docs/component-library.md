@@ -13,7 +13,7 @@ output port. Built-in components do not take a `step_size=` argument; set
 [Writing components](writing-components.md#step-sizes)).
 
 **Time meaning of the outputs.** Every library output declares what its value means in time
-(its [kind](smmm.md#the-five-kinds-what-a-time-stamp-means)), so SMMM can align it for
+(its [kind](tide.md#the-five-kinds-what-a-time-stamp-means)), so TIDE can align it for
 readers with another step size or timing convention (`read="past"` etc.):
 
 | Kind | Library outputs |
@@ -89,7 +89,7 @@ TimeSeriesSource(name, data, method="previous", repeat_yearly=False, columns=Non
 | `repeat_yearly` | `False` | map the simulation time onto the data's year (typical-year data) |
 | `columns` | `None` | use only these columns |
 | `units` | `None` | `{column: unit}` for plots |
-| `kind`, `interval` | `None` | time meaning of every published value, e.g. `kind="instant"` for measured temperatures, `kind="hold"` for prices ([kinds](smmm.md#the-five-kinds-what-a-time-stamp-means)) |
+| `kind`, `interval` | `None` | time meaning of every published value, e.g. `kind="instant"` for measured temperatures, `kind="hold"` for prices ([kinds](tide.md#the-five-kinds-what-a-time-stamp-means)) |
 
 Before the first sample the first value is used, after the last sample the last value.
 
@@ -229,7 +229,7 @@ sim.connect("battery.P", "grid.P_bat")    # GridMeter: aligned with the building
 ```
 
 Because `P` describes the coming step while EnergyPlus and `RCBuilding` powers describe the
-step that ended, connect it to the meter's `P_bat` input (read `past`, so SMMM lines the two
+step that ended, connect it to the meter's `P_bat` input (read `past`, so TIDE lines the two
 up) rather than adding it to `P_net`.
 
 ### TimeOfUseTariff
@@ -249,7 +249,7 @@ TimeOfUseTariff(name, peak_hours=(16, 21), peak_price=0.30, offpeak_price=0.10,
 
 Out: `price` [$/kWh], `is_peak` [0/1], both `hold` (valid from `t` until the next value).
 To let consumers subscribe without naming the tariff, give the price a topic:
-`tariff.set_port("price", topic="grid/price")` ([topics](smmm.md#patterns-and-topics)).
+`tariff.set_port("price", topic="grid/price")` ([topics](tide.md#patterns-and-topics)).
 
 ### GridMeter
 
@@ -281,7 +281,7 @@ just ended, whatever the producers' steps and time meanings are: an EnergyPlus m
 (`average`/`past`) is used as it is, `Battery.P` (`average`/`ahead`) contributes the power of
 the same interval, PV power (`instant`) is averaged with the trapezoid rule and the price
 (`hold`) is time-weighted — so energy is priced with the tariff of its own interval, also
-for an hourly meter on a 15-minute building ([example](smmm.md#alignment-across-step-sizes)).
+for an hourly meter on a 15-minute building ([example](tide.md#alignment-across-step-sizes)).
 `aligned=False` reads every input as the latest value (the Py-CoSim 2.0 meter).
 
 ```python
@@ -305,7 +305,7 @@ sim.subscribe("meter.price", "tariff.price")
 * `delay=True` on a connection to an aligned input (the old advice for exact pricing) now
   raises a `ConfigurationError`; drop it — the `past` read already does the job — or pass
   `read="latest"` on that connection.
-* At the first step the meter accounts for the interval *before* the start; SMMM fills it
+* At the first step the meter accounts for the interval *before* the start; TIDE fills it
   with the first known values (one extrapolated read in `res.alignment`).
 
 ---
@@ -489,7 +489,7 @@ LLMSupervisor(name, backend, intent, setpoints, observations=(), step_size="1h",
 | `decimals` | 2 | rounding of observations in the prompt |
 
 `LLMSupervisor(...).make_async(delay="15min")` lets it think in the background while the
-simulation goes on ([asynchronous components](smmm.md#asynchronous-components)).
+simulation goes on ([asynchronous components](tide.md#asynchronous-components)).
 
 In: one port per observation. Out: one port per set-point (initial = its default, `hold`), `valid`
 [1 if the LLM answer was used, 0 on fallback], `latency` [s], `reason` [text from the

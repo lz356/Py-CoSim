@@ -1,4 +1,4 @@
-"""SMMM 2.0: time-meaning-carrying messages, alignment, patterns, quality, async, replay, provenance."""
+"""TIDE: time-meaning-carrying messages, alignment, patterns, quality, async, replay, provenance."""
 import math
 import random
 import threading

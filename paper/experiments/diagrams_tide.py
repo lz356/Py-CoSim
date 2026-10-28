@@ -1,4 +1,4 @@
-"""Concept diagrams for the SMMM 2.0 manuscript (Fig. 1 and Fig. 2)."""
+"""Concept diagrams for the TIDE manuscript (Fig. 1 and Fig. 2)."""
 from __future__ import annotations
 
 import math
@@ -41,12 +41,12 @@ def fig_concept() -> None:
             fontsize=7)
     ax.set_title("(a) Connecting software", loc="left")
     ax.axis("off")
-    # (b) SMMM
+    # (b) TIDE
     ax = axes[1]
     ax.set_xlim(-1.75, 1.75)
     ax.set_ylim(-1.3, 1.25)
     ax.add_patch(FancyBboxPatch((-0.78, -0.52), 1.56, 1.04, boxstyle="round,pad=0.03", fc="#F4F4F4", ec="k", lw=1.1))
-    ax.text(0, 0.40, "SMMM", ha="center", va="center", fontsize=9, weight="bold")
+    ax.text(0, 0.40, "TIDE", ha="center", va="center", fontsize=9, weight="bold")
     ax.text(-0.39, 0.06, "Management\nclock, phases,\nexecution order,\ndeadlines, replay", ha="center", va="center",
             fontsize=6.5, linespacing=1.15)
     ax.text(0.39, 0.06, "Messaging\nvalue + validity\n+ meaning + quality;\nalignment, history", ha="center",
@@ -78,10 +78,10 @@ def fig_concept() -> None:
     ax.plot([], [], color=GREEN, label="publish")
     ax.plot([], [], color=VERMILION, ls="--", label="subscribe (aligned)")
     ax.legend(loc="lower right", fontsize=6.5, frameon=False, bbox_to_anchor=(1.03, -0.05))
-    ax.set_title("(b) Py-CoSim: messages through SMMM", loc="left")
+    ax.set_title("(b) Py-CoSim: messages through TIDE", loc="left")
     ax.axis("off")
     fig.tight_layout()
-    fig.savefig(FIG / "fig01_smmm_concept.png")
+    fig.savefig(FIG / "fig01_concept.png")
     plt.close(fig)
 
 

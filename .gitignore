@@ -43,3 +43,6 @@ Thumbs.db
 .env
 *.key
 paper/experiments/helics_feds/*.log
+
+# Author's personal review folder
+Liang's Working Folder/

@@ -15,8 +15,8 @@ Components never call each other: each one publishes *messages* (a value plus wh
 stamp means) and subscribes to what it needs. You describe *who needs what*; Py-CoSim decides
 *when* each part runs, delivers the messages — lined up in time, even between parts that run
 at different rates — keeps EnergyPlus in lock-step with the rest, and collects every exchanged
-value into one table. The part of Py-CoSim that does this is called SMMM, the Simulation
-Management and Messaging Module ([Messages and time](smmm.md)).
+value into one table. The part of Py-CoSim that does this is called TIDE, the Time-aware
+Interval Data Exchange ([Messages and time](tide.md)).
 
 ## Who is it for?
 
@@ -86,7 +86,7 @@ To use EnergyPlus instead, replace `RCBuilding(...)` with an
 | Area | What you get |
 |---|---|
 | Core engine | `CoSimulation` master with a fixed time grid, multi-rate components, automatic execution order, algebraic-loop detection, error reports |
-| Messages (SMMM 2.0) | outputs that say what their time stamp means (`instant`, `average`, `amount`, `hold`, `event`), aligned reads across step sizes (`latest`, `at`, `past`, `ahead`), pattern and topic subscriptions, quality flags and bounds, record/replay and counterfactual replay, provenance (`trace=True`, `Results.lineage`), asynchronous components with a decision delay and deadline |
+| Messages (TIDE) | outputs that say what their time stamp means (`instant`, `average`, `amount`, `hold`, `event`), aligned reads across step sizes (`latest`, `at`, `past`, `ahead`), pattern and topic subscriptions, quality flags and bounds, record/replay and counterfactual replay, provenance (`trace=True`, `Results.lineage`), asynchronous components with a decision delay and deadline |
 | EnergyPlus | `EnergyPlusComponent` (sensors, meters, actuators), one worker process per building (parallel), automatic run-period/time-step synchronisation, a finer internal EnergyPlus step than the exchange step, handle discovery (`pycosim handles`), `EnergyPlusModel` for editing IDF/epJSON |
 | Component library | Weather (EPW), time series, schedules, RC building, PV, battery, time-of-use tariff, grid meter, thermostat/pre-cooling/PI/peak-shaving controllers, NHTS household occupancy |
 | AI | `LLMSupervisor` with guardrails (Anthropic Claude, OpenAI-compatible, Ollama backends; record/replay; fault injection), which can run asynchronously while the simulation goes on; Gymnasium environment for RL (`pycosim.gym`) |
@@ -98,7 +98,7 @@ To use EnergyPlus instead, replace `RCBuilding(...)` with an
 |---|---|
 | [Installation](installation.md) | install Py-CoSim and EnergyPlus and check that everything is found |
 | [Concepts](concepts.md) | understand components, ports, the clock, the steps of the master, timing and reproducibility (**read this once**) |
-| [Messages and time (SMMM)](smmm.md) | let components with different step sizes exchange data correctly, subscribe by pattern or topic, flag bad values, replay AI decisions, trace a decision back, run slow AI components asynchronously |
+| [Messages and time (TIDE)](tide.md) | let components with different step sizes exchange data correctly, subscribe by pattern or topic, flag bad values, replay AI decisions, trace a decision back, run slow AI components asynchronously |
 | [Writing components](writing-components.md) | turn your own model, controller or ML model into a component |
 | [EnergyPlus](energyplus.md) | couple EnergyPlus models: sensors, meters, actuators, run period, executors, troubleshooting |
 | [Component library](component-library.md) | look up the inputs, outputs and parameters of every built-in component |
@@ -116,7 +116,7 @@ To use EnergyPlus instead, replace `RCBuilding(...)` with an
    [EnergyPlus](energyplus.md).
 4. Write your first own component with [Writing components](writing-components.md) and
    [example 09](examples.md#09--writing-your-own-component-ev-charger).
-5. Read [Messages and time](smmm.md) and run [example 11](examples.md#11--messages-and-time)
+5. Read [Messages and time](tide.md) and run [example 11](examples.md#11--messages-and-time)
    when your components run at different step sizes, or when you add AI components.
 6. Pick the examples closest to your research question (03–08) and adapt them.
 

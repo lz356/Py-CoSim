@@ -1,4 +1,4 @@
-"""E4: slow AI components -- blocking calls vs. SMMM deadline-aware asynchronous delivery.
+"""E4: slow AI components -- blocking calls vs. TIDE deadline-aware asynchronous delivery.
 
 N EnergyPlus offices (N = 1, 2, 4, 8), each supervised hourly by an
 LLMSupervisor whose backend answers deterministically but with a random,
@@ -108,7 +108,7 @@ def plot(df: pd.DataFrame) -> None:
 
     set_style()
     fig, ax = plt.subplots(figsize=(3.5, 2.6))
-    for mode, c, lab in (("blocking", COLORS[3], "Blocking calls"), ("async", COLORS[0], "Asynchronous (SMMM)")):
+    for mode, c, lab in (("blocking", COLORS[3], "Blocking calls"), ("async", COLORS[0], "Asynchronous (TIDE)")):
         g = df[(df["mode"] == mode) & (df["repeat"] == 1)]
         ax.plot(g["n_buildings"], g["wall_s"], "o-", color=c, label=lab)
     ax.set_xlabel("Buildings, each with one AI supervisor")
@@ -121,4 +121,9 @@ def plot(df: pd.DataFrame) -> None:
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+
+    if "--plot" in sys.argv:  # re-draw from the saved table
+        plot(pd.read_csv(OUT / "e4_async.csv"))
+    else:
+        main()

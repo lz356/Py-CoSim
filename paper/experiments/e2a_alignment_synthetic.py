@@ -1,4 +1,4 @@
-"""E2a: energy and cost across different step sizes -- naive (latest value) vs. SMMM-aligned exchange.
+"""E2a: energy and cost across different step sizes -- naive (latest value) vs. aligned exchange.
 
 A producer publishes the exact mean of a known power signal over each of its
 steps (time meaning ``average``/``past``, like EnergyPlus); a tariff publishes

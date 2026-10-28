@@ -17,7 +17,7 @@ def main() -> None:
     steps = [5, 15, 30, 60]
     x = np.arange(len(steps))
     w = 0.26
-    modes = [("naive", COLORS[3], "Naive (latest values)"), ("aligned", COLORS[0], "Aligned (SMMM)"),
+    modes = [("naive", COLORS[3], "Naive (latest values)"), ("aligned", COLORS[0], "Aligned (TIDE)"),
              ("aligned+sub", COLORS[2], "Aligned, 1-min EnergyPlus inside")]
     for ax, (col, title) in zip(axes[:3], [("cost_usd_err_pct", "(a) Energy cost"),
                                             ("grid_import_kWh_err_pct", "(b) Grid import"),

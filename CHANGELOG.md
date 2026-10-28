@@ -1,10 +1,10 @@
 # Changelog
 
-## 2.1.0 — SMMM 2.0 (unreleased)
+## 2.1.0 — TIDE (unreleased)
 
-The data hub was redesigned as **SMMM 2.0** (Simulation Management and Messaging Module, the name used in the
-original Py-CoSim paper). Components publish *messages* that say what their time stamp means, and subscribe to what
-they need; SMMM aligns them in time. Guide: [`docs/smmm.md`](docs/smmm.md); runnable tour:
+The data hub was redesigned as **TIDE** (Time-aware Interval Data Exchange; it replaces the data bus of 2.0 and
+the CSV-based "SMMM" of 0.x). Components publish *messages* that say what their time stamp means, and subscribe to what
+they need; TIDE aligns them in time. Guide: [`docs/tide.md`](docs/tide.md); runnable tour:
 `examples/11_messages_and_time/run.py`.
 
 ### New
@@ -12,7 +12,7 @@ they need; SMMM aligns them in time. Guide: [`docs/smmm.md`](docs/smmm.md); runn
   `interval="past"|"ahead"` for averages and amounts. Untyped outputs behave like `hold` (the 2.0 behaviour).
   `pycosim.Message(value, start=, end=, quality=)` publishes a value for another time span (e.g. a price announced
   for 16:00).
-- **Aligned reads**: `read=` on input ports and on `connect()` — `latest` (default), `at`, `past`, `ahead`. SMMM
+- **Aligned reads**: `read=` on input ports and on `connect()` — `latest` (default), `at`, `past`, `ahead`. TIDE
   returns time-weighted means, totals (amounts split in proportion to time), sample-and-hold values or event lists,
   so components with different step sizes and timing conventions exchange data without conversion code.
   `ctx.at(ref, when)` and `ctx.window(ref, start, end)` give the same answers for any port. `Results.alignment`
@@ -45,7 +45,7 @@ they need; SMMM aligns them in time. Guide: [`docs/smmm.md`](docs/smmm.md); runn
 - `GridMeter` has new inputs `P_load`, `P_gen`, `P_bat` and an `aligned` option (see below).
 - `Results.save`/`load` handle `quality.csv`, `alignment.csv`, `trace.csv` and `messages.jsonl`; `meta.json` lists
   `port_kinds`, `topics`, `asynchronous`, `replayed` and `recorded`.
-- Documentation: new page *Messages and time (SMMM)*; concepts, writing components, EnergyPlus, component library,
+- Documentation: new page *Messages and time (TIDE)*; concepts, writing components, EnergyPlus, component library,
   AI/RL, scenarios and FAQ updated; example 11.
 
 ### Changed behaviour
@@ -87,7 +87,7 @@ Py-CoSim is now an installable Python package (`pip install -e .`, import `pycos
   outputs, floor-area scaling, ...).
 - **Handle discovery**: `pycosim handles` / `list_available_handles`, and "did you mean" suggestions for misspelled
   sensor/actuator names.
-- **Data bus** replacing the CSV-file "SMMM": in-memory, time-indexed, history queries, event log, tidy results,
+- **Data bus** replacing the CSV-file "TIDE": in-memory, time-indexed, history queries, event log, tidy results,
   error reports with the failing component's inputs.
 - **Observers**: progress bar, live plots (online visualisation), streaming CSV recorder.
 - **Component library**: EPW weather + solar position, time series, daily profiles, RC building, PV, battery,

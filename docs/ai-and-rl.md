@@ -204,7 +204,7 @@ of one after the other.
 * The event log entry of a decision carries the time the observations were taken (16:00);
   the set-points appear in `res.df` at 16:15.
 
-Details, rules and pitfalls: [Asynchronous components](smmm.md#asynchronous-components).
+Details, rules and pitfalls: [Asynchronous components](tide.md#asynchronous-components).
 [Example 11](examples.md#11--messages-and-time) uses an asynchronous random stand-in (not an
 LLM) with an artificial latency.
 
@@ -230,7 +230,7 @@ otherwise it raises `KeyError` (and the supervisor falls back). With `strict=Fal
 prompts get the answer `"{}"` instead. Keep the `.jsonl` file with your results — it is the
 evidence of what the model said.
 
-**Replaying the supervisor's messages instead.** SMMM can also record and replay what the
+**Replaying the supervisor's messages instead.** TIDE can also record and replay what the
 supervisor *published* (its set-points, `valid`, `latency` and `reason`), independent of the
 backend:
 
@@ -243,7 +243,7 @@ sim.replay("llm", live)                           # or the run folder: "pycosim_
 again = sim.run()                                 # no API calls, identical results
 ```
 
-| | `RecordingBackend` / `ReplayBackend` | SMMM `record=` / `sim.replay()` |
+| | `RecordingBackend` / `ReplayBackend` | TIDE `record=` / `sim.replay()` |
 |---|---|---|
 | What is stored | each prompt (hashed) and the model's raw answer | the supervisor's published messages |
 | The supervisor runs during replay | yes (prompt building, guardrails, event log) | no, its messages are replayed |
@@ -252,9 +252,9 @@ again = sim.run()                                 # no API calls, identical resu
 | Works for other components (ML models, web APIs) | no | yes |
 
 Use the backend recording to keep the evidence of what the model said and to re-run the
-guardrails; use SMMM replay to repeat a run bit for bit, including asynchronous and late
+guardrails; use TIDE replay to repeat a run bit for bit, including asynchronous and late
 answers, or to test the same decisions on a modified building
-([Record and replay](smmm.md#record-and-replay)).
+([Record and replay](tide.md#record-and-replay)).
 
 ---
 

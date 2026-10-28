@@ -95,7 +95,7 @@ At each grid time `t_k` the master runs these phases:
                                    ▼  k = k + 1
 ```
 
-Phase 0 only matters for [asynchronous components](smmm.md#asynchronous-components) (for
+Phase 0 only matters for [asynchronous components](tide.md#asynchronous-components) (for
 example a slow LLM that thinks in the background): their answers become visible at a
 declared simulation time, before anything else runs in that step.
 
@@ -133,8 +133,8 @@ and `ctx.dt` is the master step.
 
 By default a slow component sees only the *latest* value of a faster one: an hourly meter
 reading 15-minute power gets the power of the last quarter hour. If it needs the mean over
-its whole hour, connect with `read="past"` — SMMM then aligns the values by their time
-meaning (see [Messages and time](smmm.md#alignment-across-step-sizes)).
+its whole hour, connect with `read="past"` — TIDE then aligns the values by their time
+meaning (see [Messages and time](tide.md#alignment-across-step-sizes)).
 
 ## Connections
 
@@ -145,10 +145,10 @@ sim.subscribe(target, source, ...)      # the same, with the arguments in readin
 
 * `source`: `"comp.port"`, `comp["port"]`, a `(comp, "port")` pair, or a **list** of those
   (fan-in). It can also be a glob pattern such as `"*.P_elec"` (every component's `P_elec`)
-  or a topic such as `"grid/price"` ([Patterns and topics](smmm.md#patterns-and-topics)).
+  or a topic such as `"grid/price"` ([Patterns and topics](tide.md#patterns-and-topics)).
 * `target`: one input port. Each input can be connected only once.
 * `read`: how the target reads the source — `"latest"` (default: the most recent value),
-  `"at"`, `"past"` or `"ahead"` ([read modes](smmm.md#the-four-read-modes-what-an-input-asks-for)).
+  `"at"`, `"past"` or `"ahead"` ([read modes](tide.md#the-four-read-modes-what-an-input-asks-for)).
 
 ### Fan-in with `reduce`
 
@@ -209,18 +209,18 @@ Ways out:
    state (that is why building → controller → building loops never cause this error).
 3. Read a value that is valid *from* `t` on (a set-point, a price: `kind="hold"`) with
    **`read="past"`**: the reader then needs only what was valid before `t`, so it does not
-   have to wait for the source ([details](smmm.md#the-four-read-modes-what-an-input-asks-for)).
+   have to wait for the source ([details](tide.md#the-four-read-modes-what-an-input-asks-for)).
 4. Make the slow decision maker **asynchronous** (`make_async(delay=...)`): its answers
    appear in a later step, so it is never part of a loop
-   ([details](smmm.md#asynchronous-components)).
+   ([details](tide.md#asynchronous-components)).
 
-## The data bus (SMMM)
+## The data bus (TIDE)
 
-All values pass through an in-memory **data bus**, the messaging half of SMMM (it replaces
+All values pass through an in-memory **data bus**, the messaging half of TIDE (it replaces
 the CSV files of Py-CoSim 0.x). The bus stores every published value as a *message*: the
 value, the time span it describes, a quality flag and the step that produced it. What the
 time span is depends on the output's `kind` (a temperature *at* `t`, a mean power *over* the
-step that ended, a set-point valid *from* `t`, …); [Messages and time](smmm.md) explains
+step that ended, a set-point valid *from* `t`, …); [Messages and time](tide.md) explains
 this and everything built on it. Besides normal connections, a component can read any port
 through its context:
 
@@ -262,8 +262,8 @@ in the error report if a run fails.
 | `res.timing` | wall-clock time and number of calls per component |
 | `res.meta` | start/end, step, seed, wall time, versions, connections, per-component metadata, port kinds, topics, asynchronous statistics |
 | `res.quality` | number of messages per port that were clipped, replaced by a fallback, late or replayed |
-| `res.alignment` | for each input read with `at`/`past`/`ahead`: how often SMMM had to fill a gap |
-| `res.messages`, `res.trace` | every message of the recorded components (`record=`) and, with `trace=True`, which messages each component read ([details](smmm.md#record-and-replay)) |
+| `res.alignment` | for each input read with `at`/`past`/`ahead`: how often TIDE had to fill a gap |
+| `res.messages`, `res.trace` | every message of the recorded components (`record=`) and, with `trace=True`, which messages each component read ([details](tide.md#record-and-replay)) |
 | `res["office.T_zone"]` | shortcut for `res.df["office.T_zone"]` |
 
 Results are saved to `<output_dir>/<name>/` (`timeseries.csv`, `events.csv`, `timing.csv`,
@@ -290,7 +290,7 @@ random. The default seed is `0`. With `seed=None`, Py-CoSim draws a random seed,
 afterwards by passing that number. EnergyPlus itself is deterministic. LLM answers, web services and anything else outside
 your control are not — record their messages with `CoSimulation(..., record=["llm"])` and
 replay them later with `sim.replay("llm", run_folder)`
-([Record and replay](smmm.md#record-and-replay)). `meta.json`
+([Record and replay](tide.md#record-and-replay)). `meta.json`
 stores the seed and the Python, Py-CoSim and EnergyPlus versions of every run.
 
 ## Time convention
@@ -355,7 +355,7 @@ Two conventions meet in a typical co-simulation:
 | `Battery.P` | `[t, t+dt)` — the step that starts | `kind="average"`, `interval="ahead"` |
 | prices, set-points (`TimeOfUseTariff.price`, a controller's output) | valid from `t` until the next value | `kind="hold"` |
 
-Because every output declares its convention, SMMM can line them up: an input read with
+Because every output declares its convention, TIDE can line them up: an input read with
 `read="past"` gets the mean over `[t-dt, t)` of whatever it is connected to.
 [`GridMeter`](component-library.md#gridmeter) does this by default (`aligned=True`): its
 `P_load`, `P_gen`, `P_bat`, `price` and `export_price` inputs are read `past`, so each energy
@@ -367,7 +367,7 @@ biased a week's cost by about 1–2 % at a 15-minute step in our tests.
 Energy-based KPIs computed directly from `res.df` (e.g. `P.sum() * dt`) are unaffected
 except for the first and last step. If you post-process costs from `res.df` yourself,
 remember that row `t` of an EnergyPlus meter belongs to the price of row `t - dt`.
-See [Messages and time](smmm.md) for the details.
+See [Messages and time](tide.md) for the details.
 
 ## Errors
 

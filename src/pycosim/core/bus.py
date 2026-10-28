@@ -1,8 +1,7 @@
-"""The messaging half of SMMM: a time-aware, in-memory store of every message.
+"""The messaging part of TIDE: a time-aware, in-memory store of every message.
 
-SMMM (Simulation Management and Messaging Module) was introduced in Py-CoSim
-0.x as a data hub that exchanged values through one CSV file per component and
-time step. Here it is an in-memory store of *messages* (see
+TIDE (Time-aware Interval Data Exchange) is the hub through which all
+components exchange data. This module keeps every *message* in memory (see
 :mod:`pycosim.core.messages`): each published value keeps its validity
 interval, its quality flag and the step that produced it, so that
 
@@ -14,7 +13,7 @@ interval, its quality flag and the step that produced it, so that
 * the full exchange can be exported as a tidy table, recorded and replayed,
 * a structured event log records warnings, LLM prompts, errors, etc.
 
-The management half of SMMM -- the clock, the per-step barrier and the
+The management part of TIDE -- the clock, the per-step barrier and the
 execution order -- is :class:`pycosim.CoSimulation`.
 """
 from __future__ import annotations
